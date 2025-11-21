@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="blueFolder-removebg-preview.png" />
+    <None Remove="circleBackButton.png" />
+    <None Remove="codeManagerIcon.png" />
+    <None Remove="codeManagerIconColor.png" />
+    <None Remove="fileFolderButtonImg.png" />
+    <None Remove="JackOLanternSpirte-removebg-preview.png" />
+    <None Remove="JackOLanternSpirte.png" />
+    <None Remove="pencil-icon-png-9.jpg" />
+    <None Remove="plusButtonImage-removebg-preview.png" />
+    <None Remove="plusButtonImage.jpg" />
+    <None Remove="saveButtonImage.png" />
+    <None Remove="trashcanPng.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="YoutubeExplode" Version="6.5.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\brushIcon.png" />
+    <Resource Include="Images\blueFolder-removebg-preview.png" />
+    <Resource Include="Images\fileFolderButtonImg.png" />
+    <Resource Include="Images\circleBackButton.png" />
+    <Resource Include="Images\codeManagerIcon.png" />
+    <Resource Include="Images\codeManagerIconColor.png" />
+    <Resource Include="Images\JackOLanternSpirte-removebg-preview.png" />
+    <Resource Include="Images\JackOLanternSpirte.png" />
+    <Resource Include="Images\plusButtonImage-removebg-preview.png" />
+    <Resource Include="Images\saveButtonImage.png" />
+    <Resource Include="Images\pencil-icon-png-9.jpg" />
+    <Resource Include="Images\trashcanPng.png" />
+  </ItemGroup>
+
+</Project>

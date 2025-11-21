@@ -1,0 +1,136 @@
+﻿<Page x:Class="CodeManagementSystem.Page2"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CodeManagementSystem"
+      mc:Ignorable="d"
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      Title="Page2">
+
+    <Grid x:Name="BackgroundGrid" Background="#FFEEE8E8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <!-- Back Button -->
+            <ColumnDefinition Width="Auto"/>
+            <!-- Folder Button -->
+            <ColumnDefinition Width="*"/>
+            <!-- Main Content -->
+            <ColumnDefinition Width="200"/>
+            <!-- Notes List -->
+            <ColumnDefinition Width="Auto"/>
+            <!-- Spacer -->
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header Row -->
+            <RowDefinition Height="Auto" />
+            <!-- Title/Search Row -->
+            <RowDefinition Height="*"/>
+            <!-- Content Row -->
+            <RowDefinition Height="Auto"/>
+            <!-- Action Buttons Row -->
+        </Grid.RowDefinitions>
+
+        <!-- Back Button -->
+        <Border BorderThickness="1.5" BorderBrush="#FF0078D7" Grid.Column="0" Grid.Row="0" Margin="5">
+            <Button x:Name="BackButton1" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource RounddButton}" Foreground="#FF0078D7" BorderBrush="#FF0078D7" BorderThickness="3" Click="BackButton_Click">
+                <TextBlock Text="&lt;" FontSize="22" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
+            </Button>
+        </Border>
+
+        <!-- Folder Button -->
+        <Border BorderThickness="1.5" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="0" Margin="5">
+            <Button x:Name="roamingAppsFolderButton" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource RounddButton}" Foreground="#FF0078D7" BorderBrush="#FF0078D7" BorderThickness="3" Click="roamingAppsFolderButton_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Images/fileFolderButtonImg.png" Stretch="Uniform"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </Border>
+
+        <!-- Main Title -->
+        <Border BorderThickness="1.5" BorderBrush="#FF0078D7" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Margin="5">
+            <TextBlock Text="Project Notes Editor" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF0078D7" FontSize="24" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center"/>
+        </Border>
+
+        <!-- Note Title Area -->
+        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="5,2,5,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="titleTextBox" Grid.Column="0" TextWrapping="Wrap" Text="Untitled Note" Background="#00707070" BorderBrush="#00707070" Foreground="#FF0078D7" FontSize="18" FontFamily="Microsoft YaHei Light" IsEnabled="False" LostFocus="titleTextBox_LostFocus" MouseDoubleClick="noteTitleChangeButton_Click" />
+            <Button x:Name="noteTitleChangeButton" Grid.Column="1" Style="{DynamicResource RounddButton}" Background="Transparent" Content="⋅⋅⋅" BorderBrush="#00707070" Foreground="#FF0078D7" FontWeight="Bold" FontSize="14" Height="30" Width="30" VerticalAlignment="Center" FontFamily="Microsoft YaHei" Click="noteTitleChangeButton_Click" Margin="5,0,0,0"/>
+        </Grid>
+
+        <!-- Search Box -->
+        <TextBox x:Name="searchTextBox" Grid.Column="3" Grid.Row="1" TextWrapping="Wrap" Text="Search..." VerticalAlignment="Center" Foreground="#FF0078D7" FontSize="18" FontFamily="Microsoft YaHei" SelectionTextBrush="White" Background="Transparent" Height="30" SelectionOpacity="0.3" GotFocus="searchTextBox_GotFocus" LostFocus="searchTextBox_LostFocus" Margin="5,2,10,2"/>
+
+        <!-- Rich Text Editor -->
+        <RichTextBox x:Name="richtextBox" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Margin="5" TextChanged="RichTextBox_TextChanged" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" LostFocus="richtextBox_LostFocus">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="Start a New Note"/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+        <!-- Notes List -->
+        <ListBox x:Name="noteListBox" Grid.Column="3" Grid.Row="2" Margin="5,5,10,10" 
+         SelectionMode="Single" SelectionChanged="noteListBox_SelectionChanged" 
+         MouseDoubleClick="noteListBox_MouseDoubleClick"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+         ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="nameTextBoxList" Grid.Column="0" HorizontalAlignment="Stretch" 
+                         FontWeight="Bold" TextWrapping="Wrap" 
+                         Text="{Binding fileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         VerticalAlignment="Stretch" Foreground="Black" FontFamily="Microsoft YaHei" 
+                         Background="Transparent" BorderThickness="0" Padding="2,0,2,0" 
+                         IsEnabled="False" LostFocus="nameTextBoxList_LostFocus"
+                         AcceptsReturn="True"/>
+                        <!-- Rest of your buttons remain the same -->
+                        <Button x:Name="renameButtonList" Grid.Column="1" Style="{DynamicResource RounddButton}" 
+                        Content="⋅⋅⋅" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Margin="2,1,1,1" Height="15" Width="15" BorderBrush="#00000000" 
+                        Foreground="#FF0078D7" FontWeight="Bold" FontSize="9" BorderThickness="2" 
+                        Background="#00000000" VerticalContentAlignment="Center" 
+                        HorizontalContentAlignment="Center" FontFamily="Microsoft YaHei" 
+                        Click="renameButtonList_Click"/>
+                        <Button x:Name="deleteButton" Grid.Column="2" Style="{DynamicResource RounddButton}" 
+                        Content="X" Click="deleteButton_Click" HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" Margin="2,1,1,1" Height="15" Width="15" 
+                        BorderBrush="Red" Foreground="Red" FontWeight="Bold" FontSize="7" 
+                        BorderThickness="2" Background="#00000000"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5,5,10,5">
+            <Button x:Name="SaveButton" Content="Save" Style="{DynamicResource RounddButton}" Height="36" Width="36" Click="SaveButton_Click" Margin="0,0,5,0"/>
+            <Button x:Name="duplicateButton" Content="Copy" Style="{DynamicResource RounddButton}" Height="36" Width="36" Click="duplicateButton_Click" Margin="5,0,5,0"/>
+            <Button x:Name="NewNoteButton" Content="New" Style="{DynamicResource RounddButton}" Height="36" Width="36" Click="NewNoteButton_Click" Margin="5,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>
