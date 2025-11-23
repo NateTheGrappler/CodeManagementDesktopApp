@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Images\brushIcon.png" />
     <Resource Include="Images\blueFolder-removebg-preview.png" />
     <Resource Include="Images\fileFolderButtonImg.png" />

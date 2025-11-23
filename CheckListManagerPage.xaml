@@ -6,541 +6,612 @@
       xmlns:local="clr-namespace:CodeManagementSystem"
       mc:Ignorable="d" 
       Title="CheckListManagerPage"
-      Unloaded="Page_Unloaded">
+      Unloaded="Page_Unloaded"
+      Background="#FFEEE8E8">
 
-    <Grid x:Name="mainColorGrid" Background="#FFEEE8E8" Height="378" Width="550">
-        <Grid x:Name ="containerGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="43"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="15"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="43"/>
-                <RowDefinition Height="43"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="28"/>
-            </Grid.RowDefinitions>
+    <!-- Main container that maintains aspect ratio and centers content -->
+    <Grid>
 
-            <Rectangle x:Name="translucentBox" Fill="#BF000000" Grid.RowSpan="5" Grid.ColumnSpan="10" Visibility="Hidden"/>
+        <!-- Background that fills any empty space -->
+        <Rectangle Fill="#FFEEE8E8" />
+        <Rectangle x:Name="translucentBoxBehind" Fill="#BF000000" Grid.RowSpan="5" Grid.ColumnSpan="10" Visibility="Hidden"/>
 
-            <Border BorderThickness="2" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="5,5,0,0">
-                <Button x:Name="BackButton" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource RounddButton}" Foreground="#FF0078D7" BorderBrush="#FF0078D7" BorderThickness="3" Click="BackButton_Click">
-                    <TextBlock Text="&lt;" FontSize="22" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
-                </Button>
-            </Border>
+        <!-- Centered Viewbox that scales uniformly -->
+        <Viewbox Stretch="Uniform" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            
+            <Grid x:Name="mainColorGrid" Width="550" Height="378" Background="#FFEEE8E8">
+                
+                <Rectangle x:Name="translucentBox" Fill="#BF000000" Grid.RowSpan="5" Grid.ColumnSpan="10" Visibility="Hidden"/>
 
-            <Border BorderThickness="2" BorderBrush="#FF0078D7"  Grid.Column="1" Grid.ColumnSpan="1" Margin="5,5,5,0">
-                <TextBlock Text="Check-List Manager" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF0078D7" FontSize="24" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" Width="286"/>
-            </Border>
-            <!--<ListBox x:Name="listBoxContainer" Grid.Row="2" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10, 0, 10, 10"/>-->
-
-            <ListBox x:Name="listBoxContainer" Grid.Row="2" Grid.ColumnSpan="2"  
-             ScrollViewer.HorizontalScrollBarVisibility="Disabled"  
-             d:ItemsSource="{d:SampleData ItemCount=5}"
-             ItemsSource="{Binding mainTextBoxList}"
-             Margin="10, 0, 10, 10" 
-             Background="Transparent" 
-             BorderThickness="4" 
-             VerticalAlignment="Stretch"
-             HorizontalAlignment="Stretch"
-             BorderBrush="Transparent"
-             ClipToBounds="True"
-             ScrollViewer.VerticalScrollBarVisibility="Hidden">
-
-                <ListBox.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </ListBox.Resources>
-
-
-
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="3"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-
-
-
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="VerticalContentAlignment" Value="Top"/>
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Focusable" Value="False"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-
-
-
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="#FF0078D7" BorderThickness="2" CornerRadius="10" Margin="5">
-                            <Grid>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="25"/>
-                                    <ColumnDefinition Width="25"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="25"/>
-                                    <RowDefinition Height="128"/>
-                                </Grid.RowDefinitions>
-
-                                <!--This is the name/title for the project-->
-                                <Viewbox Stretch="Uniform">
-                                    <TextBox x:Name="nameTextBoxList" Grid.Column="0" Text="{Binding projectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Top"  Foreground="#FF0078D7" FontWeight="Bold"  FontFamily="Microsoft YaHei" Background="Transparent" BorderThickness="0" Padding="2,2,2,2" IsEnabled="False" LostFocus="nameTextBoxList_LostFocus"/>
-                                </Viewbox>
-
-                                <!--The Pencil and trashcan buttons-->
-                                <Button x:Name="DeleteButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="2" Grid.Row="0" Margin="1,1,1,1" Click="DeleteButton_Click" Background="Transparent" BorderBrush="Transparent">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <Rectangle.OpacityMask>
-                                                    <ImageBrush ImageSource="images/trashcanPng.png" Stretch="Uniform"/>
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-                                <Button x:Name="RenameButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" Grid.Row="0" Margin="1,1,1,1" Click="RenameButton_Click">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <Rectangle.OpacityMask>
-                                                    <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-
-                                <!--The CheckList For decoration-->
-                                <Border Grid.Row="1" Grid.ColumnSpan="3" IsEnabled="False" BorderThickness="4"  CornerRadius="10" Margin="0,0,-4,0">
-                                    <ListBox IsEnabled="True" ItemsSource="{Binding items}" MouseEnter="ListBox_MouseEnter" IsHitTestVisible="True" Focusable="False">
-
-                                        <ListBox.Template>
-                                            <ControlTemplate TargetType="{x:Type ListBox}">
-                                                <Border x:Name="mainBorder"
-                                                        CornerRadius="10" 
-                                                        Background="{TemplateBinding Background}"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="2.5">
-                                                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                                                        <ItemsPresenter />
-                                                    </ScrollViewer>
-                                                </Border>
-
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="mainBorder" Property="Background" Value="Gray"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-
-                                            </ControlTemplate>
-                                        </ListBox.Template>
-
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border x:Name="outerBorder" 
-                                                    Background="Transparent" 
-                                                    CornerRadius="4" 
-                                                    Padding="4,2">
-                                                    <CheckBox IsEnabled="False" 
-                                                          Content="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                          Margin="0" 
-                                                          Foreground="Black" 
-                                                          FontStyle="Oblique" 
-                                                          IsChecked="{Binding isChecked}"
-                                                          Background="Transparent"
-                                                          BorderBrush="Transparent">
-
-                                                        <CheckBox.Style>
-                                                            <Style TargetType="CheckBox">
-                                                                <Setter Property="Template">
-                                                                    <Setter.Value>
-                                                                        <ControlTemplate TargetType="CheckBox">
-                                                                            <Grid>
-                                                                                <Grid.ColumnDefinitions>
-                                                                                    <ColumnDefinition Width="Auto"/>
-                                                                                    <ColumnDefinition Width="*"/>
-                                                                                </Grid.ColumnDefinitions>
-
-                                                                                <!-- Check box with check mark -->
-                                                                                <Border Grid.Column="0" 
-                                                                                    x:Name="checkMarkBorder" 
-                                                                                    Width="16" 
-                                                                                    Height="16" 
-                                                                                    BorderThickness="1" 
-                                                                                    BorderBrush="DarkGray" 
-                                                                                    Background="Transparent" 
-                                                                                    Margin="0,0,5,0"
-                                                                                    CornerRadius="2">
-                                                                                    <TextBlock x:Name="checkMark" 
-                                                                                       Text="✓" 
-                                                                                       Foreground="White" 
-                                                                                       HorizontalAlignment="Stretch" 
-                                                                                       VerticalAlignment="Stretch"
-                                                                                       FontWeight="Bold"
-                                                                                       Visibility="Collapsed"/>
-                                                                                </Border>
-
-                                                                                <!-- Content with text wrapping -->
-                                                                                <TextBlock Grid.Column="1" 
-                                                                                   Text="{TemplateBinding Content}" 
-                                                                                   Foreground="{TemplateBinding Foreground}"
-                                                                                   FontStyle="{TemplateBinding FontStyle}"
-                                                                                   TextWrapping="Wrap" 
-                                                                                   VerticalAlignment="Center"/>
-                                                                            </Grid>
-
-                                                                            <ControlTemplate.Triggers>
-                                                                                <Trigger Property="IsChecked" Value="True">
-                                                                                    <Setter TargetName="checkMarkBorder" Property="Background" Value="LimeGreen"/>
-                                                                                    <Setter TargetName="checkMarkBorder" Property="BorderBrush" Value="Black"/>
-                                                                                    <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
-                                                                                </Trigger>
-                                                                            </ControlTemplate.Triggers>
-                                                                        </ControlTemplate>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                            </Style>
-                                                        </CheckBox.Style>
-                                                    </CheckBox>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-
-                                    </ListBox>
-                                </Border>
-
-                                <!--Actual Button To Trigger Open-->
-                                <Button Grid.Row="1" Grid.ColumnSpan="3" x:Name="enterCheckListButton" BorderBrush="Transparent" Background="Transparent"   Height="153" HorizontalAlignment="Stretch"  VerticalAlignment="Center" Click="enterCheckListButton_Click" >
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Background" Value="Transparent"/>
-                                            <Setter Property="BorderBrush" Value="Transparent"/>
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" 
-                                                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                                                BorderThickness="{TemplateBinding BorderThickness}">
-                                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-
-            <Button x:Name="New_Project_Button" HorizontalAlignment="Left" Margin="445,0,0,0" Grid.Row="1" VerticalAlignment="Center" Click="New_Project_Button_Click" Style="{DynamicResource RounddButton}" Width="40" Height="40" Grid.Column="1" Background="Transparent" BorderBrush="Transparent">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Rectangle Width="30" Height="30" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <Button x:Name="saveButton" Grid.Column="1" HorizontalAlignment="Left" Margin="408,0,0,0" Grid.Row="1" VerticalAlignment="Center" Style="{DynamicResource RounddButton}" Width="40" Height="40" Click="save_Click" Background="Transparent" BorderBrush="Transparent">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Rectangle Width="40" Height="40" Fill="#FF0078D7">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="images/saveButtonImage.png" Stretch="Uniform"/>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-        </Grid>
-
-
-        <!--Create new Note pop up-->
-        <Border  x:Name="SlidingRectangleMain" BorderBrush="#FF0078D7" BorderThickness="4" CornerRadius="10" Background="#FFEEE8E8" Width="300" Height="200">
-
-            <Grid x:Name="newNoteBoxGrid"  
-              Width="300" 
-              Height="200" 
-              ClipToBounds="True"
-              HorizontalAlignment="Center" 
-              VerticalAlignment="Center" Grid.RowSpan="10" Grid.ColumnSpan="5">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="210"/>
-                    <ColumnDefinition Width="30"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-
-                <!--Top Button and Title-->
-                <Button x:Name="exitButtonNewNote" Style="{DynamicResource RounddButton}" Margin="5,6,7,6" Grid.Column="2" BorderBrush="Gray" Background="Transparent" Foreground="Transparent" Click="exitButtonNewNote_Click">
-                    <TextBlock Text="X" FontSize="10" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                </Button>
-                <TextBlock Grid.ColumnSpan="2" Text="Create A New Note:" HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="10, 0, 0, 0" FontSize="18" FontWeight="Bold" Foreground="#FF0078D7"/>
-
-                <!--This is the buttons, title, and listbox-->
-                <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="1" Margin="5, 0, 0, 0" >
+                <Grid x:Name ="containerGrid">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="43"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="15"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="43"/>
+                        <RowDefinition Height="43"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="28"/>
                     </Grid.RowDefinitions>
 
-                    <TextBox x:Name="currentNewProjectName" Margin="5" Text="Untitled..." Foreground="Gray" GotFocus="currentNewProjectName_GotFocus" LostFocus="currentNewProjectName_LostFocus"/>
-                    <ListBox x:Name="newProjectListBox" Grid.Row="1" Grid.RowSpan="5" Margin="5, 0, 5, 0" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <Border BorderThickness="2" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="5,5,0,0">
+                        <Button x:Name="BackButton" Height="30" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource RounddButton}" Foreground="#FF0078D7" BorderBrush="#FF0078D7" BorderThickness="3" Click="BackButton_Click">
+                            <TextBlock Text="&lt;" FontSize="22" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
+                        </Button>
+                    </Border>
+
+                    <Border BorderThickness="2" BorderBrush="#FF0078D7"  Grid.Column="1" Grid.ColumnSpan="1" Margin="5,5,5,0">
+                        <TextBlock Text="Check-List Manager" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF0078D7" FontSize="24" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" Width="286"/>
+                    </Border>
+
+                    <ListBox x:Name="listBoxContainer" Grid.Row="2" Grid.ColumnSpan="2"  
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"  
+                     d:ItemsSource="{d:SampleData ItemCount=5}"
+                     ItemsSource="{Binding mainTextBoxList}"
+                     Margin="10, 0, 10, 10" 
+                     Background="Transparent" 
+                     BorderThickness="4" 
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch"
+                     BorderBrush="Transparent"
+                     ClipToBounds="True"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden">
+
+                        <ListBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </ListBox.Resources>
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Top"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Focusable" Value="False"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <!-- Rectangle on the left -->
-                                    <CheckBox Grid.Column="0" VerticalAlignment="Center" Margin="5,0,10,0" Click="CheckBox_Click">
-                                        <CheckBox.Style>
-                                            <Style TargetType="CheckBox">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="CheckBox">
-                                                            <Grid>
-                                                                <Border x:Name="checkBoxBorder" 
-                                                                Background="White" 
-                                                                BorderBrush="DarkGray" 
-                                                                BorderThickness="2" 
-                                                                Width="16" 
-                                                                Height="16"
-                                                                CornerRadius="2">
-                                                                    <TextBlock x:Name="checkMark"
-                                                                       Text="✓"
-                                                                       Foreground="Transparent"
-                                                                       HorizontalAlignment="Center"
-                                                                       VerticalAlignment="Center"
-                                                                       FontWeight="Bold"/>
-                                                                </Border>
-                                                            </Grid>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsChecked" Value="True">
-                                                                    <Setter TargetName="checkBoxBorder" Property="Background" Value="LimeGreen"/>
-                                                                    <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="DarkGreen"/>
-                                                                    <Setter TargetName="checkMark" Property="Foreground" Value="White"/>
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </CheckBox.Style>
-                                    </CheckBox>
+                                <Border BorderBrush="#FF0078D7" BorderThickness="2" CornerRadius="10" Margin="5">
+                                    <Grid>
 
-                                    <TextBox x:Name="newCheckName" 
-                                     Grid.Column="1" 
-                                     Text="New Check" 
-                                     VerticalAlignment="Center"
-                                     Margin="0,2"
-                                     BorderThickness="0,0,0,1"
-                                     TextWrapping="Wrap"
-                                     AcceptsReturn="True"
-                                     VerticalScrollBarVisibility="Auto"
-                                     HorizontalScrollBarVisibility="Disabled"
-                                     Background="Transparent" 
-                                     GotFocus="newCheckName_GotFocus" 
-                                     LostFocus="newCheckName_LostFocus"/>
-                                </Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="25"/>
+                                            <ColumnDefinition Width="25"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"/>
+                                            <RowDefinition Height="128"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--This is the name/title for the project-->
+                                        <Viewbox Stretch="Uniform">
+                                            <TextBox x:Name="nameTextBoxList" Grid.Column="0" Text="{Binding projectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Top"  Foreground="#FF0078D7" FontWeight="Bold"  FontFamily="Microsoft YaHei" Background="Transparent" BorderThickness="0" Padding="2,2,2,2" IsEnabled="False" LostFocus="nameTextBoxList_LostFocus"/>
+                                        </Viewbox>
+
+                                        <!--The Pencil and trashcan buttons-->
+                                        <Button x:Name="DeleteButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="2" Grid.Row="0" Margin="1,1,1,1" Click="DeleteButton_Click" Background="Transparent" BorderBrush="Transparent">
+                                            <Button.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Rectangle.OpacityMask>
+                                                            <ImageBrush ImageSource="images/trashcanPng.png" Stretch="Uniform"/>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Button.Content>
+                                        </Button>
+                                        <Button x:Name="RenameButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" Grid.Column="1" Grid.Row="0" Margin="1,1,1,1" Click="RenameButton_Click">
+                                            <Button.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Rectangle.OpacityMask>
+                                                            <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </StackPanel>
+                                            </Button.Content>
+                                        </Button>
+
+                                        <!--The CheckList For decoration-->
+                                        <Border Grid.Row="1" Grid.ColumnSpan="3" IsEnabled="False" BorderThickness="4"  CornerRadius="10" Margin="0,0,-4,0">
+                                            <ListBox x:Name="DecorativeListBox" IsEnabled="True" ItemsSource="{Binding items}" MouseEnter="ListBox_MouseEnter" IsHitTestVisible="True" Focusable="False">
+
+                                                <ListBox.Template>
+                                                    <ControlTemplate TargetType="{x:Type ListBox}">
+                                                        <Border x:Name="mainBorder"
+                                                                CornerRadius="10" 
+                                                                Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="2.5">
+                                                            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                                                                <ItemsPresenter />
+                                                            </ScrollViewer>
+                                                        </Border>
+
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="mainBorder" Property="Background" Value="Gray"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+
+                                                    </ControlTemplate>
+                                                </ListBox.Template>
+
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border x:Name="outerBorder" 
+                                                            Background="Transparent" 
+                                                            CornerRadius="4" 
+                                                            Padding="4,2">
+                                                            <CheckBox IsEnabled="True" 
+                                                                  Content="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                  Margin="0" 
+                                                                  Foreground="Black" 
+                                                                  FontStyle="Oblique" 
+                                                                  IsChecked="{Binding isChecked, Mode=TwoWay}"
+                                                                  Background="Transparent"
+                                                                  BorderBrush="Transparent">
+
+                                                                <CheckBox.Style>
+                                                                    <Style TargetType="CheckBox">
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate TargetType="CheckBox">
+                                                                                    <Grid>
+                                                                                        <Grid.ColumnDefinitions>
+                                                                                            <ColumnDefinition Width="Auto"/>
+                                                                                            <ColumnDefinition Width="*"/>
+                                                                                        </Grid.ColumnDefinitions>
+
+                                                                                        <!-- Check box with check mark -->
+                                                                                        <Border Grid.Column="0" 
+                                                                                            x:Name="checkMarkBorder" 
+                                                                                            Width="16" 
+                                                                                            Height="16" 
+                                                                                            BorderThickness="1" 
+                                                                                            BorderBrush="DarkGray" 
+                                                                                            Background="Transparent" 
+                                                                                            Margin="0,0,5,0"
+                                                                                            CornerRadius="2">
+                                                                                            <TextBlock x:Name="checkMark" 
+                                                                                               Text="✓" 
+                                                                                               Foreground="White" 
+                                                                                               HorizontalAlignment="Stretch" 
+                                                                                               VerticalAlignment="Stretch"
+                                                                                               FontWeight="Bold"
+                                                                                               Visibility="Collapsed"/>
+                                                                                        </Border>
+
+                                                                                        <!-- Content with text wrapping -->
+                                                                                        <TextBlock Grid.Column="1" 
+                                                                                           Text="{TemplateBinding Content}" 
+                                                                                           Foreground="{TemplateBinding Foreground}"
+                                                                                           FontStyle="{TemplateBinding FontStyle}"
+                                                                                           TextWrapping="Wrap" 
+                                                                                           VerticalAlignment="Center"/>
+                                                                                    </Grid>
+
+                                                                                    <ControlTemplate.Triggers>
+                                                                                        <Trigger Property="IsChecked" Value="True">
+                                                                                            <Setter TargetName="checkMarkBorder" Property="Background" Value="LimeGreen"/>
+                                                                                            <Setter TargetName="checkMarkBorder" Property="BorderBrush" Value="Black"/>
+                                                                                            <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                                                                                        </Trigger>
+                                                                                    </ControlTemplate.Triggers>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </Style>
+                                                                </CheckBox.Style>
+                                                            </CheckBox>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+
+                                            </ListBox>
+                                        </Border>
+
+                                        <!--Actual Button To Trigger Open-->
+                                        <Button Grid.Row="1" Grid.ColumnSpan="3" x:Name="enterCheckListButton" BorderBrush="Transparent" Background="Transparent"   Height="153" HorizontalAlignment="Stretch"  VerticalAlignment="Center" Click="enterCheckListButton_Click" >
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" 
+                                                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <Button Style="{DynamicResource RounddButton}" x:Name="renameButtonNewProject" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="26" Width="24" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="0" Margin="0,0,0,2" Click="renameButtonNewProject_Click">
+                    <Button x:Name="New_Project_Button" HorizontalAlignment="Left" Margin="445,0,0,0" Grid.Row="1" VerticalAlignment="Center" Click="New_Project_Button_Click" Style="{DynamicResource RounddButton}" Width="40" Height="40" Grid.Column="1" Background="Transparent" BorderBrush="Transparent">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
-                                <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Rectangle Width="30" Height="30" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Rectangle.OpacityMask>
-                                        <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                        <ImageBrush ImageSource="images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <Button Style="{DynamicResource RounddButton}" x:Name="newCheckListItemButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="1" Margin="1,1,1,1" Click="newCheckListItemButton_Click">
+                    <Button x:Name="saveButton" Grid.Column="1" HorizontalAlignment="Left" Margin="408,0,0,0" Grid.Row="1" VerticalAlignment="Center" Style="{DynamicResource RounddButton}" Width="40" Height="40" Click="save_Click" Background="Transparent" BorderBrush="Transparent">
                         <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Rectangle Width="40" Height="40" Fill="#FF0078D7">
                                     <Rectangle.OpacityMask>
-                                        <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                                        <ImageBrush ImageSource="images/saveButtonImage.png" Stretch="Uniform"/>
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <Button Style="{DynamicResource RounddButton}" x:Name="deleteCheckListItemButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" Margin="1,1,1,1" Click="deleteCheckListItemButton_Click">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Rectangle.OpacityMask>
-                                        <ImageBrush ImageSource="/Images/trashcanPng.png" Stretch="Uniform"/>
-                                    </Rectangle.OpacityMask>
-                                </Rectangle>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-
-
                 </Grid>
 
-                <!--The buttons on the bottom-->
-                <Button Margin="5, 0, 0, 0" Width="50" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="createButtonNewNote" Style="{DynamicResource TwoRoundedCornersLeft}" Grid.Row="2" Background="#FF0078D7" BorderBrush="Black" Click="createButtonNewNote_Click">
-                    <TextBlock Text="Create" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="10" FontWeight="Bold" Foreground="#FFEEE8E8" Background="Transparent" FontFamily="Microsoft YaHei"/>
-                </Button>
-                <Button  Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="clearButtonNewNote" Style="{DynamicResource TwoRoundedCornersRight}" Grid.Row="2" Grid.Column="1" Margin="2,0,0,0" Background="#FF0078D7" BorderBrush="Black" Click="clearButtonNewNote_Click">
-                    <TextBlock Text="Clear" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="11" FontWeight="Bold" Foreground="#FFEEE8E8" Background="Transparent" FontFamily="Microsoft YaHei"/>
-                </Button>
+                <!--Create new Note pop up-->
+                <Border  x:Name="SlidingRectangleMain" BorderBrush="#FF0078D7" BorderThickness="4" CornerRadius="10" Background="#FFEEE8E8" Width="300" Height="200">
 
+                    <Grid x:Name="newNoteBoxGrid"  
+                      Width="300" 
+                      Height="200" 
+                      ClipToBounds="True"
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Center" Grid.RowSpan="10" Grid.ColumnSpan="5">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="210"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Top Button and Title-->
+                        <Button x:Name="exitButtonNewNote" Style="{DynamicResource RounddButton}" Margin="5,6,7,6" Grid.Column="2" BorderBrush="Gray" Background="Transparent" Foreground="Transparent" Click="exitButtonNewNote_Click">
+                            <TextBlock Text="X" FontSize="10" FontWeight="Bold" Foreground="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Button>
+                        <TextBlock Grid.ColumnSpan="2" Text="Create A New Note:" HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="10, 0, 0, 0" FontSize="18" FontWeight="Bold" Foreground="#FF0078D7"/>
+
+                        <!--This is the buttons, title, and listbox-->
+                        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="1" Margin="5, 0, 0, 0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="30"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBox x:Name="currentNewProjectName" Margin="5" Text="Untitled..." Foreground="Gray" GotFocus="currentNewProjectName_GotFocus" LostFocus="currentNewProjectName_LostFocus"/>
+                            <ListBox x:Name="newProjectListBox" Grid.Row="1" Grid.RowSpan="5" Margin="5, 0, 5, 0" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <!-- Rectangle on the left -->
+                                            <CheckBox Grid.Column="0" VerticalAlignment="Center" Margin="5,0,10,0" Click="CheckBox_Click">
+                                                <CheckBox.Style>
+                                                    <Style TargetType="CheckBox">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="CheckBox">
+                                                                    <Grid>
+                                                                        <Border x:Name="checkBoxBorder" 
+                                                                        Background="White" 
+                                                                        BorderBrush="DarkGray" 
+                                                                        BorderThickness="2" 
+                                                                        Width="16" 
+                                                                        Height="16"
+                                                                        CornerRadius="2">
+                                                                            <TextBlock x:Name="checkMark"
+                                                                               Text="✓"
+                                                                               Foreground="Transparent"
+                                                                               HorizontalAlignment="Center"
+                                                                               VerticalAlignment="Center"
+                                                                               FontWeight="Bold"/>
+                                                                        </Border>
+                                                                    </Grid>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsChecked" Value="True">
+                                                                            <Setter TargetName="checkBoxBorder" Property="Background" Value="LimeGreen"/>
+                                                                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="DarkGreen"/>
+                                                                            <Setter TargetName="checkMark" Property="Foreground" Value="White"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </CheckBox.Style>
+                                            </CheckBox>
+
+                                            <TextBox x:Name="newCheckName" 
+                                             Grid.Column="1" 
+                                             Text="New Check" 
+                                             VerticalAlignment="Center"
+                                             Margin="0,2"
+                                             BorderThickness="0,0,0,1"
+                                             TextWrapping="Wrap"
+                                             AcceptsReturn="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Disabled"
+                                             Background="Transparent" 
+                                             GotFocus="newCheckName_GotFocus" 
+                                             LostFocus="newCheckName_LostFocus"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Button Style="{DynamicResource RounddButton}" x:Name="renameButtonNewProject" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="26" Width="24" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="0" Margin="0,0,0,2" Click="renameButtonNewProject_Click">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Style="{DynamicResource RounddButton}" x:Name="newCheckListItemButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="1" Margin="1,1,1,1" Click="newCheckListItemButton_Click">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Style="{DynamicResource RounddButton}" x:Name="deleteCheckListItemButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" Margin="1,1,1,1" Click="deleteCheckListItemButton_Click">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/Images/trashcanPng.png" Stretch="Uniform"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+
+                        <!--The buttons on the bottom-->
+                        <Button Margin="5, 0, 0, 0" Width="50" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="createButtonNewNote" Style="{DynamicResource TwoRoundedCornersLeft}" Grid.Row="2" Background="#FF0078D7" BorderBrush="Black" Click="createButtonNewNote_Click">
+                            <TextBlock Text="Create" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="10" FontWeight="Bold" Foreground="#FFEEE8E8" Background="Transparent" FontFamily="Microsoft YaHei"/>
+                        </Button>
+                        <Button  Width="50" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="clearButtonNewNote" Style="{DynamicResource TwoRoundedCornersRight}" Grid.Row="2" Grid.Column="1" Margin="2,0,0,0" Background="#FF0078D7" BorderBrush="Black" Click="clearButtonNewNote_Click">
+                            <TextBlock Text="Clear" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="11" FontWeight="Bold" Foreground="#FFEEE8E8" Background="Transparent" FontFamily="Microsoft YaHei"/>
+                        </Button>
+                    </Grid>
+
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="SlideTransform" X="0" Y="1000" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <!--This is the main view whenever you click into a project-->
+                <Border  x:Name="mainContentSlideIn" BorderBrush="#FF0078D7" BorderThickness="4" CornerRadius="10" Background="#FFEEE8E8" Width="300" Height="300">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="260"/>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="10"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="35"/>
+                        </Grid.RowDefinitions>
+
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3" BorderThickness="2" BorderBrush="#FF0078D7"/>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="10" Grid.ColumnSpan="2" Grid.Column="1" BorderThickness="2" BorderBrush="#FF0078D7"/>
+
+                        <!--This is the main editable checklist right here-->
+                        <ListBox x:Name="mainContentListBox" Grid.Column="0" Grid.Row="1" Grid.RowSpan="8" Margin="7" ItemsSource="{Binding items}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border x:Name="outerBorder" 
+                                            Background="Transparent" 
+                                            CornerRadius="4" 
+                                            Padding="4,2">
+                                        <CheckBox x:Name="mainContentCheckBox" IsEnabled="True" 
+                                            Content="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                            Margin="0" 
+                                            Foreground="Black" 
+                                            FontStyle="Oblique" 
+                                            IsChecked="{Binding isChecked}"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent" Click="mainContentCheckBox_Click">
+
+                                            <CheckBox.Style>
+                                                <Style TargetType="CheckBox">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="CheckBox">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <!-- Check box with check mark -->
+                                                                    <Border Grid.Column="0" 
+                                                                        x:Name="checkMarkBorder" 
+                                                                        Width="16" 
+                                                                        Height="16" 
+                                                                        BorderThickness="1" 
+                                                                        BorderBrush="DarkGray" 
+                                                                        Background="Transparent" 
+                                                                        Margin="0,0,5,0"
+                                                                        CornerRadius="2">
+                                                                        <TextBlock x:Name="checkMark" 
+                                                                        Text="✓" 
+                                                                        Foreground="White" 
+                                                                        HorizontalAlignment="Stretch" 
+                                                                        VerticalAlignment="Stretch"
+                                                                        FontWeight="Bold"
+                                                                        Visibility="Collapsed"/>
+                                                                    </Border>
+
+                                                                    <!-- Content with text wrapping -->
+                                                                    <TextBox Grid.Column="1" 
+                                                                        x:Name="checkListItemMainText"
+                                                                        BorderBrush="Transparent"
+                                                                        Background="Transparent"
+                                                                        Text="{TemplateBinding Content}" 
+                                                                        Foreground="{TemplateBinding Foreground}"
+                                                                        FontStyle="{TemplateBinding FontStyle}"
+                                                                        TextWrapping="Wrap" 
+                                                                        VerticalAlignment="Center" GotFocus="checkListItemMainText_GotFocus" LostFocus="checkListItemMainText_LostFocus"/>
+                                                                </Grid>
+
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsChecked" Value="True">
+                                                                        <Setter TargetName="checkMarkBorder" Property="Background" Value="LimeGreen"/>
+                                                                        <Setter TargetName="checkMarkBorder" Property="BorderBrush" Value="Black"/>
+                                                                        <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </CheckBox.Style>
+                                        </CheckBox>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <!--Top Button and Title-->
+                        <Button x:Name="exitButtonMainContent" Margin="6, 3, 3, 3" BorderBrush="Transparent" Grid.Column="1" Background="Transparent" Foreground="Transparent" Click="exitButtonMainContent_Click">
+                            <TextBlock Text="X" FontSize="16" FontWeight="Bold" Foreground="#FF0078D7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Button>
+                        <TextBlock x:Name ="titleText" Grid.ColumnSpan="1" Text="{Binding DataContext.projectName, RelativeSource={RelativeSource AncestorType=Page}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="10, 0, 0, 0" FontSize="18" FontWeight="Bold" Foreground="#FF0078D7"/>
+
+                        <Button Style="{DynamicResource RounddButton}" x:Name="renameButtonMain" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" Height="24" Width="25" Margin="4,0,0,0" Click="renameButtonMain_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{DynamicResource RounddButton}" x:Name="newCheckListItemMain" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="3" Margin="4,1,1,1" Click="newCheckListItemMain_Click" >
+                            <Button.Background>
+                                <ImageBrush/>
+                            </Button.Background>
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{DynamicResource RounddButton}" x:Name="deleteCheckListItemMain" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="25" Height="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="4" Margin="4, 1, 1, 1" Click="deleteCheckListItemMain_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/trashcanPng.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{DynamicResource RounddButton}" x:Name="undoAllChangesMadeButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="25" Height="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="5" Margin="4, 1, 1, 1" Click="undoAllChangesMadeButton_Click">
+                            <Button.Background>
+                                <ImageBrush/>
+                            </Button.Background>
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/brushIcon.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{DynamicResource RounddButton}" x:Name="saveButtonMainContent" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="25" Height="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="6" Margin="4, 1, 1, 1" Click="saveButtonMainContent_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="images/saveButtonImage.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="mainContentSlideTransform" X="-1050" Y="-10"/>
+                    </Border.RenderTransform>
+                </Border>
             </Grid>
 
-            <Border.RenderTransform>
-                <TranslateTransform x:Name="SlideTransform" X="0" Y="300" />
-            </Border.RenderTransform>
-
-        </Border>
-
-        <!--This is the main view whenever you click into a project-->
-        <Border  x:Name="mainContentSlideIn" BorderBrush="#FF0078D7" BorderThickness="4" CornerRadius="10" Background="#FFEEE8E8" Width="300" Height="300">
-
-
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="260"/>
-                    <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="10"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="15"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="35"/>
-                </Grid.RowDefinitions>
-
-                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3" BorderThickness="2" BorderBrush="#FF0078D7"/>
-                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="10" Grid.ColumnSpan="2" Grid.Column="1" BorderThickness="2" BorderBrush="#FF0078D7"/>
-
-
-                <!--Top Button and Title-->
-                <Button x:Name="exitButtonMainContent" Margin="6, 3, 3, 3" BorderBrush="Transparent" Grid.Column="1" Background="Transparent" Foreground="Transparent" Click="exitButtonMainContent_Click">
-                    <TextBlock Text="X" FontSize="16" FontWeight="Bold" Foreground="#FF0078D7" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                </Button>
-                <TextBlock x:Name ="titleText" Grid.ColumnSpan="1" Text="{Binding DataContext.projectName, RelativeSource={RelativeSource AncestorType=Page}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Padding="10, 0, 0, 0" FontSize="18" FontWeight="Bold" Foreground="#FF0078D7"/>
-
-                <Button Style="{DynamicResource RounddButton}" x:Name="renameButton" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" Click="renameButtonNewProject_Click" Height="24" Width="25" Margin="4,0,0,0">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-                <Button Style="{DynamicResource RounddButton}" x:Name="newCheckListItem" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="3" Margin="4,1,1,1" Click="newCheckListItemButton_Click" >
-                    <Button.Background>
-                        <ImageBrush/>
-                    </Button.Background>
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-                <Button Style="{DynamicResource RounddButton}" x:Name="deleteCheckListItem" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="25" Height="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="4" Click="deleteCheckListItemButton_Click" Margin="4, 1, 1, 1">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="/Images/trashcanPng.png" Stretch="Uniform"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-
-
-                <Button Style="{DynamicResource RounddButton}" x:Name="clearButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="25" Height="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="5" Click="deleteCheckListItemButton_Click" Margin="4, 1, 1, 1">
-                    <Button.Background>
-                        <ImageBrush/>
-                    </Button.Background>
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="/Images/brushIcon.png" Stretch="Uniform"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-                <Button Style="{DynamicResource RounddButton}" x:Name="saveButtonMainContent" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="25" Height="25" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="6" Click="deleteCheckListItemButton_Click" Margin="4, 1, 1, 1">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="images/saveButtonImage.png" Stretch="Uniform"/>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-
-            </Grid>
-
-            <!--<Button Height="50" Width="50" Click="undoAnimaiton"/>-->
-
-            <Border.RenderTransform>
-                <TranslateTransform x:Name="mainContentSlideTransform" X="-550" Y="-10"/>
-            </Border.RenderTransform>
-
-        </Border>
+        </Viewbox>
 
 
 

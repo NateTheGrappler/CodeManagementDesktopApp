@@ -120,6 +120,30 @@ namespace CodeManagementSystem
             Description = description;
             isChecked = isCompleted;
         }
+
+        //A copy constructor here pretty much
+        public checkListItem(checkListItem item)
+        {
+            Description += item.Description;
+            isChecked = item.isChecked;
+            id = item.id;
+        }
+
+        //override the equals to compare checkListItems
+        public override bool Equals(object? obj)
+        {
+            if(obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+            checkListItem other = (checkListItem)obj;
+            return isChecked == other.isChecked && Description == other.Description;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(isChecked, Description);
+        }
     }
 
     //This is the class project thats going to actually hold checklist things, as well as the percent completion, and is held in the main list view box
@@ -137,6 +161,17 @@ namespace CodeManagementSystem
 
         //Add parameterless constructor
         public checkListProject() { }
+
+        //Also add in a copy constructor for checking
+        public checkListProject(checkListProject other)
+        {
+            projectName = other.projectName;
+            items = new ObservableCollection<checkListItem>();
+            foreach (var item in other.items)
+            {
+                items.Add(new checkListItem(item)); // Deep copy each item
+            }
+        }
 
         //Math to get the total completion percent
         public float calculatePercentage()
@@ -183,6 +218,9 @@ namespace CodeManagementSystem
         private string?                                 ogName;
         private string?                                 currentNewProjectOgName;
         private checkListProject                        currentOpenCheckListProject;
+        private checkListProject                        currentOpenCheckListProjectCOPY;
+        private string                                  renameCheckListMain;
+
 
         public CheckListManagerPage()
         {
@@ -205,6 +243,7 @@ namespace CodeManagementSystem
         {
             Debug.WriteLine("Pressed The Black Button");
             animateMainContentIN(sender, e);
+            mainContentListBox.ItemsSource = currentOpenCheckListProject.items;
         }
 
         private void animateMainContentIN(object sender, RoutedEventArgs e)
@@ -213,7 +252,9 @@ namespace CodeManagementSystem
             checkListProject? checkListProject = clickedButton?.DataContext as checkListProject;
             if (checkListProject != null)
             {
+                //Create a refrence to the object youre working with, and also a copy so that way you can use them to compare
                 currentOpenCheckListProject = checkListProject;
+                currentOpenCheckListProjectCOPY = new checkListProject(checkListProject);
                 titleText.Text = checkListProject.projectName;
                 Debug.WriteLine(currentOpenCheckListProject.projectName);
             }
@@ -221,6 +262,7 @@ namespace CodeManagementSystem
             var slidingRectangle = mainContentSlideIn;
 
             translucentBox.Visibility = Visibility.Visible;
+            translucentBoxBehind.Visibility = Visibility.Visible;
             Panel.SetZIndex(translucentBox, 20);
             Panel.SetZIndex(slidingRectangle, 20);
 
@@ -229,17 +271,24 @@ namespace CodeManagementSystem
             if (slidingRectangle.RenderTransform is not TranslateTransform)
             {
                 Debug.Write("Ran the TranslateTransform");
-                slidingRectangle.RenderTransform = new TranslateTransform(-550, -10);
+                slidingRectangle.RenderTransform = new TranslateTransform(-1050, -10);
             }
 
             DoubleAnimation translateXAnimation = new DoubleAnimation
             {
-                From = -550,
+                From = -1050,
                 To = 0,
                 Duration = TimeSpan.FromSeconds(0.3),
                 AutoReverse = false,
             };
             DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 0.90,
+                Duration = TimeSpan.FromSeconds(0.3),
+                AutoReverse = false,
+            };
+            DoubleAnimation opacityAnimation2 = new DoubleAnimation
             {
                 From = 0,
                 To = 0.90,
@@ -255,8 +304,14 @@ namespace CodeManagementSystem
             Storyboard.SetTarget(opacityAnimation, translucentBox);
             Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
 
+            Storyboard.SetTarget(opacityAnimation2, translucentBoxBehind);
+            Storyboard.SetTargetProperty(opacityAnimation2, new PropertyPath("Opacity"));
+
+
             storyBoard.Children.Add(translateXAnimation);
             storyBoard.Children.Add(opacityAnimation);
+            storyBoard.Children.Add(opacityAnimation2);
+
 
             storyBoard.Begin();
         }
@@ -363,7 +418,8 @@ namespace CodeManagementSystem
         {
             await SaveDataAsync();
         }
-
+        
+        //This looks like the start of all of the new note button code
         private void New_Project_Button_Click(object sender, RoutedEventArgs e)
         {
             var project = new checkListProject { projectName = "Untitled" };;
@@ -374,6 +430,7 @@ namespace CodeManagementSystem
             var translucentRectangle = translucentBox;
 
             translucentBox.Visibility = Visibility.Visible;
+            translucentBoxBehind.Visibility = Visibility.Visible;
             Panel.SetZIndex(translucentBox, 20);
             Panel.SetZIndex(slidingRectangle, 20);
 
@@ -385,17 +442,25 @@ namespace CodeManagementSystem
             if (slidingRectangle.RenderTransform is not TranslateTransform)
             {
                 Debug.Write("Ran the TranslateTransform");
-                slidingRectangle.RenderTransform = new TranslateTransform(0, 300);
+                slidingRectangle.RenderTransform = new TranslateTransform(0, 1000);
             }
 
             DoubleAnimation translateXAnimation = new DoubleAnimation
             {
-                From = 300,
+                From = 1000,
                 To = 0,
                 Duration = TimeSpan.FromSeconds(0.3),
                 AutoReverse = false,
             };
             DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 0.90,
+                Duration = TimeSpan.FromSeconds(0.3),
+                AutoReverse = false,
+            };
+
+            DoubleAnimation opacityAnimation2 = new DoubleAnimation
             {
                 From = 0,
                 To = 0.90,
@@ -411,8 +476,12 @@ namespace CodeManagementSystem
             Storyboard.SetTarget(opacityAnimation, translucentBox);
             Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
 
+            Storyboard.SetTarget(opacityAnimation2, translucentBoxBehind);
+            Storyboard.SetTargetProperty(opacityAnimation2, new PropertyPath("Opacity"));
+
             storyBoard.Children.Add(translateXAnimation);
             storyBoard.Children.Add(opacityAnimation);
+            storyBoard.Children.Add(opacityAnimation2);
 
             storyBoard.Begin();
         }
@@ -436,17 +505,24 @@ namespace CodeManagementSystem
             if (slidingRectangle.RenderTransform is not TranslateTransform)
             {
                 Debug.Write("Ran the TranslateTransform");
-                slidingRectangle.RenderTransform = new TranslateTransform(0, 300);
+                slidingRectangle.RenderTransform = new TranslateTransform(0, 1000);
             }
 
             DoubleAnimation translateXAnimation = new DoubleAnimation
             {
                 From = 0,
-                To = 300,
+                To = 1000,
                 Duration = TimeSpan.FromSeconds(0.3),
                 AutoReverse = false,
             };
             DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0.90,
+                To = 0,
+                Duration = TimeSpan.FromSeconds(0.3),
+                AutoReverse = false,
+            };
+            DoubleAnimation opacityAnimation2 = new DoubleAnimation
             {
                 From = 0.90,
                 To = 0,
@@ -462,14 +538,20 @@ namespace CodeManagementSystem
             Storyboard.SetTarget(opacityAnimation, translucentBox);
             Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
 
+            Storyboard.SetTarget(opacityAnimation2, translucentBoxBehind);
+            Storyboard.SetTargetProperty(opacityAnimation2, new PropertyPath("Opacity"));
+
+
             storyBoard.Children.Add(translateXAnimation);
             storyBoard.Children.Add(opacityAnimation);
+            storyBoard.Children.Add(opacityAnimation2);
 
             storyBoard.Begin();
 
-            //translucentBox.Visibility = Visibility.Hidden;
             Panel.SetZIndex(translucentBox, 0);
             Panel.SetZIndex(slidingRectangle, 0);
+            //translucentBoxBehind.Visibility = Visibility.Hidden;
+
         }
 
         //Delete the checklist item that is currently highlighted in the new project
@@ -596,8 +678,50 @@ namespace CodeManagementSystem
             }
         }
 
-        private void exitButtonMainContent_Click(object sender, RoutedEventArgs e)
+        //Pretty sure all of this and down is the maincontent area
+        private async void exitButtonMainContent_Click(object sender, RoutedEventArgs e)
         {
+            bool hasChanges = false;
+
+            //Check if counts are different
+            if (currentOpenCheckListProject.items.Count != currentOpenCheckListProjectCOPY.items.Count)
+            {
+                Debug.WriteLine("The amount of items changed");
+                hasChanges = true;
+            }
+            else
+            {
+                //Check each item for changes
+                for (int i = 0; i < currentOpenCheckListProject.items.Count; i++)
+                {
+                    var currentItem = currentOpenCheckListProject.items[i];
+                    var copyItem = currentOpenCheckListProjectCOPY.items[i];
+
+                    if (!currentItem.Equals(copyItem) ||
+                        currentItem.Description != copyItem.Description ||
+                        currentItem.isChecked != copyItem.isChecked)
+                    {
+                        Debug.WriteLine($"Item {i} changed: {currentItem.Description}");
+                        hasChanges = true;
+                        break;
+                    }
+                }
+            }
+
+            if (hasChanges)
+            {
+                Debug.WriteLine("Changes were made to the checklist!");
+                // Save changes if needed
+            }
+            else
+            {
+                Debug.WriteLine("No changes were made");
+            }
+            await SaveDataAsync();
+            RefreshDecorativeListBox();
+
+            //-----------------------------------------------------------------------------------
+            //Run the exit out sliding animation here:
             var slidingRectangle = mainContentSlideIn;
             var translucentRectangle = translucentBox;
 
@@ -613,11 +737,18 @@ namespace CodeManagementSystem
             DoubleAnimation translateXAnimation = new DoubleAnimation
             {
                 From = 0,
-                To = -550,
+                To = -1050,
                 Duration = TimeSpan.FromSeconds(0.3),
                 AutoReverse = false,
             };
             DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0.90,
+                To = 0,
+                Duration = TimeSpan.FromSeconds(0.3),
+                AutoReverse = false,
+            };
+            DoubleAnimation opacityAnimation2 = new DoubleAnimation
             {
                 From = 0.90,
                 To = 0,
@@ -633,14 +764,128 @@ namespace CodeManagementSystem
             Storyboard.SetTarget(opacityAnimation, translucentBox);
             Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
 
+            Storyboard.SetTarget(opacityAnimation2, translucentBoxBehind);
+            Storyboard.SetTargetProperty(opacityAnimation2, new PropertyPath("Opacity"));
+
+
             storyBoard.Children.Add(translateXAnimation);
             storyBoard.Children.Add(opacityAnimation);
+            storyBoard.Children.Add(opacityAnimation2);
 
             storyBoard.Begin();
 
-            //translucentBox.Visibility = Visibility.Hidden;
             Panel.SetZIndex(translucentBox, 0);
             Panel.SetZIndex(slidingRectangle, 0);
+            //translucentBoxBehind.Visibility = Visibility.Hidden;
+        }
+
+        private void mainContentCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void undoAllChangesMadeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentOpenCheckListProject != null && currentOpenCheckListProjectCOPY != null)
+            {
+                //clear current items and recreate them from the copy
+                currentOpenCheckListProject.items.Clear();
+
+                //create new instances of each item from the copy
+                foreach (var item in currentOpenCheckListProjectCOPY.items)
+                {
+                    currentOpenCheckListProject.items.Add(new checkListItem(item));
+                }
+
+                mainContentListBox.ItemsSource = currentOpenCheckListProject.items;
+                mainContentListBox.Items.Refresh();
+
+                //update the backup copy to point to the newly restored state
+                currentOpenCheckListProjectCOPY = new checkListProject(currentOpenCheckListProject);
+            }
+        }
+
+        private void RefreshDecorativeListBox()
+        {
+            //force the decorative ListBox to refresh
+            var itemsSource = listBoxContainer.ItemsSource;
+            listBoxContainer.ItemsSource = null;
+            listBoxContainer.ItemsSource = itemsSource;
+            listBoxContainer.Items.Refresh();
+        }
+
+        private void deleteCheckListItemMain_Click(object sender, RoutedEventArgs e)
+        {
+            if (mainContentListBox.SelectedItem != null && currentOpenCheckListProject != null)
+            {
+                currentOpenCheckListProject.removeItem(mainContentListBox.SelectedItem as checkListItem);
+            }
+        }
+
+        private void newCheckListItemMain_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentOpenCheckListProject != null)
+            {
+                currentOpenCheckListProject.addNewItem("Untitiled...");
+            }
+        }
+
+        private void renameButtonMain_Click(object sender, RoutedEventArgs e)
+        {
+            if (mainContentListBox.SelectedItem != null && currentOpenCheckListProject != null)
+            {
+                // Get the ListBoxItem container
+                var listBoxItem = mainContentListBox.ItemContainerGenerator.ContainerFromItem(mainContentListBox.SelectedItem) as ListBoxItem;
+
+                if (listBoxItem != null)
+                {
+                    // Find the TextBox in the ListBoxItem's visual tree
+                    var textBox = FindVisualChild<TextBox>(listBoxItem);
+                    if (textBox != null)
+                    {
+                        checkListItemMainText_GotFocus(textBox, e);
+                    }
+                }
+            }
+
+        }
+
+        private void checkListItemMainText_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var item = sender as TextBox;
+            item.Focus();
+            item.SelectAll();
+            renameCheckListMain = item.Text;
+            item.Text = string.Empty;
+        }
+
+        //Make it so that way this also saves to the main object and updates the UI properly
+        private void checkListItemMainText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var item = sender as TextBox;;
+            if(string.IsNullOrEmpty(item.Text))
+            {
+                item.Text = renameCheckListMain;
+            }
+            //If Not null or whatever, then update the object so it all saves good
+            if(renameCheckListMain != " ")
+            {
+                currentOpenCheckListProject.GetCheckListItem(renameCheckListMain).Description = item.Text;
+            }
+            renameCheckListMain = " ";
+            RefreshDecorativeListBox();
+
+        }
+
+        private async void saveButtonMainContent_Click(object sender, RoutedEventArgs e)
+        {
+            //update the copy to match the current then also save all data to json
+            currentOpenCheckListProjectCOPY.items.Clear();
+            foreach (checkListItem item in currentOpenCheckListProject.items)
+            {
+                currentOpenCheckListProjectCOPY.items.Add(item);
+            }
+            await SaveDataAsync();
         }
     }
 }
