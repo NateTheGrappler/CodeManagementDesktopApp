@@ -28,7 +28,7 @@
         <Button x:Name="BookManagerButtonBM" HorizontalAlignment="Center" Margin="0,197,0,0" VerticalAlignment="Top" Style="{DynamicResource RounddButton}" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
             <TextBlock Text="Book Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
         </Button>
-        <Button x:Name="VideoManagerButtonVM" Style="{DynamicResource RounddButton}" HorizontalAlignment="Center" Margin="0,47,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
+        <Button x:Name="VideoManagerButtonVM" Style="{DynamicResource RounddButton}" HorizontalAlignment="Center" Margin="0,47,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7" Click="VideoManagerButtonVM_Click">
             <TextBlock Text="Video Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
         </Button>
         <Label Content="Code Information Managing System" HorizontalAlignment="Center" VerticalAlignment="Top" Height="42" Width="426" FontSize="22" FontFamily="Microsoft YaHei UI" FontWeight="Bold" Foreground="#FF0078D7" FontStyle="Italic" BorderBrush="#FF0078D7" BorderThickness="1" Margin="0,2,0,0"/>

@@ -79,6 +79,18 @@ namespace CodeManagementSystem
             this.NavigationService.Navigate(new CheckListManagerPage());
         }
 
+        private void VideoManagerButtonVM_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("You clicked the Video Manager button");
+            foreach (UIElement element in mainGrid.Children)
+            {
+                if (element is System.Windows.Controls.Button button)
+                {
+                    resetButtonImmediately(button);
+                }
+            }
+            this.NavigationService.Navigate(new videoManager());
+        }
         private void CreateNNLines()
         {
             var main = Window.GetWindow(this) as MainWindow;
@@ -141,6 +153,7 @@ namespace CodeManagementSystem
                         Debug.WriteLine("Last Two Digits are: " + lastTwoDigits);
                         if (lastTwoDigits == "PN")      { button.Click += buttonClick; }
                         else if (lastTwoDigits == "CM") { button.Click += CheckListManagerButton_Click; }
+                        else if (lastTwoDigits == "VM") { button.Click += VideoManagerButtonVM_Click; }
                         else { button.Click += buttonClick; }
                     }
                 }
