@@ -9,11 +9,12 @@
       Title="videoManager">
 
     <Grid Background="#FFEEE8E8">
+        
         <!--Main Grid Defintions-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -21,12 +22,12 @@
         </Grid.RowDefinitions>
 
         <!--Title-->
-        <Border BorderThickness="2" BorderBrush="#FF0078D7"  Grid.Column="1" Grid.ColumnSpan="2" Margin="2,2,2,2" Background="Transparent">
+        <Border BorderThickness="3" BorderBrush="#FF0078D7"  Grid.Column="1" Grid.ColumnSpan="2" Margin="2,2,2,2" Background="Transparent">
             <TextBlock Text="Video Resource Manager" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF0078D7" FontSize="24" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" Width="430"/>
         </Border>
 
         <!--Back Button-->
-        <Border BorderThickness="2" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="2,2,2,2" Background="Transparent">
+        <Border BorderThickness="3" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="2,2,2,2" Background="Transparent">
             <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7">
                 <TextBlock Text="&lt;" FontSize="32" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
             </Button>
@@ -42,7 +43,7 @@
                 <RowDefinition Height="60"/>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Border BorderThickness="2" BorderBrush="#FF0078D7" Grid.RowSpan="5" Margin="2, 2, 2, 2"/>
+            <Border BorderThickness="3" BorderBrush="#FF0078D7" Grid.RowSpan="5" Margin="2, 2, 2, 2"/>
             <!--The TrashCan/Delete Video Button-->
             <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2">
                 <Button.Content>
@@ -80,7 +81,73 @@
                 </Button.Content>
             </Button>
         </Grid>
-        <!--Tabs for all of the different Video Formats-->
+        
+        <!--Tabs for all of the different Video Formats / On the right hand side-->
+        <Grid Background="Transparent" Grid.Column="2" Grid.Row="1">
+            
+            <TabControl x:Name="TabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                <!--Set Up Tab resource so that way the tabs are on the righthand side-->
+                <TabControl.Resources>
+                    <Style TargetType="{x:Type TabItem}">
+                        <!--This are just styilistic choices-->
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalAlignment"   Value="Stretch"/>
+                        <Setter Property="Width"               Value="Auto"/>
+                        <Setter Property="Height"               Value="Auto"/>
+                        <Setter Property="FontFamily"           Value="Microsoft YaHei"/>
+                        <Setter Property="FontSize"             Value="14"/>
+                        <Setter Property="FontWeight"           Value="SemiBold"/>
+                        <!--Set the actual property of it to be sideways and style the content -->
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" BorderThickness="0,3,3,3" BorderBrush="#FF075A9B" CornerRadius="0,8,8, 0" Margin="2,3,18,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                        <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Stretch"
+                                              HorizontalAlignment="Stretch"
+                                              ContentSource="Header"
+                                              Margin="10,5">
+                                            <ContentPresenter.LayoutTransform>
+                                                <RotateTransform Angle="90"/>
+                                            </ContentPresenter.LayoutTransform>
+                                        </ContentPresenter>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="AliceBlue" />
+                                            <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black" />
+
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter TargetName="Border" Property="Background" Value="#FF0078D7" />
+                                            <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="AliceBlue" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+
+                <!--The Video Tab-->
+                <TabItem Header="Videos"/>
+
+                <!--The Playlists Tab-->
+                <TabItem Header="PlayLists"/>
+
+                <!--The Shorts/Reels Tab-->
+                <TabItem Header="Shorts"/>
+
+                <!--The Other Tab-->
+                <TabItem Header="Other"/>
+
+
+            </TabControl>
+            
+            <!--Border for decorative purpose so it looks like theres something to hang on-->
+            <Border BorderThickness="3, 0, 0, 3" BorderBrush="#FF0078D7" Margin="0, 0, 0, 2"/>
+        </Grid>
 
     </Grid>
 </Page>
