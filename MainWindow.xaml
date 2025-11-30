@@ -6,78 +6,8 @@
         xmlns:local="clr-namespace:CodeManagementSystem"
         mc:Ignorable="d"
         Title="MainWindow" Height="386" Width="550" Icon="/Images/codeManagerIconColor.png" WindowStyle="SingleBorderWindow">
-    <Grid x:Name="mainGrid" Background="#FFEEE8E8">
-        <Rectangle x:Name="translucentBox" HorizontalAlignment="Center" Height="378" Stroke="Black" VerticalAlignment="Top" Width="550" Fill="#BF000000" Visibility="Hidden"/>
 
-        <Button x:Name="projectNotesButton" Style="{DynamicResource RounddButton}" HorizontalAlignment="Left" Margin="31,92,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Project Notes" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Button x:Name="InspoVidsButton" HorizontalAlignment="Left" Margin="31,167,0,0" VerticalAlignment="Top" Style="{DynamicResource RounddButton}" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Inspo Videos"  TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Button x:Name="ToolManagerButton" Style="{DynamicResource RounddButton}" HorizontalAlignment="Left" Margin="450,92,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Project Manager"  TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Button x:Name="GithubButton" HorizontalAlignment="Left" Margin="450,167,0,0" VerticalAlignment="Top" Style="{DynamicResource RounddButton}" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Github Tools Library" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Button x:Name="PlaylistManagerButton" Style="{DynamicResource RounddButton}" HorizontalAlignment="Center" Margin="0,122,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Playlist Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Button x:Name="BookManagerButton" HorizontalAlignment="Center" Margin="0,197,0,0" VerticalAlignment="Top" Style="{DynamicResource RounddButton}" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Book Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Button x:Name="VideoManagerButton" Style="{DynamicResource RounddButton}" HorizontalAlignment="Center" Margin="0,47,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Video Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
-        </Button>
-        <Label Content="Code Information Managing System" HorizontalAlignment="Center" VerticalAlignment="Top" Height="42" Width="426" FontSize="22" FontFamily="Microsoft YaHei UI" FontWeight="Bold" Foreground="#FF0078D7" FontStyle="Italic" BorderBrush="#FF0078D7" BorderThickness="1" Margin="0,2,0,0"/>
-        <Polygon Points="0,200 0,150 50,200" Fill="#FF0078D7" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="194"/>
-        <Polygon Points="0,200 0,150 50,200" Fill="#FF0078D7" Stroke="Black" StrokeThickness="2" RenderTransformOrigin="0.5,0.5" Height="194" VerticalAlignment="Bottom">
-            <Polygon.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="-1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Polygon.RenderTransform>
-        </Polygon>
-        <Polygon Points="0,200 0,150 50,200" Fill="#FF0078D7" Stroke="Black" StrokeThickness="2" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top" Height="193" Margin="0,-8,0,0">
-            <Polygon.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleY="-1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Polygon.RenderTransform>
-        </Polygon>
-        <Polygon Points="0,200 0,150 50,200" Fill="#FF0078D7" Stroke="Black" StrokeThickness="2" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Right" VerticalAlignment="Top" Height="193" Margin="0,-8,-1,0">
-            <Polygon.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleY="-1" ScaleX="-1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform X="1.5E-05" Y="0"/>
-                </TransformGroup>
-            </Polygon.RenderTransform>
-        </Polygon>
-        <Label Content="L1" HorizontalAlignment="Left" Height="33" Margin="52,264,0,0" VerticalAlignment="Top" Width="28" Foreground="#FF0078D7" FontSize="16" FontFamily="Microsoft YaHei UI" FontWeight="Bold"/>
-        <Label Content="L2" HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="28" FontWeight="Bold" Foreground="#FF0078D7" FontSize="16" FontFamily="Microsoft YaHei UI" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,279,0,0"/>
-        <Label Content="L3" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="30" FontWeight="Bold" Foreground="#FF0078D7" FontSize="16" FontFamily="Microsoft YaHei UI" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="470,260,0,0"/>
-        <Label Content="Brain Storm" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="132" FontWeight="Bold" Foreground="#FF0078D7" FontSize="16" FontFamily="Microsoft YaHei UI" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,282,0,0"/>
-        <Label Content="Learning" HorizontalAlignment="Center"  Height="40" VerticalAlignment="Top" Width="86" FontWeight="Bold" Foreground="#FF0078D7" FontSize="16" FontFamily="Microsoft YaHei UI" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,298,0,0"/>
-        <Label Content="Creation" HorizontalAlignment="Left" Height="28" Margin="440,283,0,0" VerticalAlignment="Top" Width="90" FontWeight="Bold" Foreground="#FF0078D7" FontSize="16" FontFamily="Microsoft YaHei UI" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" RenderTransformOrigin="0.5,0.5">
-            <Label.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="1.533"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="-0.375"/>
-                </TransformGroup>
-            </Label.RenderTransform>
-        </Label>
-        <Image HorizontalAlignment="Left" Height="19" Margin="512,0,0,0" VerticalAlignment="Top" Width="36" Source="/JackOLanternSpirte-removebg-preview.png"/>
+    <Grid x:Name="mainGrid" Background="#FFEEE8E8">
         <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
-    </Grid>
+        </Grid>
 </Window>

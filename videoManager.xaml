@@ -9,7 +9,7 @@
       Title="videoManager">
 
     <Grid Background="#FFEEE8E8">
-        
+
         <!--Main Grid Defintions-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>
@@ -28,7 +28,7 @@
 
         <!--Back Button-->
         <Border BorderThickness="3" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="2,2,2,2" Background="Transparent">
-            <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7">
+            <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
                 <TextBlock Text="&lt;" FontSize="32" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
             </Button>
         </Border>
@@ -37,10 +37,10 @@
         <Grid Grid.Row="1" Background="Transparent">
             <!--Grid to store both of the buttons-->
             <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="60"/>
-                <RowDefinition Height="60"/>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Border BorderThickness="3" BorderBrush="#FF0078D7" Grid.RowSpan="5" Margin="2, 2, 2, 2"/>
@@ -81,11 +81,11 @@
                 </Button.Content>
             </Button>
         </Grid>
-        
+
         <!--Tabs for all of the different Video Formats / On the right hand side-->
         <Grid Background="Transparent" Grid.Column="2" Grid.Row="1">
-            
-            <TabControl x:Name="TabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+            <TabControl x:Name="TabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="TabControl_SelectionChanged">
 
                 <!--Set Up Tab resource so that way the tabs are on the righthand side-->
                 <TabControl.Resources>
@@ -93,31 +93,64 @@
                         <!--This are just styilistic choices-->
                         <Setter Property="HorizontalAlignment" Value="Stretch"/>
                         <Setter Property="VerticalAlignment"   Value="Stretch"/>
-                        <Setter Property="Width"               Value="Auto"/>
-                        <Setter Property="Height"               Value="Auto"/>
                         <Setter Property="FontFamily"           Value="Microsoft YaHei"/>
                         <Setter Property="FontSize"             Value="14"/>
                         <Setter Property="FontWeight"           Value="SemiBold"/>
+
                         <!--Set the actual property of it to be sideways and style the content -->
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="TabItem">
-                                    <Border Name="Border" BorderThickness="0,3,3,3" BorderBrush="#FF075A9B" CornerRadius="0,8,8, 0" Margin="2,3,18,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                        <ContentPresenter x:Name="ContentSite"
-                                              VerticalAlignment="Stretch"
-                                              HorizontalAlignment="Stretch"
-                                              ContentSource="Header"
-                                              Margin="10,5">
-                                            <ContentPresenter.LayoutTransform>
-                                                <RotateTransform Angle="90"/>
-                                            </ContentPresenter.LayoutTransform>
-                                        </ContentPresenter>
-                                    </Border>
+                                    <!--Grid Containing all of the items, holds main content as well as allows for animation-->
+                                    <Grid Width="60" HorizontalAlignment="Stretch">
+                                        <Border Name="Border" BorderThickness="0,3,3,3" BorderBrush="#FF075A9B" 
+                                                CornerRadius="0,8,8,0" VerticalAlignment="Center" 
+                                                HorizontalAlignment="Left" Width="24" Margin="2,2,0,0">
+                                            <ContentPresenter x:Name="ContentSite"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  ContentSource="Header"
+                                                  Margin="10,5">
+                                                <ContentPresenter.LayoutTransform>
+                                                    <RotateTransform Angle="90"/>
+                                                </ContentPresenter.LayoutTransform>
+                                            </ContentPresenter>
+                                        </Border>
+                                    </Grid>
                                     <ControlTemplate.Triggers>
+                                        <!--The multi trigger that detects mouse hover and holds the actual width animaiton-->
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver" Value="True"/>
+                                            </MultiTrigger.Conditions>
+                                            <MultiTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Storyboard.TargetName="Border"
+                                                            Storyboard.TargetProperty="Width"
+                                                            To="40"
+                                                            Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiTrigger.EnterActions>
+                                            <MultiTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                            Storyboard.TargetName="Border"
+                                                            Storyboard.TargetProperty="Width"
+                                                            To="24"
+                                                            Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </MultiTrigger.ExitActions>
+                                        </MultiTrigger>
+
+                                        <!--This changes the color/style whenever you click on one of the tabs-->
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="AliceBlue" />
                                             <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black" />
-
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="False">
                                             <Setter TargetName="Border" Property="Background" Value="#FF0078D7" />
@@ -131,23 +164,47 @@
                 </TabControl.Resources>
 
                 <!--The Video Tab-->
-                <TabItem Header="Videos"/>
+                <TabItem x:Name ="VideoTab" Header="Videos"/>
 
                 <!--The Playlists Tab-->
-                <TabItem Header="PlayLists"/>
+                <TabItem x:Name ="PlaylistTab" Header="PlayLists"/>
 
                 <!--The Shorts/Reels Tab-->
-                <TabItem Header="Shorts"/>
+                <TabItem x:Name ="ShortsTab" Header="Shorts"/>
 
                 <!--The Other Tab-->
-                <TabItem Header="Other"/>
+                <TabItem x:Name ="OtherTab" Header="Other"/>
 
 
             </TabControl>
-            
+
             <!--Border for decorative purpose so it looks like theres something to hang on-->
             <Border BorderThickness="3, 0, 0, 3" BorderBrush="#FF0078D7" Margin="0, 0, 0, 2"/>
         </Grid>
+
+        <!--The List View Boxes that hold all of the content, and also are controlled by the tabs-->
+        <!--The Longer Form Videos ListBox-->
+        <ListBox x:Name="VideoListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Red">
+
+        </ListBox>
+        
+        
+        <!--The Playlists ListBox-->
+        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Green">
+
+        </ListBox>
+        
+        <!--The Shorts ListBox-->
+        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MistyRose">
+
+        </ListBox>
+        
+        <!--The Other ListBox-->
+        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Purple">
+
+        </ListBox>
+
+
 
     </Grid>
 </Page>

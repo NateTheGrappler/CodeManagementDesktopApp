@@ -7,7 +7,9 @@
       mc:Ignorable="d" 
       d:DesignHeight="386" d:DesignWidth="550"
       Title="MainPage">
-    <Grid x:Name="mainGrid" Background="#FFEEE8E8">
+    
+    <Viewbox Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid x:Name="mainGrid" Background="#FFEEE8E8">
         <Rectangle x:Name="translucentBox" HorizontalAlignment="Center" Height="378" Stroke="Black" VerticalAlignment="Top" Width="550" Fill="#BF000000" Visibility="Hidden"/>
 
         <Button x:Name="projectNotesButtonPN" Style="{DynamicResource RounddButton}" HorizontalAlignment="Left" Margin="31,92,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
@@ -83,4 +85,5 @@
         
         <Image HorizontalAlignment="Left" Height="19" Margin="512,0,0,0" VerticalAlignment="Top" Width="36" Source="/JackOLanternSpirte-removebg-preview.png"/>
     </Grid>
+    </Viewbox>
 </Page>

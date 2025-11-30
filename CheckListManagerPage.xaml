@@ -46,7 +46,7 @@
                         <TextBlock Text="Check-List Manager" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF0078D7" FontSize="24" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" Width="286"/>
                     </Border>
 
-                    <ListBox x:Name="listBoxContainer" Grid.Row="2" Grid.ColumnSpan="2"  
+                    <ListBox x:Name="listBoxContainer" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="3" 
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"  
                      d:ItemsSource="{d:SampleData ItemCount=5}"
                      ItemsSource="{Binding mainTextBoxList}"
