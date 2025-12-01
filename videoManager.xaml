@@ -27,7 +27,7 @@
         </Border>
 
         <!--Back Button-->
-        <Border BorderThickness="3" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="2,2,2,2" Background="Transparent">
+        <Border BorderThickness="3" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="1" Margin="2,2,2,2" Background="Transparent" ToolTip="Go Back To Main Page">
             <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
                 <TextBlock Text="&lt;" FontSize="32" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
             </Button>
@@ -41,11 +41,14 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Border BorderThickness="3" BorderBrush="#FF0078D7" Grid.RowSpan="5" Margin="2, 2, 2, 2"/>
+            <Border BorderThickness="3" BorderBrush="#FF0078D7" Grid.RowSpan="7" Margin="2, 2, 2, 2"/>
             <!--The TrashCan/Delete Video Button-->
-            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2">
+            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" ToolTip="Deleted Selected Video" Click="DeleteButton_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
@@ -57,7 +60,7 @@
                 </Button.Content>
             </Button>
             <!--The plus/New video button-->
-            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="1">
+            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="1" ToolTip="Add In A New Video" Click="NewButton_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
@@ -69,12 +72,36 @@
                 </Button.Content>
             </Button>
             <!--Search Button-->
-            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="SearchButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="3">
+            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="SearchButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="3" ToolTip="Search For A Video" Click="SearchButton_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="/Images/codeManagerIcon.png" Stretch="Uniform"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <!--The save all content button-->
+            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="SaveAllButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="4" ToolTip="Manually Save All Content" Click="SaveAllButton_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Images/saveButtonImage.png" Stretch="Uniform"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <!--Save Only the content of this page-->
+            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="SavePageButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="5" ToolTip="Manually Save Content For This Page" Click="SavePageButton_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Images/saveButtonImage.png" Stretch="Uniform"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </StackPanel>

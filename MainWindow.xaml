@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CodeManagementSystem"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="386" Width="550" Icon="/Images/codeManagerIconColor.png" WindowStyle="SingleBorderWindow">
 
     <Grid x:Name="mainGrid" Background="#FFEEE8E8">

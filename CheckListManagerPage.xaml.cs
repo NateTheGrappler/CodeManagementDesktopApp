@@ -234,11 +234,6 @@ namespace CodeManagementSystem
            this.NavigationService.GoBack();
         }
 
-        //public void initializeListBox()
-        //{
-        //    listBoxContainer.ItemsSource = mainTextBoxList;
-        //}
-
         private void enterCheckListButton_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Pressed The Black Button");
