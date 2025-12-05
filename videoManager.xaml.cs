@@ -15,6 +15,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -307,6 +308,8 @@ namespace CodeManagementSystem
         private readonly VideoJsonSaver jsonManagement = new VideoJsonSaver();
         public           ContentManager contentManager = new ContentManager();
         public           String         tabName        = string.Empty;
+        public           String         createTabName  = string.Empty;
+
         public videoManager()
         {
             InitializeComponent();
@@ -421,7 +424,72 @@ namespace CodeManagementSystem
         //Open up a new popup that allows for the creation of a new Video, Short, Playlist, or Other
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
+            //Start Slide in animation for new creation GUI
+            var button = sender as Button;
+            Storyboard storyboard = new Storyboard();
 
+            if (button.Name == "NewButton") //For Add content button
+            {
+                //Set up translucent box and all the proper Z panel stuff
+                Panel.SetZIndex(NewContentGUI, 31);
+                Panel.SetZIndex(translucentBox, 30);
+
+                //Set up a doubleAnimation to move the x val
+                DoubleAnimation translateXTo = new DoubleAnimation
+                {
+                    From = -1500,
+                    To = 10,
+                    Duration = TimeSpan.FromSeconds(0.3),
+                    AutoReverse = false,
+                };
+                //Opacity animaiton for black box
+                DoubleAnimation opactiy = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 0.7,
+                    Duration = TimeSpan.FromSeconds(0.3),
+                    AutoReverse = false,
+                };
+
+                Storyboard.SetTarget(opactiy, translucentBox);
+                Storyboard.SetTargetProperty(opactiy, new PropertyPath("Opacity"));
+                Storyboard.SetTarget(translateXTo, NewContentGUI);
+                Storyboard.SetTargetProperty(translateXTo, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
+
+                storyboard.Children.Add(opactiy);
+                storyboard.Children.Add(translateXTo);
+                storyboard.Begin();
+            }
+            else if(button.Name == "NewContentBack")
+            {
+                Panel.SetZIndex(NewContentGUI, 0);
+                Panel.SetZIndex(translucentBox, -10);
+
+                //Set up the animation for it to slide bacl
+                DoubleAnimation translateXBack = new DoubleAnimation
+                {
+                    From = 10,
+                    To = -1500,
+                    Duration = TimeSpan.FromSeconds(0.3),
+                    AutoReverse = false,
+                };
+                DoubleAnimation opactiy = new DoubleAnimation
+                {
+                    From = 0.7,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.3),
+                    AutoReverse = false,
+                };
+
+                Storyboard.SetTarget(opactiy, translucentBox);
+                Storyboard.SetTargetProperty(opactiy, new PropertyPath("Opacity"));
+                Storyboard.SetTarget(translateXBack, NewContentGUI);
+                Storyboard.SetTargetProperty(translateXBack, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
+
+                storyboard.Children.Add(opactiy);
+                storyboard.Children.Add(translateXBack);
+                storyboard.Begin();
+            }
         }
         //Delete the currently selected Item in the ListSourceBox
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -466,6 +534,60 @@ namespace CodeManagementSystem
             else if(tabName == "OtherTab")
             {
                 await jsonManagement.SaveOtherVideosAsync(contentManager.OtherArray);
+            }
+        }
+
+
+        //--------------------------------------Functions for the Creation GUI-----------------------------
+        private void TabControlCreation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String tabName = "";
+
+            //get tab that is selected and it's name
+            if (e.Source is TabControl tabControl)
+            {
+                if (tabControl.SelectedItem is TabItem selectedTab)
+                {
+                    tabName = selectedTab.Name; //assign name of tab for later use
+                    this.createTabName = tabName;
+                }
+            }
+
+            Debug.WriteLine(tabName);
+
+            //Go through all of the checks to see which of the tabs to display
+            if (tabName == "CreateVideoTab")
+            {
+                Panel.SetZIndex(VideoInformationInput,     20);
+                Panel.SetZIndex(PlaylistsInformationInput, 0);
+                Panel.SetZIndex(ShortsInformationInput,    0);
+                Panel.SetZIndex(OtherInformationInput,     0);
+
+            }
+            else if (tabName == "CreatePlaylistTab")
+            {
+                Panel.SetZIndex(VideoInformationInput,     0);
+                Panel.SetZIndex(PlaylistsInformationInput, 20);
+                Panel.SetZIndex(ShortsInformationInput,    0);
+                Panel.SetZIndex(OtherInformationInput,     0);
+            }
+            else if (tabName == "CreateShortsTab")
+            {
+                Panel.SetZIndex(VideoInformationInput,     0);
+                Panel.SetZIndex(PlaylistsInformationInput, 0);
+                Panel.SetZIndex(ShortsInformationInput,    20);
+                Panel.SetZIndex(OtherInformationInput,     0);
+            }
+            else if (tabName == "CreateOtherTab")
+            {
+                Panel.SetZIndex(VideoInformationInput,     0);
+                Panel.SetZIndex(PlaylistsInformationInput, 0);
+                Panel.SetZIndex(ShortsInformationInput,    0);
+                Panel.SetZIndex(OtherInformationInput,     20);
+            }
+            else
+            {
+                Debug.WriteLine("ERROR");
             }
         }
     }

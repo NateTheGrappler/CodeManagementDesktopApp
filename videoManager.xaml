@@ -33,7 +33,7 @@
             </Button>
         </Border>
 
-        <!--Create and Delete Button-->
+        <!--Create and Delete Button and all the buttons on the left hand side-->
         <Grid Grid.Row="1" Background="Transparent">
             <!--Grid to store both of the buttons-->
             <Grid.RowDefinitions>
@@ -214,24 +214,332 @@
         <ListBox x:Name="VideoListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Red">
 
         </ListBox>
-        
-        
+
         <!--The Playlists ListBox-->
         <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Green">
 
         </ListBox>
-        
+
         <!--The Shorts ListBox-->
         <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MistyRose">
 
         </ListBox>
-        
+
         <!--The Other ListBox-->
         <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Purple">
 
         </ListBox>
 
+        
+        <!--The other PopUp GUI for making a new instance of something-->
+        <Border x:Name="NewContentGUI" BorderThickness="3" BorderBrush="#FF0078D7" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="40, 10, 40, 10" CornerRadius="10" ClipToBounds="True" Background="#FFEEE8E8">
+
+            <!--Grid that holds all of the main content-->
+            <Grid>
+                
+                <!--Grid Set up/Row and Col Defs-->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="45"/>
+                </Grid.RowDefinitions>
+                    
+                    
+                <!--The Back Button To slide this content out-->
+                <Border BorderThickness="3, 0, 0, 3" BorderBrush="#FF0078D7" Margin="0, 0, 0, 0" Grid.Column="2" Grid.RowSpan="1"/>
+                <Button x:Name="NewContentBack" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="6,3,2,6" Background="#FF0078D7" Click="NewButton_Click" Grid.Column="2" >
+                    <TextBlock Text="X" FontSize="20" FontWeight="Bold" FontFamily="Mi" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+                
+                <!--The Title of What it is that you are creating-->
+                <Border BorderThickness="0, 0, 3, 3" BorderBrush="#FF0078D7"  Grid.Column="0" Grid.ColumnSpan="2" Margin="0, 0, 2, 0" Background="Transparent" >
+                    <TextBlock Text="Video Resource Manager" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold" TextAlignment="Center" FontSize="16" Margin="0, 8, 0, 0"/>
+                </Border>
+
+                <!--The Clear and Save Buttons-->
+                <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="SaveNewContentButton" BorderBrush="#FF075A9B" BorderThickness="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="6, 6, 2, 6" Style="{DynamicResource TwoRoundedCornersLeft}" Content="Save" Foreground="White" FontSize="18" FontWeight="Bold" FontFamily="Microsoft YaHei"/>
+                    <Button x:Name="ClearNewContentButton" BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="2, 6, 6, 6" Style="{DynamicResource TwoRoundedCornersRight}" Content="Clear" Foreground="White" FontSize="18" FontWeight="Bold" FontFamily="Microsoft YaHei"/>
+                </Grid>
+
+                <!--The Tabs to Switch between what you are creating-->
+                <Grid Background="Transparent" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="0, 2, 0, 0">
+
+                    <TabControl x:Name="CreateTabControl" TabStripPlacement="Right" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="TabControlCreation_SelectionChanged">
+
+                        <!--Set Up Tab resource so that way the tabs are on the righthand side-->
+                        <TabControl.Resources>
+                            <Style TargetType="{x:Type TabItem}">
+                                <!--This are just styilistic choices-->
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalAlignment"   Value="Stretch"/>
+                                <Setter Property="FontFamily"           Value="Microsoft YaHei"/>
+                                <Setter Property="FontSize"             Value="14"/>
+                                <Setter Property="FontWeight"           Value="SemiBold"/>
+
+                                <!--Set the actual property of it to be sideways and style the content -->
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabItem">
+                                            <!--Grid Containing all of the items, holds main content as well as allows for animation-->
+                                            <Grid Width="60" HorizontalAlignment="Stretch">
+                                                <Border Name="Border" BorderThickness="0,3,3,3" BorderBrush="#FF075A9B" 
+                                                CornerRadius="0,8,8,0" VerticalAlignment="Center" 
+                                                HorizontalAlignment="Left" Width="24" Margin="2,2,0,0">
+                                                    <ContentPresenter x:Name="ContentSite"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  ContentSource="Header"
+                                                  Margin="10,5">
+                                                        <ContentPresenter.LayoutTransform>
+                                                            <RotateTransform Angle="90"/>
+                                                        </ContentPresenter.LayoutTransform>
+                                                    </ContentPresenter>
+                                                </Border>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <!--The multi trigger that detects mouse hover and holds the actual width animaiton-->
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsMouseOver" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+                                                    <MultiTrigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                            Storyboard.TargetName="Border"
+                                                            Storyboard.TargetProperty="Width"
+                                                            To="40"
+                                                            Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </MultiTrigger.EnterActions>
+                                                    <MultiTrigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                            Storyboard.TargetName="Border"
+                                                            Storyboard.TargetProperty="Width"
+                                                            To="24"
+                                                            Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </MultiTrigger.ExitActions>
+                                                </MultiTrigger>
+
+                                                <!--This changes the color/style whenever you click on one of the tabs-->
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="AliceBlue" />
+                                                    <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="False">
+                                                    <Setter TargetName="Border" Property="Background" Value="#FF0078D7" />
+                                                    <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="AliceBlue" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TabControl.Resources>
+
+                        <!--The Video Tab-->
+                        <TabItem x:Name ="CreateVideoTab" Header="Videos"/>
+
+                        <!--The Playlists Tab-->
+                        <TabItem x:Name ="CreatePlaylistTab" Header="PlayLists"/>
+
+                        <!--The Shorts/Reels Tab-->
+                        <TabItem x:Name ="CreateShortsTab" Header="Shorts"/>
+
+                        <!--The Other Tab-->
+                        <TabItem x:Name ="CreateOtherTab" Header="Other"/>
 
 
+                    </TabControl>
+
+                    <!--Border for decorative purpose so it looks like theres something to hang on-->
+                    <Border BorderThickness="3, 3, 0, 0" BorderBrush="#FF0078D7" Margin="0, 0, 0, 2"/>
+                </Grid>
+
+                <!--The LongForm Video Information Input (Done)--> 
+                <Grid x:Name="VideoInformationInput" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <!--Title-->
+                        <RowDefinition Height="40"/>
+                        <!--Description-->
+                        <RowDefinition Height="40"/>
+                        <!--URL-->
+                        <RowDefinition Height="40"/>
+                        <!--Category-->
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Title Input-->
+                    <Label Grid.Row="0" Grid.Column="0" Content="Title:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="0" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Description Input-->
+                    <Label Grid.Row="1" Grid.Column="0" Content="Description:" Margin="5" FontSize="14" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--URL Input-->
+                    <Label Grid.Row="2" Grid.Column="0" Content="URL:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Category Input-->
+                    <Label Grid.Row="3" Grid.Column="0" Content="Category:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="3" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                </Grid>
+
+                <!--The Playlists Infomation Input-->
+                <Grid x:Name="PlaylistsInformationInput" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <!--Title-->
+                        <RowDefinition Height="40"/>
+                        <!--Description-->
+                        <RowDefinition Height="40"/>
+                        <!--URL-->
+                        <RowDefinition Height="40"/>
+                        <!--Category-->
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Title Input-->
+                    <Label Grid.Row="0" Grid.Column="0" Content="Title:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="0" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Description Input-->
+                    <Label Grid.Row="1" Grid.Column="0" Content="Description:" Margin="5" FontSize="14" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--URL Input-->
+                    <Label Grid.Row="2" Grid.Column="0" Content="URL:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Category Input-->
+                    <Label Grid.Row="3" Grid.Column="0" Content="Category:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="3" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                </Grid>
+
+                <!--The Shorts Infomation Input-->
+                <Grid x:Name="ShortsInformationInput" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <!--Title-->
+                        <RowDefinition Height="40"/>
+                        <!--Description-->
+                        <RowDefinition Height="40"/>
+                        <!--URL-->
+                        <RowDefinition Height="40"/>
+                        <!--Category-->
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Title Input-->
+                    <Label Grid.Row="0" Grid.Column="0" Content="Title:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="0" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Description Input-->
+                    <Label Grid.Row="1" Grid.Column="0" Content="Description:" Margin="5" FontSize="14" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--URL Input-->
+                    <Label Grid.Row="2" Grid.Column="0" Content="URL:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Category Input-->
+                    <Label Grid.Row="3" Grid.Column="0" Content="Category:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="3" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                </Grid>
+
+                <!--The Other Infomation Input-->
+                <Grid x:Name="OtherInformationInput" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <!--Title-->
+                        <RowDefinition Height="40"/>
+                        <!--Description-->
+                        <RowDefinition Height="40"/>
+                        <!--URL-->
+                        <RowDefinition Height="40"/>
+                        <!--Category-->
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!--Title Input-->
+                    <Label Grid.Row="0" Grid.Column="0" Content="Title:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="0" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Description Input-->
+                    <Label Grid.Row="1" Grid.Column="0" Content="Description:" Margin="5" FontSize="14" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--URL Input-->
+                    <Label Grid.Row="2" Grid.Column="0" Content="URL:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="2" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                    <!--Category Input-->
+                    <Label Grid.Row="3" Grid.Column="0" Content="Category:" Margin="5" FontSize="16" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Foreground="#FF0078D7" FontWeight="Bold"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="5"/>
+                    <Button Grid.Row="3" Grid.Column="2" Margin="5" Foreground="Red" FontWeight="Bold" FontSize="18" Background="Transparent" BorderBrush="Transparent" Content="X" Style="{DynamicResource RounddButton}" Width="30"/>
+
+                </Grid>
+            </Grid>
+
+                <!--The Border Transform in order to do the slide stuff-->
+            <Border.RenderTransform>
+                <TranslateTransform X="-1500" Y="0"/>
+            </Border.RenderTransform>
+        </Border>
+        <!--The Translucent Box to go along with the PopUpGui for Creation-->
+        <Rectangle x:Name="translucentBox" Fill="Black" Visibility="Visible" Grid.ColumnSpan="10" Grid.RowSpan="10" Opacity="0" Panel.ZIndex="-10"/>
     </Grid>
+
 </Page>
