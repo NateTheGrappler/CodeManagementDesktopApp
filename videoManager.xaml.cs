@@ -24,6 +24,10 @@ using Microsoft.Win32;
 //The extra imports needed for this:
 using YoutubeExplode;
 using YoutubeExplode.Videos;
+using YoutubeExplode.Videos.Streams;
+using Xabe.FFmpeg;
+using FFMpegCore;
+using FFMpegCore.Pipes;
 
 namespace CodeManagementSystem
 {
@@ -162,7 +166,6 @@ namespace CodeManagementSystem
         public ObservableCollection<PlayList>     PlaylistArray = new ObservableCollection<PlayList>();
         public ObservableCollection<OtherVideo>   OtherArray    = new ObservableCollection<OtherVideo>();
 
-
         //Clear Function
         public void clearAllCollections()
         {
@@ -250,22 +253,87 @@ namespace CodeManagementSystem
     }
 
     //Shorts Videos, hold link, maybe a topic, maybe a description, maybe a title
-    public class ShortsVideo
+    public class RegularVideo
     {
-        public int id                  { get; set; }
-        public string title            { get; set; } = string.Empty;
-        public string url              { get; set; } = string.Empty;
-        public string thumbNailUrl     { get; set; } = string.Empty;
-        public TimeSpan duration       { get; set; }
-        public string platform         { get; set; } = string.Empty;
-        public DateTime addedDate      { get; set; }
-        public string description      { get; set; } = string.Empty;
-        public string durationFormatted => duration.ToString(@"hh\:mm\:ss");
-        public string addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+        //The path to where downloaded Videos are stored
+        private readonly string _dataPathVideos = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "CodeInformationManagingSystem\\SavedVideos\\");
+
+        //All of the Data to store from the video itself
+        public int      id               { get; set; }
+        public string   title            { get; set; } = string.Empty;
+        public string   category         { get; set; } = string.Empty;
+        public string   notes            { get; set; } = string.Empty;
+        public string   url              { get; set; } = string.Empty;
+        public string   urlToDownload    { get; set; } = string.Empty;
+        public string   thumbNailUrl     { get; set; } = string.Empty;
+        public TimeSpan duration         { get; set; }
+        public string   author           { get; set; } = string.Empty;
+        public DateTime addedDate        { get; set; }
+        public string   description      { get; set; } = string.Empty;
+        public string   durationFormatted => duration.ToString(@"hh\:mm\:ss");
+        public string   addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+
+        public YoutubeClient youtube = new YoutubeClient();
+
+
+        //------------------------Constructors--------------------------------
+        public RegularVideo(string URL, string Category, string Notes)
+        {
+            //Set up all of the needed information in the constructor
+            this.url = URL;
+            this.category = Category;
+            this.notes = Notes;
+        }
+        public RegularVideo() { }
+
+
+        //-------------------------Functions for playing and also storing youtube videos--------------------
+        public void playVideo(string urlInput)
+        {
+
+        }
+        public async Task downloadVideo(string urlInput)
+        {
+            //get the stream manifest so we can grab audio n video
+            StreamManifest streamManifest = await youtube.Videos.Streams.GetManifestAsync(urlInput);
+
+            //Grab the infor of the audio and video
+            //MuxedStreamInfo streamVideo = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality(); DONT WORK
+
+            //Get the Video and Audo Stream
+            IVideoStreamInfo videoComponent = streamManifest.GetVideoStreams().GetWithHighestVideoQuality();
+            IAudioStreamInfo audioComponent = (IAudioStreamInfo)streamManifest.GetAudioStreams().GetWithHighestBitrate();
+
+            string outputPath = _dataPathVideos + this.title + ".mp4";
+
+            //Create raw video and audio pipes
+            var videoPipe = new StreamPipeSource(await youtube.Videos.Streams.GetAsync(videoComponent));
+            var audioPipe = new StreamPipeSource(await youtube.Videos.Streams.GetAsync(audioComponent));
+
+            //Combine using FFMpeg having input pipe, another pipe, then output at the specified location in Local Roaming Folder
+            await FFMpegArguments.FromPipeInput(videoPipe).AddPipeInput(audioPipe).OutputToFile(outputPath,overwrite: true,options => options .WithVideoCodec("copy").WithAudioCodec("aac").WithFastStart()).ProcessAsynchronously();
+        }
+
+        public async Task updateVideoItems(string urlInput)
+        {
+            //Get Video data type
+            Video video = await youtube.Videos.GetAsync(urlInput);
+
+            //Set up all the data so that way it could be saved via the given link
+            this.title = video.Title;
+            this.description = video.Description;
+            this.duration = (TimeSpan)video.Duration;
+            this.author = video.Author.ChannelTitle;
+            this.addedDate = DateTime.Now;
+            this.url = video.Url;
+            //TODO: Add in a way to make it so you see the thumbnails
+        }
     }
 
     //The regular youtube videos, holds url, thumbnail, content, description, all the goods
-    public class RegularVideo
+    public class ShortsVideo
     {
         public int id                   { get; set; }
         public string title             { get; set; } = string.Empty;
@@ -304,6 +372,13 @@ namespace CodeManagementSystem
 
     public partial class videoManager : Page
     {
+        //Data Variables to store temporary information input by user
+        public           string title       = "";
+        public           string url         = "";
+        public           string description = "";
+        public           string category    = "";
+
+
         //Initialize all other needed objects
         private readonly VideoJsonSaver jsonManagement = new VideoJsonSaver();
         public           ContentManager contentManager = new ContentManager();
@@ -556,7 +631,7 @@ namespace CodeManagementSystem
             Debug.WriteLine(tabName);
 
             //Go through all of the checks to see which of the tabs to display
-            if (tabName == "CreateVideoTab")
+            if      (tabName == "CreateVideoTab")
             {
                 Panel.SetZIndex(VideoInformationInput,     20);
                 Panel.SetZIndex(PlaylistsInformationInput, 0);
@@ -588,6 +663,19 @@ namespace CodeManagementSystem
             else
             {
                 Debug.WriteLine("ERROR");
+            }
+        }
+
+        private async void addNewContent(object sender, RoutedEventArgs e)
+        {
+
+            if(createTabName == "CreateVideoTab")
+            {
+                RegularVideo video = new RegularVideo(LongVideoURL.Text.ToString(), "Whatever", "Dont Care");
+                Debug.WriteLine(video.url);
+                await video.downloadVideo(video.url);
+                Debug.WriteLine("Download Successful?");
+
             }
         }
     }
