@@ -4,11 +4,13 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -168,6 +170,8 @@ namespace CodeManagementSystem
         public ObservableCollection<RegularVideo> VideosArray   = new ObservableCollection<RegularVideo>();
         public ObservableCollection<PlayList>     PlaylistArray = new ObservableCollection<PlayList>();
         public ObservableCollection<OtherVideo>   OtherArray    = new ObservableCollection<OtherVideo>();
+        public YoutubeClient                      yt            = new YoutubeClient();
+
 
         //Clear Function
         public void clearAllCollections()
@@ -250,7 +254,48 @@ namespace CodeManagementSystem
             OtherArray.Remove(other);
         }
 
-        //------------------------------------------------CONSTRUCTOR-------------------------------------------------------
+        //------------------------------------------------Link Manager Functions-------------------------------------------------------
+        public string CheckLinkType(string link)
+        {
+            if(link.Contains("youtube.com/playlist"))
+            {
+                return "playlist";
+            }
+            if(link.Contains("youtube.com/watch"))
+            {
+                return "video";
+            }
+
+            return "neither";
+        }
+
+        public async Task<bool> CheckifValidYTLink(string URL)
+        {
+            try
+            {
+                if(string.IsNullOrEmpty(URL))
+                {
+                    return false;
+                }
+
+                var video = await yt.Videos.GetAsync(URL);
+                if (video != null)
+                {
+                    return true;
+                }
+
+                var playlist = await yt.Playlists.GetAsync(URL);
+                if(playlist != null)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
 
     }
@@ -355,41 +400,18 @@ namespace CodeManagementSystem
         **/
         public async Task updateVideoItems(string urlInput)
         {
-            //Try Catch for links that are not from youtube
-            try
-            {
-                //Get Video data type
-                Video video = await youtube.Videos.GetAsync(urlInput);
+            //Get Video data type
+            Video video = await youtube.Videos.GetAsync(urlInput);
 
-                //Set up all the data so that way it could be saved via the given link
-                this.id = video.Id;
-                this.title = video.Title;
-                this.description = video.Description;
-                this.duration = (TimeSpan)video.Duration;
-                this.author = video.Author.ChannelTitle;
-                this.addedDate = DateTime.Now;
-                this.url = video.Url;
-                //TODO: Add in a way to make it so you see the thumbnails
-            }
-            catch (ArgumentException)
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    "The URL entered is not from an known site; information will have to be entered manually.",
-                    "Unknown URL",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                    );
-            }
-            catch (Exception ex)
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    "The URL entered is Not Valid. Unable To Add New Content.",
-                    "Invalid URL",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                    );
-            }
-
+            //Set up all the data so that way it could be saved via the given link
+            this.id = video.Id;
+            this.title = video.Title;
+            this.description = video.Description;
+            this.duration = (TimeSpan)video.Duration;
+            this.author = video.Author.ChannelTitle;
+            this.addedDate = DateTime.Now;
+            this.url = video.Url;
+            //TODO: Add in a way to make it so you see the thumbnails
         }
 
         //Helper function for naviagting to ffmpeg
@@ -472,53 +494,33 @@ namespace CodeManagementSystem
         //------------------------------------Information Manipulation Functions-----------------------
         public async Task updatePlaylistItems(string URL)
         {
-            try
-            {
-                //get the actual playlist object via given URL
-                var playlist = await youtube.Playlists.GetAsync(URL);
-                var playlistVideos = await youtube.Playlists.GetVideosAsync(playlist.Id).CollectAsync();
+            //get the actual playlist object via given URL
+            var playlist = await youtube.Playlists.GetAsync(URL);
+            var playlistVideos = await youtube.Playlists.GetVideosAsync(playlist.Id).CollectAsync();
 
-                //For each of the videos in the list, get it's information and store it
-                foreach (var video in playlistVideos)
-                {
-                    RegularVideo newVideo = new RegularVideo();
-                    newVideo.id = video.Id.Value;
-                    newVideo.title = video.Title;
-                    newVideo.duration = video.Duration ?? TimeSpan.Zero;
-                    newVideo.author = video.Author.ChannelTitle;
-                    newVideo.addedDate = DateTime.Now;
-                    newVideo.url = video.Url;
-                    newVideo.platform = "YouTube";
-                    regularVideos.Add(newVideo);
-                }
-
-                //Also get all of the infomration of the playlist itself
-                this.id = playlist.Id.ToString();
-                this.title = playlist.Title;
-                this.addedDate = DateTime.Now;
-                this.author = playlist.Author.ChannelTitle;
-                this.url = URL;
-                this.numOfVideos = playlistVideos.Count;
-                //TODO Add in a way to see thumbnail
-            }
-            catch (ArgumentException)
-            { //TODO Add in a way to cancel the operation
-                MessageBoxResult result = MessageBox.Show(
-                    "The URL entered is not from an known site; information will have to be entered manually.",
-                    "Unknown URL",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                    );
-            }
-            catch (Exception ex)
+            //For each of the videos in the list, get it's information and store it
+            foreach (var video in playlistVideos)
             {
-                MessageBoxResult result = MessageBox.Show(
-                    "The URL entered is Not Valid. Unable To Add New Content.",
-                    "Invalid URL",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                    );
+                RegularVideo newVideo = new RegularVideo();
+                newVideo.id = video.Id.Value;
+                newVideo.title = video.Title;
+                newVideo.duration = video.Duration ?? TimeSpan.Zero;
+                newVideo.author = video.Author.ChannelTitle;
+                newVideo.addedDate = DateTime.Now;
+                newVideo.url = video.Url;
+                newVideo.platform = "YouTube";
+                regularVideos.Add(newVideo);
             }
+
+            //Also get all of the infomration of the playlist itself
+            this.id = playlist.Id.ToString();
+            this.title = playlist.Title;
+            this.addedDate = DateTime.Now;
+            this.author = playlist.Author.ChannelTitle;
+            this.url = URL;
+            this.numOfVideos = playlistVideos.Count;
+            //TODO Add in a way to see thumbnail
+
         }
     }
 
@@ -822,8 +824,26 @@ namespace CodeManagementSystem
                 return;
             }
 
-            //Check to see the type of content created, then create/store it accordingly
-            if      (createTabName == "CreateVideoTab")
+
+            //Have a safeguard for if a person is in the wrong tab when adding content
+            //if     (contentManager.CheckLinkType(URL.Text.ToString()) == "video" && await contentManager.CheckifValidYTLink(URL.Text.ToString()))
+            //{
+            //    Debug.WriteLine("You put in a video link");
+            //    return;
+            //}
+            //else if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist" && await contentManager.CheckifValidYTLink(URL.Text.ToString()))
+            //{
+            //    Debug.WriteLine("You put in a playlist link");
+            //    return;
+            //}
+            //else
+            //{
+            //    Debug.WriteLine("You put in neither");
+            //    return;
+            //}
+
+                //Check to see the type of content created, then create/store it accordingly
+                 if (createTabName == "CreateVideoTab")
             {
                 //Create a new video object using all of the gathered data
                 RegularVideo video = new RegularVideo(
@@ -833,18 +853,49 @@ namespace CodeManagementSystem
                     Platform.Text.ToString()
                     );
 
-                //Update all of it's internal variables
-                await video.updateVideoItems(video.url);
+                if (contentManager.CheckLinkType(URL.Text.ToString()) == "video") //If Is youtube video, save all of the data
+                {
+                    //Change the add button to be a loading as an indicator
+                    SaveNewContentButton.IsEnabled = false;
+                    SaveNewContentButton.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                    SaveNewContentButton.Content = "Loading...";
 
-                //Append it to the list of all videos
-                contentManager.VideosArray.Add(video);
+                    //Update all of it's internal variables and then save it
+                    await video.updateVideoItems(video.url);
+                    contentManager.VideosArray.Add(video);
+                    await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
 
-                //Then save the newly added content
-                await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+                    //Reset Add Button Color
+                    SaveNewContentButton.IsEnabled = true;
+                    SaveNewContentButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+                    SaveNewContentButton.Content = "Add";
 
-                //After Saving, clear the textFields, then close the popup
-                clearCurrentGUI(sender, e);
-                NewButton_Click(sender, e);
+                    //clear the textFields, then close the popup
+                    clearCurrentGUI(sender, e);
+                    NewButton_Click(sender, e);
+                }
+                else //Otherwise give the option to proceed or not
+                {
+                    //Let them cancel or continue, if cancel clear, if not add the input only, no extra data
+                    MessageBoxResult result = MessageBox.Show(
+                        "The URL entered is Invalid or from an Unknown site; information will have to be entered manually.",
+                        "Unknown URL",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Warning
+                        );
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        clearCurrentGUI(sender, e);
+                    }
+                    else
+                    {
+                        contentManager.VideosArray.Add(video);
+                        await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+                        clearCurrentGUI(sender, e);
+                        NewButton_Click(sender, e);
+                    }
+                }
+
             }
             else if (createTabName == "CreatePlaylistTab")
             {
@@ -855,18 +906,46 @@ namespace CodeManagementSystem
                     Platform.Text.ToString()
                     );
 
-                //Get all of the proper meta data for the playlist
-                await playlist.updatePlaylistItems(playlist.url);
+                if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist")
+                {
+                    //Change the add button to be a loading as an indicator
+                    SaveNewContentButton.IsEnabled = false;
+                    SaveNewContentButton.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
 
-                //Append it to the list of all playlists
-                contentManager.PlaylistArray.Add(playlist);
+                    //Get all of the proper meta data for the playlist
+                    await playlist.updatePlaylistItems(playlist.url);
+                    contentManager.PlaylistArray.Add(playlist);
+                    await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
 
-                //Then save the newly added content
-                await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
+                    //Reset Add Button Color
+                    SaveNewContentButton.IsEnabled = true;
+                    SaveNewContentButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
 
-                //After Saving, clear the textFields, then close the popup
-                clearCurrentGUI(sender, e);
-                NewButton_Click(sender, e);
+                    //After Saving, clear the textFields, then close the popup
+                    clearCurrentGUI(sender, e);
+                    NewButton_Click(sender, e);
+                }
+                else
+                {
+                    MessageBoxResult result = MessageBox.Show(
+                        "The URL entered is not from an known site; information will have to be entered manually.",
+                        "Unknown URL",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Warning
+                        );
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        clearCurrentGUI(sender, e);
+                    }
+                    else
+                    {
+                        contentManager.PlaylistArray.Add(playlist);
+                        await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
+                        clearCurrentGUI(sender, e);
+                        NewButton_Click(sender, e);
+                    }
+                }
+
 
 
             }
@@ -912,6 +991,8 @@ namespace CodeManagementSystem
             }
         }
 
+        //------------------------------------------------Helper Functions-----------------------------------------------
+
         //Empty out all of the fields that the user can put in
         public void clearCurrentGUI(object sender, RoutedEventArgs e)
         {
@@ -920,5 +1001,6 @@ namespace CodeManagementSystem
             Notes.Text = string.Empty;
             Platform.Text = string.Empty;
         }
+
     }
 }
