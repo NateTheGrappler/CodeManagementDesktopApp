@@ -460,7 +460,7 @@
                         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="10" Grid.ColumnSpan="2" Grid.Column="1" BorderThickness="2" BorderBrush="#FF0078D7"/>
 
                         <!--This is the main editable checklist right here-->
-                        <ListBox x:Name="mainContentListBox" Grid.Column="0" Grid.Row="1" Grid.RowSpan="8" Margin="7" ItemsSource="{Binding items}" d:ItemsSource="{d:SampleData ItemCount=5}">
+                        <ListBox x:Name="mainContentListBox" Grid.Column="0" Grid.Row="1" Grid.RowSpan="8" Margin="7" ItemsSource="{Binding items}" d:ItemsSource="{d:SampleData ItemCount=5}"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border x:Name="outerBorder" 
@@ -506,7 +506,7 @@
                                                                         Visibility="Collapsed"/>
                                                                     </Border>
 
-                                                                    <!-- Content with text wrapping -->
+                                                                    <!--Content with text wrapping -->
                                                                     <TextBox Grid.Column="1" 
                                                                         x:Name="checkListItemMainText"
                                                                         BorderBrush="Transparent"
@@ -515,6 +515,7 @@
                                                                         Foreground="{TemplateBinding Foreground}"
                                                                         FontStyle="{TemplateBinding FontStyle}"
                                                                         TextWrapping="Wrap" 
+                                                                        AcceptsReturn="True" 
                                                                         VerticalAlignment="Center" GotFocus="checkListItemMainText_GotFocus" LostFocus="checkListItemMainText_LostFocus"/>
                                                                 </Grid>
 
