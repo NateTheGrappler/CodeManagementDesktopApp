@@ -18,16 +18,14 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AngleSharp.Dom;
 using Microsoft.Win32;
 //The extra imports needed for this:
 using YoutubeExplode;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
-using Xabe.FFmpeg;
+using YoutubeExplode.Converter;
 using FFMpegCore;
-using FFMpegCore.Pipes;
 
 namespace CodeManagementSystem
 {
@@ -259,6 +257,7 @@ namespace CodeManagementSystem
         private readonly string _dataPathVideos = System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CodeInformationManagingSystem\\SavedVideos\\");
+        private readonly string _ffmpegFilePath = Path.Combine(GetProjectRootDirectory(AppContext.BaseDirectory), "ffmpeg", "ffmpeg.exe");
 
         //All of the Data to store from the video itself
         public int      id               { get; set; }
@@ -266,25 +265,28 @@ namespace CodeManagementSystem
         public string   category         { get; set; } = string.Empty;
         public string   notes            { get; set; } = string.Empty;
         public string   url              { get; set; } = string.Empty;
-        public string   urlToDownload    { get; set; } = string.Empty;
+        public string   platform    { get; set; } = string.Empty;
         public string   thumbNailUrl     { get; set; } = string.Empty;
         public TimeSpan duration         { get; set; }
         public string   author           { get; set; } = string.Empty;
         public DateTime addedDate        { get; set; }
         public string   description      { get; set; } = string.Empty;
-        public string   durationFormatted => duration.ToString(@"hh\:mm\:ss");
+        public string   durationFormatted  => duration.ToString(@"hh\:mm\:ss");
         public string   addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+
+        public bool     isDownloaded       = false;
 
         public YoutubeClient youtube = new YoutubeClient();
 
 
         //------------------------Constructors--------------------------------
-        public RegularVideo(string URL, string Category, string Notes)
+        public RegularVideo(string URL, string Category, string Notes, string platForm)
         {
             //Set up all of the needed information in the constructor
             this.url = URL;
             this.category = Category;
             this.notes = Notes;
+            this.platform = platForm;
         }
         public RegularVideo() { }
 
@@ -294,28 +296,57 @@ namespace CodeManagementSystem
         {
 
         }
+
+        /**
+        [Obsolete("This may violate youtube terms of service. Use at your own risk.")]
         public async Task downloadVideo(string urlInput)
         {
-            //get the stream manifest so we can grab audio n video
-            StreamManifest streamManifest = await youtube.Videos.Streams.GetManifestAsync(urlInput);
+            //See if it is a yt video, if it is then download and store
+            try
+            {
+                //Check To see if Ffmpeg exits
+                if (!File.Exists(_ffmpegFilePath))
+                {
+                    Debug.WriteLine("DIRECTORY: " + _ffmpegFilePath);
+                    MessageBox.Show(
+                        "FFmpeg is not found. Please ensure ffmpeg.exe is in the 'ffmpeg' folder next to the application.",
+                        "FFmpeg Missing",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
 
-            //Grab the infor of the audio and video
-            //MuxedStreamInfo streamVideo = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality(); DONT WORK
+                var video = await youtube.Videos.GetAsync(urlInput);
 
-            //Get the Video and Audo Stream
-            IVideoStreamInfo videoComponent = streamManifest.GetVideoStreams().GetWithHighestVideoQuality();
-            IAudioStreamInfo audioComponent = (IAudioStreamInfo)streamManifest.GetAudioStreams().GetWithHighestBitrate();
+                //Create the output path via the roaming apps, proper title, and the file type
+                string outputPath = _dataPathVideos + string.Join("_", video.Title.Split(Path.GetInvalidFileNameChars())) + ".mp4";
 
-            string outputPath = _dataPathVideos + this.title + ".mp4";
+                if (!Directory.Exists(_dataPathVideos)) //Create directory if it doesnt exist yet
+                {
+                    Directory.CreateDirectory(_dataPathVideos);
+                }
 
-            //Create raw video and audio pipes
-            var videoPipe = new StreamPipeSource(await youtube.Videos.Streams.GetAsync(videoComponent));
-            var audioPipe = new StreamPipeSource(await youtube.Videos.Streams.GetAsync(audioComponent));
+                //Download at the given location, combining both audio and video using the explicit ffmpeg filepath
+                await youtube.Videos.DownloadAsync(urlInput, outputPath, o => o.SetContainer("mp4").SetFFmpegPath(_ffmpegFilePath).SetPreset(ConversionPreset.Fast));
 
-            //Combine using FFMpeg having input pipe, another pipe, then output at the specified location in Local Roaming Folder
-            await FFMpegArguments.FromPipeInput(videoPipe).AddPipeInput(audioPipe).OutputToFile(outputPath,overwrite: true,options => options .WithVideoCodec("copy").WithAudioCodec("aac").WithFastStart()).ProcessAsynchronously();
+                //Tell user that the video was downloaded successfully
+                MessageBox.Show(
+                    "Video Downloaded Succcessfully",
+                    "Success!",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+            }
+            catch (Exception ex) //If not yt video, store only link and dont download
+            {
+                Debug.WriteLine("Download failed");
+                MessageBox.Show(
+                    "Link is either not valid or not from Youtube. Please double check the URL. Save Current URL?.",
+                    "Invalid URL",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Information);
+            }
         }
-
+        **/
         public async Task updateVideoItems(string urlInput)
         {
             //Get Video data type
@@ -330,6 +361,21 @@ namespace CodeManagementSystem
             this.url = video.Url;
             //TODO: Add in a way to make it so you see the thumbnails
         }
+
+        //Helper function for naviagting to ffmpeg
+        public static string GetProjectRootDirectory(string startingPath)
+        {
+            var directory = new DirectoryInfo(startingPath);
+
+            while (directory != null &&
+                   !directory.GetFiles("*.csproj").Any() &&
+                   !directory.GetFiles("*.sln").Any())
+            {
+                directory = directory.Parent;
+            }
+
+            return directory?.FullName ?? startingPath;
+        }
     }
 
     //The regular youtube videos, holds url, thumbnail, content, description, all the goods
@@ -341,10 +387,23 @@ namespace CodeManagementSystem
         public string thumbNailUrl      { get; set; } = string.Empty;
         public TimeSpan duration        { get; set; }
         public string platform          { get; set; } = string.Empty;
+        public string notes             { get; set; } = string.Empty;
+        public string category          { get; set; } = string.Empty;
         public DateTime addedDate       { get; set; }
         public string description       { get; set; } = string.Empty;
         public string durationFormatted => duration.ToString(@"hh\:mm\:ss");
         public string addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+
+        //------------------------Constructors--------------------------------
+        public ShortsVideo(string URL, string Category, string Notes, string platForm)
+        {
+            //Set up all of the needed information in the constructor
+            this.url = URL;
+            this.category = Category;
+            this.notes = Notes;
+            this.platform = platForm;
+        }
+        public ShortsVideo() { }
     }
 
     //Holds all of the information of a playlist, like category, #num of vids, idk stuff like that
@@ -356,15 +415,44 @@ namespace CodeManagementSystem
         public string thumbNailUrl     { get; set; } = string.Empty;
         public int numOfVideos         { get; set; }
         public string platform         { get; set; } = string.Empty;
+        public string notes            { get; set; } = string.Empty;
+        public string category         { get; set; } = string.Empty;
         public DateTime addedDate      { get; set; }
         public string description      { get; set; } = string.Empty;
         public string addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+
+        //------------------------Constructors--------------------------------
+        public PlayList(string URL, string Category, string Notes, string platForm)
+        {
+            //Set up all of the needed information in the constructor
+            this.url = URL;
+            this.category = Category;
+            this.notes = Notes;
+            this.platform = platForm;
+        }
+        public PlayList() { }
     }
 
     //Holds as many miscellianous pieces of information as possible
     public class OtherVideo
     {
-        public int id { get; set; }
+        public int id            { get; set; }
+        public string url        { get; set; } = string.Empty;
+        public string platform   { get; set; } = string.Empty;
+        public string notes      { get; set; } = string.Empty;
+        public string category   { get; set; } = string.Empty;
+
+
+        //------------------------Constructors--------------------------------
+        public OtherVideo(string URL, string Category, string Notes, string platForm)
+        {
+            //Set up all of the needed information in the constructor
+            this.url = URL;
+            this.category = Category;
+            this.notes = Notes;
+            this.platform = platForm;
+        }
+        public OtherVideo() { }
     }
 
 
@@ -535,7 +623,7 @@ namespace CodeManagementSystem
                 storyboard.Children.Add(translateXTo);
                 storyboard.Begin();
             }
-            else if(button.Name == "NewContentBack")
+            else if(button.Name == "NewContentBack"|| button.Name == "SaveNewContentButton")
             {
                 Panel.SetZIndex(NewContentGUI, 0);
                 Panel.SetZIndex(translucentBox, -10);
@@ -564,6 +652,8 @@ namespace CodeManagementSystem
                 storyboard.Children.Add(opactiy);
                 storyboard.Children.Add(translateXBack);
                 storyboard.Begin();
+
+                clearCurrentGUI(sender, e);
             }
         }
         //Delete the currently selected Item in the ListSourceBox
@@ -618,7 +708,7 @@ namespace CodeManagementSystem
         {
             String tabName = "";
 
-            //get tab that is selected and it's name
+            //get tab that is selected and it's name, hold it in class for future 
             if (e.Source is TabControl tabControl)
             {
                 if (tabControl.SelectedItem is TabItem selectedTab)
@@ -628,55 +718,118 @@ namespace CodeManagementSystem
                 }
             }
 
-            Debug.WriteLine(tabName);
-
-            //Go through all of the checks to see which of the tabs to display
-            if      (tabName == "CreateVideoTab")
-            {
-                Panel.SetZIndex(VideoInformationInput,     20);
-                Panel.SetZIndex(PlaylistsInformationInput, 0);
-                Panel.SetZIndex(ShortsInformationInput,    0);
-                Panel.SetZIndex(OtherInformationInput,     0);
-
-            }
-            else if (tabName == "CreatePlaylistTab")
-            {
-                Panel.SetZIndex(VideoInformationInput,     0);
-                Panel.SetZIndex(PlaylistsInformationInput, 20);
-                Panel.SetZIndex(ShortsInformationInput,    0);
-                Panel.SetZIndex(OtherInformationInput,     0);
-            }
-            else if (tabName == "CreateShortsTab")
-            {
-                Panel.SetZIndex(VideoInformationInput,     0);
-                Panel.SetZIndex(PlaylistsInformationInput, 0);
-                Panel.SetZIndex(ShortsInformationInput,    20);
-                Panel.SetZIndex(OtherInformationInput,     0);
-            }
-            else if (tabName == "CreateOtherTab")
-            {
-                Panel.SetZIndex(VideoInformationInput,     0);
-                Panel.SetZIndex(PlaylistsInformationInput, 0);
-                Panel.SetZIndex(ShortsInformationInput,    0);
-                Panel.SetZIndex(OtherInformationInput,     20);
-            }
-            else
-            {
-                Debug.WriteLine("ERROR");
-            }
+            //Check to see which tab has been clicked in order to see what the title should display
+            if      (tabName == "CreateVideoTab")     { AddNewContentTitle.Text = "Add New Long Form Video"; }
+            else if (tabName == "CreateShortsTab")    { AddNewContentTitle.Text = "Add New Shorts Video"; }
+            else if (tabName == "CreatePlaylistTab")  { AddNewContentTitle.Text = "Add New Playlist"; }
+            else if (tabName == "CreateOtherTab")     { AddNewContentTitle.Text = "Add Another Type Of Content"; }
         }
 
         private async void addNewContent(object sender, RoutedEventArgs e)
         {
-
-            if(createTabName == "CreateVideoTab")
+         
+            
+            //Check To see if any content is null
+            if(string.IsNullOrEmpty(URL.Text.ToString())) 
             {
-                RegularVideo video = new RegularVideo(LongVideoURL.Text.ToString(), "Whatever", "Dont Care");
-                Debug.WriteLine(video.url);
-                await video.downloadVideo(video.url);
-                Debug.WriteLine("Download Successful?");
-
+                MessageBox.Show(
+                    "A URL is required",
+                    "Incomplete Submission",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
             }
+
+            //Check to see the type of content created, then create/store it accordingly
+            if      (createTabName == "CreateVideoTab")
+            {
+                //Create a new video object using all of the gathered data
+                RegularVideo video = new RegularVideo(
+                    URL.Text.ToString(),
+                    Category.Text.ToString(),
+                    Notes.Text.ToString(),
+                    Platform.Text.ToString()
+                    );
+
+                //Append it to the list of all videos
+                contentManager.VideosArray.Add(video);
+
+                //Then save the newly added content
+                await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+
+                //After Saving, clear the textFields, then close the popup
+                clearCurrentGUI(sender, e);
+                NewButton_Click(sender, e);
+            }
+            else if (createTabName == "CreatePlaylistTab")
+            {
+                PlayList playlist = new PlayList(
+                    URL.Text.ToString(),
+                    Category.Text.ToString(),
+                    Notes.Text.ToString(),
+                    Platform.Text.ToString()
+                    );
+
+                //Append it to the list of all playlists
+                contentManager.PlaylistArray.Add(playlist);
+
+                //Then save the newly added content
+                await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
+
+
+                //After Saving, clear the textFields, then close the popup
+                clearCurrentGUI(sender, e);
+                NewButton_Click(sender, e);
+            }
+            else if (createTabName == "CreateShortsTab")
+            {
+                ShortsVideo shortsVideo = new ShortsVideo(
+                    URL.Text.ToString(),
+                    Category.Text.ToString(),
+                    Notes.Text.ToString(),
+                    Platform.Text.ToString()
+                    );
+
+                //Append it to the list of all shorts
+                contentManager.ShortsArray.Add(shortsVideo);
+
+                //Then save the newly added content
+                await jsonManagement.SaveShortsAsync(contentManager.ShortsArray);
+
+
+                //After Saving, clear the textFields, then close the popup
+                clearCurrentGUI(sender, e);
+                NewButton_Click(sender, e);
+            }
+            else if (createTabName == "CreateOtherTab")
+            {
+                OtherVideo other = new OtherVideo(
+                    URL.Text.ToString(),
+                    Category.Text.ToString(),
+                    Notes.Text.ToString(),
+                    Platform.Text.ToString()
+                    );
+
+                //Append it to the list of all other videos
+                contentManager.OtherArray.Add(other);
+
+                //Then save the newly added content
+                await jsonManagement.SaveOtherVideosAsync(contentManager.OtherArray);
+
+
+                //After Saving, clear the textFields, then close the popup
+                clearCurrentGUI(sender, e);
+                NewButton_Click(sender, e);
+            }
+        }
+
+        //Empty out all of the fields that the user can put in
+        private void clearCurrentGUI(object sender, RoutedEventArgs e)
+        {
+            URL.Text = string.Empty;
+            Category.Text = string.Empty;
+            Notes.Text = string.Empty;
+            Platform.Text = string.Empty;
         }
     }
 }
