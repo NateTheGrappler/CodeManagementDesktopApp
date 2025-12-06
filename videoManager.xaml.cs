@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -19,13 +20,17 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using AngleSharp.Dom;
+using FFMpegCore;
 using Microsoft.Win32;
 //The extra imports needed for this:
 using YoutubeExplode;
+using YoutubeExplode.Common;
+using YoutubeExplode.Converter;
+using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
-using YoutubeExplode.Converter;
-using FFMpegCore;
+
+
 
 namespace CodeManagementSystem
 {
@@ -187,7 +192,7 @@ namespace CodeManagementSystem
             return new ShortsVideo();
         }
         //The regular youtube video finder
-        public RegularVideo FindVideo(int id)
+        public RegularVideo FindVideo(string id)
         {
             foreach (RegularVideo video in VideosArray)
             {
@@ -199,7 +204,7 @@ namespace CodeManagementSystem
             return new RegularVideo();
         }
         //The regular playlist finder
-        public PlayList FindPlaylist(int id)
+        public PlayList FindPlaylist(string id)
         {
             foreach (PlayList playlist in PlaylistArray)
             {
@@ -257,10 +262,11 @@ namespace CodeManagementSystem
         private readonly string _dataPathVideos = System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CodeInformationManagingSystem\\SavedVideos\\");
+
         private readonly string _ffmpegFilePath = Path.Combine(GetProjectRootDirectory(AppContext.BaseDirectory), "ffmpeg", "ffmpeg.exe");
 
         //All of the Data to store from the video itself
-        public int      id               { get; set; }
+        public string   id               { get; set; }
         public string   title            { get; set; } = string.Empty;
         public string   category         { get; set; } = string.Empty;
         public string   notes            { get; set; } = string.Empty;
@@ -295,7 +301,7 @@ namespace CodeManagementSystem
         public void playVideo(string urlInput)
         {
 
-        }
+        } //TODO See if its possible to do this
 
         /**
         [Obsolete("This may violate youtube terms of service. Use at your own risk.")]
@@ -349,17 +355,41 @@ namespace CodeManagementSystem
         **/
         public async Task updateVideoItems(string urlInput)
         {
-            //Get Video data type
-            Video video = await youtube.Videos.GetAsync(urlInput);
+            //Try Catch for links that are not from youtube
+            try
+            {
+                //Get Video data type
+                Video video = await youtube.Videos.GetAsync(urlInput);
 
-            //Set up all the data so that way it could be saved via the given link
-            this.title = video.Title;
-            this.description = video.Description;
-            this.duration = (TimeSpan)video.Duration;
-            this.author = video.Author.ChannelTitle;
-            this.addedDate = DateTime.Now;
-            this.url = video.Url;
-            //TODO: Add in a way to make it so you see the thumbnails
+                //Set up all the data so that way it could be saved via the given link
+                this.id = video.Id;
+                this.title = video.Title;
+                this.description = video.Description;
+                this.duration = (TimeSpan)video.Duration;
+                this.author = video.Author.ChannelTitle;
+                this.addedDate = DateTime.Now;
+                this.url = video.Url;
+                //TODO: Add in a way to make it so you see the thumbnails
+            }
+            catch (ArgumentException)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    "The URL entered is not from an known site; information will have to be entered manually.",
+                    "Unknown URL",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
+            }
+            catch (Exception ex)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    "The URL entered is Not Valid. Unable To Add New Content.",
+                    "Invalid URL",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
+            }
+
         }
 
         //Helper function for naviagting to ffmpeg
@@ -394,6 +424,9 @@ namespace CodeManagementSystem
         public string durationFormatted => duration.ToString(@"hh\:mm\:ss");
         public string addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
 
+        public YoutubeClient youtube = new YoutubeClient();
+
+
         //------------------------Constructors--------------------------------
         public ShortsVideo(string URL, string Category, string Notes, string platForm)
         {
@@ -409,17 +442,21 @@ namespace CodeManagementSystem
     //Holds all of the information of a playlist, like category, #num of vids, idk stuff like that
     public class PlayList
     {
-        public int id                  { get; set; }
-        public string title            { get; set; } = string.Empty;
-        public string url              { get; set; } = string.Empty;
-        public string thumbNailUrl     { get; set; } = string.Empty;
-        public int numOfVideos         { get; set; }
-        public string platform         { get; set; } = string.Empty;
-        public string notes            { get; set; } = string.Empty;
-        public string category         { get; set; } = string.Empty;
-        public DateTime addedDate      { get; set; }
-        public string description      { get; set; } = string.Empty;
-        public string addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+        public string               id               { get; set; }
+        public string               title            { get; set; } = string.Empty;
+        public string               author           { get; set; } = string.Empty;
+        public string               url              { get; set; } = string.Empty;
+        public string               thumbNailUrl     { get; set; } = string.Empty;
+        public int                  numOfVideos      { get; set; }
+        public string               platform         { get; set; } = string.Empty;
+        public string               notes            { get; set; } = string.Empty;
+        public string               category         { get; set; } = string.Empty;
+        public DateTime             addedDate        { get; set; }
+
+        public List<RegularVideo> regularVideos      { get; set; } = new List<RegularVideo>();
+
+        public string               addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
+        public YoutubeClient        youtube            = new YoutubeClient();
 
         //------------------------Constructors--------------------------------
         public PlayList(string URL, string Category, string Notes, string platForm)
@@ -431,6 +468,58 @@ namespace CodeManagementSystem
             this.platform = platForm;
         }
         public PlayList() { }
+
+        //------------------------------------Information Manipulation Functions-----------------------
+        public async Task updatePlaylistItems(string URL)
+        {
+            try
+            {
+                //get the actual playlist object via given URL
+                var playlist = await youtube.Playlists.GetAsync(URL);
+                var playlistVideos = await youtube.Playlists.GetVideosAsync(playlist.Id).CollectAsync();
+
+                //For each of the videos in the list, get it's information and store it
+                foreach (var video in playlistVideos)
+                {
+                    RegularVideo newVideo = new RegularVideo();
+                    newVideo.id = video.Id.Value;
+                    newVideo.title = video.Title;
+                    newVideo.duration = video.Duration ?? TimeSpan.Zero;
+                    newVideo.author = video.Author.ChannelTitle;
+                    newVideo.addedDate = DateTime.Now;
+                    newVideo.url = video.Url;
+                    newVideo.platform = "YouTube";
+                    regularVideos.Add(newVideo);
+                }
+
+                //Also get all of the infomration of the playlist itself
+                this.id = playlist.Id.ToString();
+                this.title = playlist.Title;
+                this.addedDate = DateTime.Now;
+                this.author = playlist.Author.ChannelTitle;
+                this.url = URL;
+                this.numOfVideos = playlistVideos.Count;
+                //TODO Add in a way to see thumbnail
+            }
+            catch (ArgumentException)
+            { //TODO Add in a way to cancel the operation
+                MessageBoxResult result = MessageBox.Show(
+                    "The URL entered is not from an known site; information will have to be entered manually.",
+                    "Unknown URL",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
+            }
+            catch (Exception ex)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    "The URL entered is Not Valid. Unable To Add New Content.",
+                    "Invalid URL",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
+            }
+        }
     }
 
     //Holds as many miscellianous pieces of information as possible
@@ -460,14 +549,8 @@ namespace CodeManagementSystem
 
     public partial class videoManager : Page
     {
-        //Data Variables to store temporary information input by user
-        public           string title       = "";
-        public           string url         = "";
-        public           string description = "";
-        public           string category    = "";
 
-
-        //Initialize all other needed objects
+        //Initialize all needed objects
         private readonly VideoJsonSaver jsonManagement = new VideoJsonSaver();
         public           ContentManager contentManager = new ContentManager();
         public           String         tabName        = string.Empty;
@@ -728,7 +811,6 @@ namespace CodeManagementSystem
         private async void addNewContent(object sender, RoutedEventArgs e)
         {
          
-            
             //Check To see if any content is null
             if(string.IsNullOrEmpty(URL.Text.ToString())) 
             {
@@ -751,6 +833,9 @@ namespace CodeManagementSystem
                     Platform.Text.ToString()
                     );
 
+                //Update all of it's internal variables
+                await video.updateVideoItems(video.url);
+
                 //Append it to the list of all videos
                 contentManager.VideosArray.Add(video);
 
@@ -770,16 +855,20 @@ namespace CodeManagementSystem
                     Platform.Text.ToString()
                     );
 
+                //Get all of the proper meta data for the playlist
+                await playlist.updatePlaylistItems(playlist.url);
+
                 //Append it to the list of all playlists
                 contentManager.PlaylistArray.Add(playlist);
 
                 //Then save the newly added content
                 await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
 
-
                 //After Saving, clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
+
+
             }
             else if (createTabName == "CreateShortsTab")
             {
@@ -824,7 +913,7 @@ namespace CodeManagementSystem
         }
 
         //Empty out all of the fields that the user can put in
-        private void clearCurrentGUI(object sender, RoutedEventArgs e)
+        public void clearCurrentGUI(object sender, RoutedEventArgs e)
         {
             URL.Text = string.Empty;
             Category.Text = string.Empty;
