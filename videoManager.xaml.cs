@@ -269,35 +269,6 @@ namespace CodeManagementSystem
             return "neither";
         }
 
-        public async Task<bool> CheckifValidYTLink(string URL)
-        {
-            try
-            {
-                if(string.IsNullOrEmpty(URL))
-                {
-                    return false;
-                }
-
-                var video = await yt.Videos.GetAsync(URL);
-                if (video != null)
-                {
-                    return true;
-                }
-
-                var playlist = await yt.Playlists.GetAsync(URL);
-                if(playlist != null)
-                {
-                    return true;
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-
     }
 
     //Shorts Videos, hold link, maybe a topic, maybe a description, maybe a title
@@ -547,8 +518,6 @@ namespace CodeManagementSystem
     }
 
 
-
-
     public partial class videoManager : Page
     {
 
@@ -635,6 +604,7 @@ namespace CodeManagementSystem
                 Panel.SetZIndex(PlaylistListBox, 0);
                 Panel.SetZIndex(ShortsListBox,   0);
                 Panel.SetZIndex(OtherListBox,    0);
+                CreateTabControl.SelectedItem = CreateVideoTab;
 
             }
             else if(tabName == "PlaylistTab")
@@ -644,6 +614,8 @@ namespace CodeManagementSystem
                 Panel.SetZIndex(PlaylistListBox, 20);
                 Panel.SetZIndex(ShortsListBox,    0);
                 Panel.SetZIndex(OtherListBox,     0);
+                CreateTabControl.SelectedItem = CreatePlaylistTab;
+
             }
             else if(tabName == "ShortsTab")
             {
@@ -652,6 +624,7 @@ namespace CodeManagementSystem
                 Panel.SetZIndex(PlaylistListBox, 0);
                 Panel.SetZIndex(ShortsListBox,  20);
                 Panel.SetZIndex(OtherListBox,    0);
+                CreateTabControl.SelectedItem = CreateShortsTab;
             }
             else if(tabName == "OtherTab")
             {
@@ -660,6 +633,7 @@ namespace CodeManagementSystem
                 Panel.SetZIndex(PlaylistListBox, 0);
                 Panel.SetZIndex(ShortsListBox,   0);
                 Panel.SetZIndex(OtherListBox,   20);
+                CreateTabControl.SelectedItem = CreateOtherTab;
             }
             else
             {
@@ -825,25 +799,68 @@ namespace CodeManagementSystem
             }
 
 
-            //Have a safeguard for if a person is in the wrong tab when adding content
-            //if     (contentManager.CheckLinkType(URL.Text.ToString()) == "video" && await contentManager.CheckifValidYTLink(URL.Text.ToString()))
-            //{
-            //    Debug.WriteLine("You put in a video link");
-            //    return;
-            //}
-            //else if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist" && await contentManager.CheckifValidYTLink(URL.Text.ToString()))
-            //{
-            //    Debug.WriteLine("You put in a playlist link");
-            //    return;
-            //}
-            //else
-            //{
-            //    Debug.WriteLine("You put in neither");
-            //    return;
-            //}
+            //Have a safeguard for if a person is in the wrong tab when adding content, by passing the other stuff if its a link from yt
+            if (contentManager.CheckLinkType(URL.Text.ToString()) == "video")
+            {
+                RegularVideo video = new RegularVideo(
+                    URL.Text.ToString(),
+                    Category.Text.ToString(),
+                    Notes.Text.ToString(),
+                    Platform.Text.ToString()
+                    );
 
-                //Check to see the type of content created, then create/store it accordingly
-                 if (createTabName == "CreateVideoTab")
+                //Change the add button to be a loading as an indicator
+                SaveNewContentButton.IsEnabled = false;
+                SaveNewContentButton.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                SaveNewContentButton.Content = "Loading...";
+
+                //Update all of it's internal variables and then save it
+                await video.updateVideoItems(video.url);
+                contentManager.VideosArray.Add(video);
+                await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+
+                //Reset Add Button Color
+                SaveNewContentButton.IsEnabled = true;
+                SaveNewContentButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+                SaveNewContentButton.Content = "Add";
+
+                //clear the textFields, then close the popup
+                clearCurrentGUI(sender, e);
+                NewButton_Click(sender, e);
+                return;
+            }
+            else if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist")
+            {
+
+                PlayList playlist = new PlayList(
+                    URL.Text.ToString(),
+                    Category.Text.ToString(),
+                    Notes.Text.ToString(),
+                    Platform.Text.ToString()
+                    );
+
+                //Change the add button to be a loading as an indicator
+                SaveNewContentButton.IsEnabled = false;
+                SaveNewContentButton.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+
+                //Get all of the proper meta data for the playlist
+                await playlist.updatePlaylistItems(playlist.url);
+                contentManager.PlaylistArray.Add(playlist);
+                await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
+
+                //Reset Add Button Color
+                SaveNewContentButton.IsEnabled = true;
+                SaveNewContentButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+
+                //After Saving, clear the textFields, then close the popup
+                clearCurrentGUI(sender, e);
+                NewButton_Click(sender, e);
+                return;
+            }
+
+
+            //Check to see the type of content created, then create/store it accordingly
+            if (createTabName == "CreateVideoTab")
             {
                 //Create a new video object using all of the gathered data
                 RegularVideo video = new RegularVideo(
@@ -896,6 +913,7 @@ namespace CodeManagementSystem
                     }
                 }
 
+                TabControl.SelectedItem = VideoTab;
             }
             else if (createTabName == "CreatePlaylistTab")
             {
@@ -946,7 +964,7 @@ namespace CodeManagementSystem
                     }
                 }
 
-
+                TabControl.SelectedItem = PlaylistTab;
 
             }
             else if (createTabName == "CreateShortsTab")
@@ -968,6 +986,7 @@ namespace CodeManagementSystem
                 //After Saving, clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
+                TabControl.SelectedItem = ShortsTab;
             }
             else if (createTabName == "CreateOtherTab")
             {
@@ -988,6 +1007,7 @@ namespace CodeManagementSystem
                 //After Saving, clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
+                TabControl.SelectedItem = OtherTab;
             }
         }
 
