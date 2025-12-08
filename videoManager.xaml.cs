@@ -375,14 +375,19 @@ namespace CodeManagementSystem
             Video video = await youtube.Videos.GetAsync(urlInput);
 
             //Set up all the data so that way it could be saved via the given link
-            this.id              = video.Id;
-            this.title           = video.Title;
-            this.description     = video.Description;
-            this.duration        = (TimeSpan)video.Duration;
-            this.author          = video.Author.ChannelTitle;
-            this.addedDate       = DateTime.Now;
-            this.url             = video.Url;
-            this.thumbNailUrl = GetBestThumbnailUrl(video);
+            if(video != null)
+            {
+                Debug.WriteLine("Saving data from youtube: title is " + this.title);
+                this.id = video.Id;
+                this.title = video.Title;
+                this.description = video.Description;
+                this.duration = (TimeSpan)video.Duration;
+                this.author = video.Author.ChannelTitle;
+                this.addedDate = DateTime.Now;
+                this.url = video.Url;
+                this.thumbNailUrl = GetBestThumbnailUrl(video);
+
+            }
         }
 
         //---------------------------------Helper Functions-----------------------------------------------
@@ -664,7 +669,7 @@ namespace CodeManagementSystem
         
         //---------------------------------------All Left Sidebar Buttons------------------------------------
         //Open up a new popup that allows for the creation of a new Video, Short, Playlist, or Other
-        private void NewButton_Click(object sender, RoutedEventArgs e)
+        private void NewButton_Click(object sender, RoutedEventArgs e) //Lowkey just all of the animations
         {
             //Start Slide in animation for new creation GUI
             var button = sender as Button;
@@ -681,7 +686,7 @@ namespace CodeManagementSystem
                 {
                     From = -1500,
                     To = 10,
-                    Duration = TimeSpan.FromSeconds(0.3),
+                    Duration = TimeSpan.FromSeconds(0.5),
                     AutoReverse = false,
                 };
                 //Opacity animaiton for black box
@@ -689,7 +694,7 @@ namespace CodeManagementSystem
                 {
                     From = 0,
                     To = 0.7,
-                    Duration = TimeSpan.FromSeconds(0.3),
+                    Duration = TimeSpan.FromSeconds(0.5),
                     AutoReverse = false,
                 };
 
@@ -712,14 +717,14 @@ namespace CodeManagementSystem
                 {
                     From = 10,
                     To = -1500,
-                    Duration = TimeSpan.FromSeconds(0.3),
+                    Duration = TimeSpan.FromSeconds(0.5),
                     AutoReverse = false,
                 };
                 DoubleAnimation opactiy = new DoubleAnimation
                 {
                     From = 0.7,
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(0.3),
+                    Duration = TimeSpan.FromSeconds(0.5),
                     AutoReverse = false,
                 };
 
@@ -733,6 +738,37 @@ namespace CodeManagementSystem
                 storyboard.Begin();
 
                 clearCurrentGUI(sender, e);
+            }
+            else if(button.Name == "ExtraVideoInfo")
+            {
+
+                Panel.SetZIndex(MoreInfoGUI, 31);
+                Panel.SetZIndex(translucentBox, 30);
+
+                //Set the animation the same as the others, but just coming from the left this time
+                DoubleAnimation transX = new DoubleAnimation
+                {
+                    From = 1500,
+                    To = 1,
+                    Duration = TimeSpan.FromSeconds(0.5)
+                };
+                DoubleAnimation opacity = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 0.7,
+                    Duration = TimeSpan.FromSeconds(0.5)
+                };
+
+
+                Storyboard.SetTarget(opacity, translucentBox);
+                Storyboard.SetTargetProperty(opacity, new PropertyPath("Opacity"));
+                Storyboard.SetTarget(transX, MoreInfoGUI);
+                Storyboard.SetTargetProperty(transX, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
+
+                storyboard.Children.Add(opacity);
+                storyboard.Children.Add(transX);
+                storyboard.Begin();
+
             }
         }
 
@@ -785,6 +821,17 @@ namespace CodeManagementSystem
             }
         }
 
+        //-------------------------All of the functions for the actual main content listboxes-------------------------------
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = e.Uri.AbsoluteUri,
+                UseShellExecute = true
+            });
+            e.Handled = true;
+        }
+
 
         //--------------------------------------Functions for the Creation GUI-----------------------------
         private void TabControlCreation_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -832,6 +879,9 @@ namespace CodeManagementSystem
                     Notes.Text.ToString(),
                     Platform.Text.ToString()
                     );
+                video.title = URL.Text.ToString(); //Set the title as the url before actual title is gotten so you have something to display
+
+                Debug.WriteLine("New Video Created with title: " + video.title);
 
                 //Change the add button to be a loading as an indicator
                 SaveNewContentButton.IsEnabled = false;
@@ -895,6 +945,7 @@ namespace CodeManagementSystem
                     Notes.Text.ToString(),
                     Platform.Text.ToString()
                     );
+                video.title = URL.Text.ToString(); //Set the title as the url before actual title is gotten so you have something to display
 
                 if (contentManager.CheckLinkType(URL.Text.ToString()) == "video") //If Is youtube video, save all of the data
                 {
@@ -1048,5 +1099,9 @@ namespace CodeManagementSystem
             Platform.Text = string.Empty;
         }
 
+        private void VideoListBox_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+
+        }
     }
 }
