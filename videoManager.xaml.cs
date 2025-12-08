@@ -31,6 +31,7 @@ using YoutubeExplode.Converter;
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
+using System.Net.Http;
 
 
 
@@ -279,24 +280,23 @@ namespace CodeManagementSystem
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CodeInformationManagingSystem\\SavedVideos\\");
 
-        private readonly string _ffmpegFilePath = Path.Combine(GetProjectRootDirectory(AppContext.BaseDirectory), "ffmpeg", "ffmpeg.exe");
+        //private readonly string _ffmpegFilePath = Path.Combine(GetProjectRootDirectory(AppContext.BaseDirectory), "ffmpeg", "ffmpeg.exe");
 
         //All of the Data to store from the video itself
-        public string   id               { get; set; }
-        public string   title            { get; set; } = string.Empty;
-        public string   category         { get; set; } = string.Empty;
-        public string   notes            { get; set; } = string.Empty;
-        public string   url              { get; set; } = string.Empty;
-        public string   platform    { get; set; } = string.Empty;
-        public string   thumbNailUrl     { get; set; } = string.Empty;
-        public TimeSpan duration         { get; set; }
-        public string   author           { get; set; } = string.Empty;
-        public DateTime addedDate        { get; set; }
-        public string   description      { get; set; } = string.Empty;
+        public string           id               { get; set; }
+        public string           title            { get; set; } = string.Empty;
+        public string           category         { get; set; } = string.Empty;
+        public string           notes            { get; set; } = string.Empty;
+        public string           url              { get; set; } = string.Empty;
+        public string           platform         { get; set; } = string.Empty;
+        public string           thumbNailUrl     { get; set; } = "https://i.ytimg.com/vi/9wafxM-vA0E/maxresdefault.jpg";
+        public TimeSpan         duration         { get; set; } = TimeSpan.FromSeconds(1);
+        public string           author           { get; set; } = string.Empty;
+        public DateTime         addedDate        { get; set; }
+        public string           description      { get; set; } = string.Empty;
+
         public string   durationFormatted  => duration.ToString(@"hh\:mm\:ss");
         public string   addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
-
-        public bool     isDownloaded       = false;
 
         public YoutubeClient youtube = new YoutubeClient();
 
@@ -375,17 +375,17 @@ namespace CodeManagementSystem
             Video video = await youtube.Videos.GetAsync(urlInput);
 
             //Set up all the data so that way it could be saved via the given link
-            this.id = video.Id;
-            this.title = video.Title;
-            this.description = video.Description;
-            this.duration = (TimeSpan)video.Duration;
-            this.author = video.Author.ChannelTitle;
-            this.addedDate = DateTime.Now;
-            this.url = video.Url;
-            //TODO: Add in a way to make it so you see the thumbnails
+            this.id              = video.Id;
+            this.title           = video.Title;
+            this.description     = video.Description;
+            this.duration        = (TimeSpan)video.Duration;
+            this.author          = video.Author.ChannelTitle;
+            this.addedDate       = DateTime.Now;
+            this.url             = video.Url;
+            this.thumbNailUrl = GetBestThumbnailUrl(video);
         }
 
-        //Helper function for naviagting to ffmpeg
+        //---------------------------------Helper Functions-----------------------------------------------
         public static string GetProjectRootDirectory(string startingPath)
         {
             var directory = new DirectoryInfo(startingPath);
@@ -399,6 +399,20 @@ namespace CodeManagementSystem
 
             return directory?.FullName ?? startingPath;
         }
+        private string GetBestThumbnailUrl(Video video)
+        {
+            //Try to get the highest quality thumbnail available
+            var thumbnails = video.Thumbnails;
+
+            //Order by resolution (width * height) descending to get best quality
+            var bestThumbnail = thumbnails
+                .OrderByDescending(t => t.Resolution.Width * t.Resolution.Height)
+                .FirstOrDefault();
+
+            return bestThumbnail?.Url ?? string.Empty;
+        }
+
+
     }
 
     //The regular youtube videos, holds url, thumbnail, content, description, all the goods
@@ -526,6 +540,12 @@ namespace CodeManagementSystem
         public           ContentManager contentManager = new ContentManager();
         public           String         tabName        = string.Empty;
         public           String         createTabName  = string.Empty;
+        //The Objects for when the user selects different types of content
+        public           RegularVideo   selectedVideo;
+        public           Playlist       selectedPlaylist;
+        public           ShortsVideo    selectedShorts;
+        public           OtherVideo     selectedOther;
+
 
         public videoManager()
         {
@@ -715,16 +735,19 @@ namespace CodeManagementSystem
                 clearCurrentGUI(sender, e);
             }
         }
+
         //Delete the currently selected Item in the ListSourceBox
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
         //TODO: Implement the ability to search for videos by title or something
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
         //Save all of the videos from all of the tabs to the json file
         private async void SaveAllButton_Click(object sender, RoutedEventArgs e)
         {
@@ -733,6 +756,7 @@ namespace CodeManagementSystem
             await jsonManagement.SaveShortsAsync(contentManager.ShortsArray);
             await jsonManagement.SaveOtherVideosAsync(contentManager.OtherArray);
         }
+
         //Save only the current content in the open tab
         private async void SavePageButton_Click(object sender, RoutedEventArgs e)
         {
@@ -827,6 +851,7 @@ namespace CodeManagementSystem
                 //clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
+                TabControl.SelectedItem = VideoTab;
                 return;
             }
             else if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist")
@@ -855,6 +880,7 @@ namespace CodeManagementSystem
                 //After Saving, clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
+                TabControl.SelectedItem = PlaylistTab;
                 return;
             }
 

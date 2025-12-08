@@ -213,20 +213,68 @@
         <!--The Longer Form Videos ListBox-->
         <ListBox x:Name="VideoListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Red">
 
+            <!--Set the style for the inner contents of the listbox-->
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalAlignment" Value="Stretch"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+
+                </Style>
+            </ListBox.ItemContainerStyle>
+                
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--The Thumbnail that is visible-->
+                        <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
+
+                        <!--The (Editable?) text box with the link-->
+                        <TextBox Grid.Column="1" Background="Black">
+                            
+                        </TextBox>
+                        
+                        <!--The Category Box-->
+                        <TextBlock Grid.Column="2" Background="Green" Text="{Binding category}"/>
+
+                        <!--The Button that should hold the avaliable options-->
+                        <Button Grid.Column="3" Background="Yellow">
+                            
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            
+            <!--Example Data for dev purposes-->
+            <!--<ListBox.Items>
+                <x:Null/>
+                <x:Null/>
+                <x:Null/>
+            </ListBox.Items>-->
         </ListBox>
 
         <!--The Playlists ListBox-->
-        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Green">
+        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Transparent">
 
         </ListBox>
 
         <!--The Shorts ListBox-->
-        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MistyRose">
+        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Transparent">
 
         </ListBox>
 
         <!--The Other ListBox-->
-        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Purple">
+        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Transparent">
 
         </ListBox>
 
