@@ -14,6 +14,8 @@
     <None Remove="codeManagerIcon.png" />
     <None Remove="codeManagerIconColor.png" />
     <None Remove="fileFolderButtonImg.png" />
+    <None Remove="Images\blackVerticalDots.png" />
+    <None Remove="Images\verticalDots.png" />
     <None Remove="JackOLanternSpirte-removebg-preview.png" />
     <None Remove="JackOLanternSpirte.png" />
     <None Remove="pencil-icon-png-9.jpg" />
@@ -38,6 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\blackVerticalDots.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\brushIcon.png" />
     <Resource Include="Images\blueFolder-removebg-preview.png" />
     <Resource Include="Images\fileFolderButtonImg.png" />
@@ -50,6 +55,9 @@
     <Resource Include="Images\saveButtonImage.png" />
     <Resource Include="Images\pencil-icon-png-9.jpg" />
     <Resource Include="Images\trashcanPng.png" />
+    <Resource Include="Images\verticalDots.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
