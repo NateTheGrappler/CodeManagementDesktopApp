@@ -558,6 +558,8 @@ namespace CodeManagementSystem
             InitializeAllLists().ConfigureAwait(false);
         }
 
+    
+
         //----------------------------Miscelnious Functions for saving or loading----------------------------
         //This function loads all the data from the user json files into the app, and also sets the item sources for each listbox
         private async Task InitializeAllLists()
@@ -666,6 +668,8 @@ namespace CodeManagementSystem
             }
         }
 
+
+
         
         //---------------------------------------All Left Sidebar Buttons------------------------------------
         //Open up a new popup that allows for the creation of a new Video, Short, Playlist, or Other
@@ -739,43 +743,6 @@ namespace CodeManagementSystem
 
                 clearCurrentGUI(sender, e);
             }
-            else if(button.Name == "ExtraVideoInfo")
-            {
-
-                Panel.SetZIndex(MoreInfoGUI, 31);
-                Panel.SetZIndex(translucentBox, 30);
-
-                //Set the animation the same as the others, but just coming from the left this time
-                DoubleAnimation transX = new DoubleAnimation
-                {
-                    From = 1500,
-                    To = 1,
-                    Duration = TimeSpan.FromSeconds(0.5)
-                };
-                DoubleAnimation opacity = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 0.7,
-                    Duration = TimeSpan.FromSeconds(0.5)
-                };
-
-
-                Storyboard.SetTarget(opacity, translucentBox);
-                Storyboard.SetTargetProperty(opacity, new PropertyPath("Opacity"));
-                Storyboard.SetTarget(transX, MoreInfoGUI);
-                Storyboard.SetTargetProperty(transX, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
-
-                storyboard.Children.Add(opacity);
-                storyboard.Children.Add(transX);
-                storyboard.Begin();
-
-            }
-        }
-
-        //Delete the currently selected Item in the ListSourceBox
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         //TODO: Implement the ability to search for videos by title or something
@@ -821,6 +788,8 @@ namespace CodeManagementSystem
             }
         }
 
+
+
         //-------------------------All of the functions for the actual main content listboxes-------------------------------
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
@@ -831,6 +800,33 @@ namespace CodeManagementSystem
             });
             e.Handled = true;
         }
+
+        //Handle button that is attached to the three dots in the main listbox
+        private void OpenContextMenu(object sender, RoutedEventArgs e)
+        {
+            //Get the context menu from the key in App.cs
+            ContextMenu menu = this.FindResource("VideoContextMenuKey") as ContextMenu;
+            
+            if (menu != null) //if menu is not null, then display it
+            {
+                //Open the Context Menu
+                menu.IsOpen = true;
+
+                //Add in click function based on header value
+                
+                foreach (MenuItem item in menu.Items)
+                {
+                    string name = item.Header.ToString();
+                    if     (name == "Edit")           { item.Click += openInfoGUI; }
+                    else if(name == "Save")           { item.Click += saveVideoPage; }
+                    else if(name == "Delete")         { item.Click += deleteSelectedItem; }
+                    else if(name == "View Full Info") { item.Click += openInfoGUI; }
+
+                }
+                
+            }
+        }
+
 
 
         //--------------------------------------Functions for the Creation GUI-----------------------------
@@ -1088,6 +1084,9 @@ namespace CodeManagementSystem
             }
         }
 
+
+
+
         //------------------------------------------------Helper Functions-----------------------------------------------
 
         //Empty out all of the fields that the user can put in
@@ -1099,8 +1098,158 @@ namespace CodeManagementSystem
             Platform.Text = string.Empty;
         }
 
-        private void VideoListBox_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+
+
+
+        //--------------------------------------------Functions for Context Menu Items-------------------------
+        
+        //The function to open the GUI to view a RegularVideos full details
+        public async void openInfoGUI(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("Ran Here?");
+
+            Storyboard storyboard = new Storyboard();
+
+            Panel.SetZIndex(MoreInfoGUI, 31);
+            Panel.SetZIndex(translucentBox, 30);
+
+            //Set the animation the same as the others, but just coming from the left this time
+            DoubleAnimation transX = new DoubleAnimation
+            {
+                From = 1500,
+                To = 1,
+                Duration = TimeSpan.FromSeconds(0.5)
+            };
+            DoubleAnimation opacity = new DoubleAnimation
+            {
+                From = 0,
+                To = 0.7,
+                Duration = TimeSpan.FromSeconds(0.5)
+            };
+
+
+            Storyboard.SetTarget(opacity, translucentBox);
+            Storyboard.SetTargetProperty(opacity, new PropertyPath("Opacity"));
+            Storyboard.SetTarget(transX, MoreInfoGUI);
+            Storyboard.SetTargetProperty(transX, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
+
+            storyboard.Children.Add(opacity);
+            storyboard.Children.Add(transX);
+            storyboard.Begin();
+        }
+
+        //Purely really just a cosmetic function
+        public async void saveVideoPage(object sender, RoutedEventArgs e)
+        {
+            ContextMenu menu = this.FindResource("VideoContextMenuKey") as ContextMenu;
+
+            //Find the Save menu button, change it to indicate saving to user, save, then change it back.
+            if (menu != null)
+            {
+                foreach (MenuItem item in menu.Items)
+                {
+                    if (item.Header.ToString() == "Save")
+                    {
+                        item.Header = "Saving...";
+                        await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+                        item.Header = "Save";
+                    }
+                }
+            }
+        }
+
+        //The universal delete function for any given piece of content
+        private async void deleteSelectedItem(object sender, RoutedEventArgs e)
+        {
+
+            if (sender is MenuItem menuItem)
+            {
+                // Use 'as' operator to safely cast (returns null if cast fails)
+                var videoItem = VideoListBox.ContainerFromElement(menuItem) as ListBoxItem;
+                var playlistItem = PlaylistListBox.ContainerFromElement(menuItem) as ListBoxItem;
+                var shortItem = ShortsListBox.ContainerFromElement(menuItem) as ListBoxItem;
+                var otherItem = OtherListBox.ContainerFromElement(menuItem) as ListBoxItem;
+
+                // Get the content
+                var video = videoItem?.Content as RegularVideo;
+                var playlist = playlistItem?.Content as PlayList;
+                var shorts = shortItem?.Content as ShortsVideo;
+                var other = otherItem?.Content as OtherVideo;
+
+                Debug.WriteLine($"Debug - Video: {video}, Playlist: {playlist}, Shorts: {shorts}, Other: {other}");
+
+                // Remove the appropriate item
+                bool removed = false;
+
+                if (video != null)
+                {
+                    contentManager.VideosArray.Remove(video);
+                    VideoListBox.SelectedItem = null;  // Clear selection
+                    removed = true;
+                    Debug.WriteLine("Removed Video");
+                }
+                else if (playlist != null)
+                {
+                    contentManager.PlaylistArray.Remove(playlist);
+                    PlaylistListBox.SelectedItem = null;
+                    removed = true;
+                    Debug.WriteLine("Removed Playlist");
+                }
+                else if (shorts != null)
+                {
+                    contentManager.ShortsArray.Remove(shorts);
+                    ShortsListBox.SelectedItem = null;
+                    removed = true;
+                    Debug.WriteLine("Removed Shorts");
+                }
+                else if (other != null)
+                {
+                    contentManager.OtherArray.Remove(other);
+                    OtherListBox.SelectedItem = null;
+                    removed = true;
+                    Debug.WriteLine("Removed Other");
+                }
+
+                if (removed)
+                {
+                    Debug.WriteLine("\nItem was removed successfully!\n");
+                    // Call your save method if needed
+                    // SaveAllButton_Click(sender, e);
+                }
+                else
+                {
+                    Debug.WriteLine("\nNo item was found to remove!\n");
+                }
+            }
+
+
+            //Check to see if for some reason no tab is selected
+            if (string.IsNullOrEmpty(tabName))
+            {
+                return;
+            }
+
+            //Check open tab, and if said tab has a selected item, if so, delete it (For the main trash button), and save the page.
+            if (tabName == "VideoTab" && VideoListBox.SelectedItem != null)
+            {
+                contentManager.VideosArray.Remove(VideoListBox.SelectedItem as RegularVideo);
+                await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+            }
+            else if (tabName == "PlaylistTab" && PlaylistListBox.SelectedItem != null)
+            {
+                contentManager.PlaylistArray.Remove(PlaylistListBox.SelectedItem as PlayList);
+                await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
+            }
+            else if (tabName == "ShortsTab"   && ShortsListBox.SelectedItem != null)
+            {
+                contentManager.ShortsArray.Remove(ShortsListBox.SelectedItem as ShortsVideo);
+                await jsonManagement.SaveShortsAsync(contentManager.ShortsArray);
+            }
+            else if (tabName == "OtherTab"    && OtherListBox.SelectedItem != null)
+            {
+                contentManager.OtherArray.Remove(OtherListBox.SelectedItem as OtherVideo);
+                await jsonManagement.SaveOtherVideosAsync(contentManager.OtherArray);
+            }
 
         }
     }

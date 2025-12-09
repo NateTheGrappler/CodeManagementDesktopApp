@@ -48,7 +48,7 @@
             </Grid.RowDefinitions>
             <Border BorderThickness="3" BorderBrush="#FF0078D7" Grid.RowSpan="7" Margin="2, 2, 2, 2"/>
             <!--The TrashCan/Delete Video Button-->
-            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" ToolTip="Deleted Selected Video" Click="DeleteButton_Click">
+            <Button BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="1" Grid.Row="2" ToolTip="Deleted Selected Video" Click="deleteSelectedItem">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
@@ -244,7 +244,7 @@
                 </Style>
             </ListBox.ItemContainerStyle>
                 
-            
+         
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
@@ -287,7 +287,7 @@
 
                          <!--The Button that should hold the avaliable options-->
                         <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="3"/>
-                        <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="NewButton_Click">
+                        <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="15" Height="15" Fill="DarkBlue" VerticalAlignment="Center">
