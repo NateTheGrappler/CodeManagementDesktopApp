@@ -4,7 +4,21 @@
              xmlns:local="clr-namespace:CodeManagementSystem"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+
+        <!--Add in a context Menu for use in Video Manager-->
+        <ContextMenu x:Key="VideoContextMenuKey" x:Name="VideoContextMenu">
+            <MenuItem Header="Edit"/>
+            <MenuItem Header="Save" />
+            <MenuItem Header="Delete" />
+            <MenuItem Header="View Full Info"/>
+            <!--<Separator/>-->
+            <MenuItem Header="Exit" />
+        </ContextMenu>
+        
+        <!--Add In a main foreground color brush, and a main background colorbrush-->
+        <SolidColorBrush x:Key="MainBorderBrushKey" x:Name="MainBorderBrush" Color="#FF0078D7"/>
+
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -14,6 +28,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
         <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
         <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
