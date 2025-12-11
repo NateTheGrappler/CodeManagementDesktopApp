@@ -804,6 +804,34 @@ namespace CodeManagementSystem
         //Handle button that is attached to the three dots in the main listbox
         private void OpenContextMenu(object sender, RoutedEventArgs e)
         {
+
+            //Check to see if youre a button in the list, and if so, get that list, and select the item that you pressed the button from
+            if (sender is Button button)
+            {
+                //Find the parent ListBoxItem
+                DependencyObject parent = VisualTreeHelper.GetParent(button);
+
+                //Get the parent of the button object
+                while (parent != null && !(parent is ListBoxItem))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                if (parent is ListBoxItem listBoxItem)
+                {
+                    //Select the ListBoxItem
+                    listBoxItem.IsSelected = true;
+                    ListBox listBox = ItemsControl.ItemsControlFromItemContainer(listBoxItem) as ListBox;
+
+                    //Make the item the selected one in the list box
+                    if (listBox != null)
+                    {
+                        var selectedItem = listBox.SelectedItem;
+                    }
+                }
+            }
+
+
             //Get the context menu from the key in App.cs
             ContextMenu menu = this.FindResource("VideoContextMenuKey") as ContextMenu;
             
@@ -826,8 +854,6 @@ namespace CodeManagementSystem
                 
             }
         }
-
-
 
         //--------------------------------------Functions for the Creation GUI-----------------------------
         private void TabControlCreation_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1085,8 +1111,6 @@ namespace CodeManagementSystem
         }
 
 
-
-
         //------------------------------------------------Helper Functions-----------------------------------------------
 
         //Empty out all of the fields that the user can put in
@@ -1099,14 +1123,13 @@ namespace CodeManagementSystem
         }
 
 
-
-
         //--------------------------------------------Functions for Context Menu Items-------------------------
         
         //The function to open the GUI to view a RegularVideos full details
         public async void openInfoGUI(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Ran Here?");
+            //Update all of the neccessary information for the video the user is about to see
+            updateAllInfo();
 
             Storyboard storyboard = new Storyboard();
 
@@ -1162,67 +1185,6 @@ namespace CodeManagementSystem
         private async void deleteSelectedItem(object sender, RoutedEventArgs e)
         {
 
-            if (sender is MenuItem menuItem)
-            {
-                // Use 'as' operator to safely cast (returns null if cast fails)
-                var videoItem = VideoListBox.ContainerFromElement(menuItem) as ListBoxItem;
-                var playlistItem = PlaylistListBox.ContainerFromElement(menuItem) as ListBoxItem;
-                var shortItem = ShortsListBox.ContainerFromElement(menuItem) as ListBoxItem;
-                var otherItem = OtherListBox.ContainerFromElement(menuItem) as ListBoxItem;
-
-                // Get the content
-                var video = videoItem?.Content as RegularVideo;
-                var playlist = playlistItem?.Content as PlayList;
-                var shorts = shortItem?.Content as ShortsVideo;
-                var other = otherItem?.Content as OtherVideo;
-
-                Debug.WriteLine($"Debug - Video: {video}, Playlist: {playlist}, Shorts: {shorts}, Other: {other}");
-
-                // Remove the appropriate item
-                bool removed = false;
-
-                if (video != null)
-                {
-                    contentManager.VideosArray.Remove(video);
-                    VideoListBox.SelectedItem = null;  // Clear selection
-                    removed = true;
-                    Debug.WriteLine("Removed Video");
-                }
-                else if (playlist != null)
-                {
-                    contentManager.PlaylistArray.Remove(playlist);
-                    PlaylistListBox.SelectedItem = null;
-                    removed = true;
-                    Debug.WriteLine("Removed Playlist");
-                }
-                else if (shorts != null)
-                {
-                    contentManager.ShortsArray.Remove(shorts);
-                    ShortsListBox.SelectedItem = null;
-                    removed = true;
-                    Debug.WriteLine("Removed Shorts");
-                }
-                else if (other != null)
-                {
-                    contentManager.OtherArray.Remove(other);
-                    OtherListBox.SelectedItem = null;
-                    removed = true;
-                    Debug.WriteLine("Removed Other");
-                }
-
-                if (removed)
-                {
-                    Debug.WriteLine("\nItem was removed successfully!\n");
-                    // Call your save method if needed
-                    // SaveAllButton_Click(sender, e);
-                }
-                else
-                {
-                    Debug.WriteLine("\nNo item was found to remove!\n");
-                }
-            }
-
-
             //Check to see if for some reason no tab is selected
             if (string.IsNullOrEmpty(tabName))
             {
@@ -1252,5 +1214,27 @@ namespace CodeManagementSystem
             }
 
         }
+
+        //---------------------------Functions For the More Info GUI------------------------------------------
+
+        //Clear all of the displayed information about a topic in the info GUI //TODO: Add in visibibility and invisiblity of all of the videos in a playlist
+        private void clearAllInfo()
+        {
+            
+        }
+
+        private void updateAllInfo()
+        {
+            if(tabName == "VideoTab")
+            {
+                RegularVideo video = VideoListBox.SelectedItem as RegularVideo;
+                moreInfoTitle.Text = video.title;
+            }
+            else if (tabName == "PlaylistTab")
+            {
+
+            }
+        }
+
     }
 }

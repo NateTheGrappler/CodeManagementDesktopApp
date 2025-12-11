@@ -512,7 +512,115 @@
         
         <!--The PopUp GUI for more content info (Dependent on the content visible)-->
         <Border x:Name="MoreInfoGUI" BorderThickness="3" BorderBrush="#FF0078D7" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="40, 10, 40, 10" CornerRadius="15" ClipToBounds="True" Background="#FFEEE8E8">
-            
+
+            <!--The Grid To Hold All Of the Extra Infomration-->
+            <Grid>
+                
+                <!--The Grid Definitions For all of the Content-->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"  />
+                    <RowDefinition Height="*"   />
+                    
+                </Grid.RowDefinitions>
+                
+                <!--The Close Button for the pop up gui-->
+                <Button Margin="2" BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="CloseInfoGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" >
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="20" Height="20" Fill="#FF0078D7" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="\Images\Close.png" Stretch="Uniform"/>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
+                <!--The Title that displys the title of the video-->
+                <Border Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="{StaticResource MainBorderBrushKey}" Margin="2" CornerRadius="2" BorderThickness="2" >
+                    <Viewbox Stretch="Uniform" MaxHeight="45">
+                            <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Medium" Margin="5" x:Name="moreInfoTitle"/>
+                    </Viewbox>
+                </Border>
+
+                <!--A decorative border for the shits and gigs-->
+                <Border Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="0" Margin="10" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="2" CornerRadius="10">
+
+                    <!--Add Scroller view because its a lot of data-->
+                    <ScrollViewer>
+                        <!--The Grid Panel to hold all of the data-->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <!--Text Space-->
+                                <ColumnDefinition Width="*"/>
+                                <!--The Input Value Space-->
+                                <ColumnDefinition Width="30"/>
+                                <!--The Extra Button for editing-->
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <!--id-->
+                                <RowDefinition Height="Auto" />
+                                <!--title-->
+                                <RowDefinition Height="Auto" />
+                                <!--category-->
+                                <RowDefinition Height="Auto" />
+                                <!--notes-->
+                                <RowDefinition Height="Auto" />
+                                <!--url-->
+                                <RowDefinition Height="Auto" />
+                                <!--platform-->
+                                <RowDefinition Height="Auto" />
+                                <!--thumbnail url-->
+                                <RowDefinition Height="Auto" />
+                                <!--duration-->
+                                <RowDefinition Height="Auto" />
+                                <!--author-->
+                                <RowDefinition Height="Auto" />
+                                <!--added date-->
+                                <RowDefinition Height="Auto" />
+                                <!--description-->
+                            </Grid.RowDefinitions>
+                            
+                            <!--Title-->
+                            <Label Grid.Column="0" Grid.Row="0"  Content="Title: "         HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="18" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="1"  Content="Category: "      HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="14" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="2"  Content="Notes: "         HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="18" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="3"  Content="URL: "           HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="18" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="4"  Content="Platform: "      HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="16" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="5"  Content="Thumbnail: "     HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="12" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="6"  Content="Duration: "      HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="14" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="7"  Content="Author: "        HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="18" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="8"  Content="Added: "         HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="18" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="9"  Content="Id: "            HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="18" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+                            <Label Grid.Column="0" Grid.Row="10" Content="Description: "   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="12" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
+
+                            <!--The Text Boxes to Display all of the information-->
+                            <TextBox x:Name="titleTB"       Grid.Column="1" Grid.Row="0"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2" IsEnabled="False"/>
+                            <TextBox x:Name="CategoryTB"    Grid.Column="1" Grid.Row="1"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="NotesTB"       Grid.Column="1" Grid.Row="2"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="URLTB"         Grid.Column="1" Grid.Row="3"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="PlatformTB"    Grid.Column="1" Grid.Row="4"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="ThumbnailTB"   Grid.Column="1" Grid.Row="5"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="DurationTB"    Grid.Column="1" Grid.Row="6"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="AuthorTB"      Grid.Column="1" Grid.Row="7"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="AddedTB"       Grid.Column="1" Grid.Row="8"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="IdTB"          Grid.Column="1" Grid.Row="9"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                            <TextBox x:Name="DescriptionTB" Grid.Column="1" Grid.Row="10" TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
+                        
+                            <!--The Edit Buttons-->
+                            
+                        </Grid>
+                    </ScrollViewer>
+                    
+                </Border>
+            </Grid>
             
             
             <!--The Border Transform in order to do the slide stuff-->
