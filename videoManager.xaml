@@ -309,20 +309,209 @@
         </ListBox>
 
         <!--The Playlists ListBox-->
-        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Transparent">
+        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MediumPurple">
 
         </ListBox>
 
         <!--The Shorts ListBox-->
-        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Transparent">
+        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="PaleVioletRed">
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <!--Set the style for the inner contents of the listbox-->
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalAlignment"          Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
+                    <Setter Property="BorderBrush"                Value="#E1E8ED"/>
+                    <Setter Property="BorderThickness"            Value="1"/>
+                    <Setter Property="Margin"                     Value="0"/>
+                    <Setter Property="Padding"                    Value="0"/>
+                    <!--Customize the look whenever the mouse hovers over one of the items-->
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F0F8FF"/>
+                            <Setter Property="BorderBrush" Value="#4A90E2"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#E8F4FF"/>
+                            <Setter Property="BorderBrush" Value="#4A90E2"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+
+                        <!--The Thumbnail that is visible-->
+                        <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+
+                        <!--Background rectange for color?-->
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="5"/>
+
+                        <!--The (Editable?) text box with the link-->
+                        <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
+                            <WrapPanel MaxWidth="1500">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Right" FontSize="16">
+                                    <Hyperlink NavigateUri="{Binding url}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Run Text="{Binding title}" Foreground="MediumPurple" FontWeight="SemiBold"/>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </WrapPanel>
+                        </Viewbox>
+
+                        <!--The Category Box-->
+                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0" >
+                            <Viewbox Stretch="Uniform" MaxHeight="50">
+                                <WrapPanel MaxWidth="80">
+                                    <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
+                                </WrapPanel>
+                            </Viewbox>
+                        </Border>
+
+                        <!--The Button that should hold the avaliable options-->
+                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="3"/>
+                        <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="DarkBlue" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/images/verticalDots.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <!--Example Data for dev purposes-->
 
         </ListBox>
 
         <!--The Other ListBox-->
-        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="Transparent">
+        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="LightSeaGreen">
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <!--Set the style for the inner contents of the listbox-->
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalAlignment"          Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
+                    <Setter Property="BorderBrush"                Value="#E1E8ED"/>
+                    <Setter Property="BorderThickness"            Value="1"/>
+                    <Setter Property="Margin"                     Value="0"/>
+                    <Setter Property="Padding"                    Value="0"/>
+                    <!--Customize the look whenever the mouse hovers over one of the items-->
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F0F8FF"/>
+                            <Setter Property="BorderBrush" Value="#4A90E2"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#E8F4FF"/>
+                            <Setter Property="BorderBrush" Value="#4A90E2"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+
+                        <!--The Thumbnail that is visible-->
+                        <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+
+                        <!--Background rectange for color?-->
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="5"/>
+
+                        <!--The (Editable?) text box with the link-->
+                        <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
+                            <WrapPanel MaxWidth="1500">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Right" FontSize="16">
+                                    <Hyperlink NavigateUri="{Binding url}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Run Text="{Binding title}" Foreground="MediumPurple" FontWeight="SemiBold"/>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </WrapPanel>
+                        </Viewbox>
+
+                        <!--The Category Box-->
+                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0" >
+                            <Viewbox Stretch="Uniform" MaxHeight="50">
+                                <WrapPanel MaxWidth="80">
+                                    <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
+                                </WrapPanel>
+                            </Viewbox>
+                        </Border>
+
+                        <!--The Button that should hold the avaliable options-->
+                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="3"/>
+                        <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="DarkBlue" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/images/verticalDots.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <!--Example Data for dev purposes-->
 
         </ListBox>
 
+        
+        
+        <!--___________________________________________The Pop Up GUIS_________________________________________________-->
         
         <!--The other PopUp GUI for making a new instance of something-->
         <Border x:Name="NewContentGUI" BorderThickness="3" BorderBrush="#FF0078D7" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="40, 10, 40, 10" CornerRadius="10" ClipToBounds="True" Background="#FFEEE8E8">
@@ -514,7 +703,7 @@
         <Border x:Name="MoreInfoGUI" BorderThickness="3" BorderBrush="#FF0078D7" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="40, 10, 40, 10" CornerRadius="15" ClipToBounds="True" Background="#FFEEE8E8">
 
             <!--The Grid To Hold All Of the Extra Infomration-->
-            <Grid>
+            <Grid x:Name="infoGrid">
                 
                 <!--The Grid Definitions For all of the Content-->
                 <Grid.ColumnDefinitions>
@@ -525,11 +714,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"  />
                     <RowDefinition Height="*"   />
-                    
+                    <RowDefinition Height="30"  />
+
                 </Grid.RowDefinitions>
                 
                 <!--The Close Button for the pop up gui-->
-                <Button Margin="2" BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="CloseInfoGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" >
+                <Button Margin="2" BorderThickness="2" Style="{DynamicResource RounddButton}" x:Name="CloseInfoGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="Transparent" BorderBrush="#FF0078D7" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="openInfoGUI">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <Rectangle Width="20" Height="20" Fill="#FF0078D7" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -602,7 +792,7 @@
                             <Label Grid.Column="0" Grid.Row="10" Content="Description: "   HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="12" Foreground="MediumPurple" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" Height="30"/>
 
                             <!--The Text Boxes to Display all of the information-->
-                            <TextBox x:Name="titleTB"       Grid.Column="1" Grid.Row="0"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2" IsEnabled="False"/>
+                            <TextBox x:Name="titleTB"       Grid.Column="1" Grid.Row="0"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2" IsEnabled="True"/>
                             <TextBox x:Name="CategoryTB"    Grid.Column="1" Grid.Row="1"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
                             <TextBox x:Name="NotesTB"       Grid.Column="1" Grid.Row="2"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
                             <TextBox x:Name="URLTB"         Grid.Column="1" Grid.Row="3"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
@@ -614,12 +804,28 @@
                             <TextBox x:Name="IdTB"          Grid.Column="1" Grid.Row="9"  TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
                             <TextBox x:Name="DescriptionTB" Grid.Column="1" Grid.Row="10" TextWrapping="Wrap" AcceptsReturn="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" Margin="2"/>
                         
+                            
                             <!--The Edit Buttons-->
                             
                         </Grid>
                     </ScrollViewer>
                     
                 </Border>
+            
+                <!--The Save And Revert Buttons-->
+                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--The Save Button-->
+                    <Button x:Name="moreInfoSave" Style="{DynamicResource TwoRoundedCornersLeft}" BorderBrush="#FF075A9B" BorderThickness="3" Grid.Row="2" Grid.Column="0" Margin="5. 0, 2, 3" Content="Save" Foreground="White" Background="{StaticResource MainBorderBrushKey}" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"   Click="saveAllInfo"/>
+                    <Button x:Name="revertInfo"  Style="{DynamicResource TwoRoundedCornersRight}" BorderBrush="#FF075A9B" BorderThickness="3" Grid.Row="2" Grid.Column="1" Margin="2, 0, 5, 3" Content="Revert" Foreground="White" Background="{StaticResource MainBorderBrushKey}" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="updateAllInfo"/>
+
+                </Grid>
+
+
             </Grid>
             
             

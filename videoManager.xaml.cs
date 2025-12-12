@@ -185,7 +185,7 @@ namespace CodeManagementSystem
 
         //-----------------------------------------------FIND FUNCTIONS-------------------------------------------------------
         //Functions iterate through each items id to find the right one, otherwise returns an new empty one
-        public ShortsVideo FindShort(int id)
+        public ShortsVideo FindShort(string id)
         {
             foreach (ShortsVideo video in ShortsArray)
             {
@@ -221,7 +221,7 @@ namespace CodeManagementSystem
             return new PlayList();
         }
         //The other video finder via the id
-        public OtherVideo FindOtherVideo(int id)
+        public OtherVideo FindOtherVideo(string id)
         {
             foreach (OtherVideo video in OtherArray)
             {
@@ -423,10 +423,11 @@ namespace CodeManagementSystem
     //The regular youtube videos, holds url, thumbnail, content, description, all the goods
     public class ShortsVideo
     {
-        public int id                   { get; set; }
+        public string id                { get; set; } = string.Empty;
         public string title             { get; set; } = string.Empty;
         public string url               { get; set; } = string.Empty;
         public string thumbNailUrl      { get; set; } = string.Empty;
+        public string author            { get; set; } = string.Empty;
         public TimeSpan duration        { get; set; }
         public string platform          { get; set; } = string.Empty;
         public string notes             { get; set; } = string.Empty;
@@ -517,11 +518,19 @@ namespace CodeManagementSystem
     //Holds as many miscellianous pieces of information as possible
     public class OtherVideo
     {
-        public int id            { get; set; }
-        public string url        { get; set; } = string.Empty;
-        public string platform   { get; set; } = string.Empty;
-        public string notes      { get; set; } = string.Empty;
-        public string category   { get; set; } = string.Empty;
+        public string id           { get; set; } = string.Empty;
+        public string title        { get; set; } = string.Empty;
+        public string url          { get; set; } = string.Empty;
+        public string thumbNailUrl { get; set; } = string.Empty;
+        public string author       { get; set; } = string.Empty;
+        public TimeSpan duration   { get; set; }
+        public string platform     { get; set; } = string.Empty;
+        public string notes        { get; set; } = string.Empty;
+        public string category     { get; set; } = string.Empty;
+        public DateTime addedDate  { get; set; }
+        public string description  { get; set; } = string.Empty;
+        public string durationFormatted => duration.ToString(@"hh\:mm\:ss");
+        public string addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
 
 
         //------------------------Constructors--------------------------------
@@ -877,6 +886,7 @@ namespace CodeManagementSystem
             else if (tabName == "CreateOtherTab")     { AddNewContentTitle.Text = "Add Another Type Of Content"; }
         }
 
+        //THE FUNCTION THAT HANDLES ALL LOADING BACKEND FUNCTIONALITY
         private async void addNewContent(object sender, RoutedEventArgs e)
         {
          
@@ -1126,39 +1136,75 @@ namespace CodeManagementSystem
         //--------------------------------------------Functions for Context Menu Items-------------------------
         
         //The function to open the GUI to view a RegularVideos full details
-        public async void openInfoGUI(object sender, RoutedEventArgs e)
+        public void openInfoGUI(object sender, RoutedEventArgs e)
         {
-            //Update all of the neccessary information for the video the user is about to see
-            updateAllInfo();
-
             Storyboard storyboard = new Storyboard();
 
-            Panel.SetZIndex(MoreInfoGUI, 31);
-            Panel.SetZIndex(translucentBox, 30);
-
-            //Set the animation the same as the others, but just coming from the left this time
-            DoubleAnimation transX = new DoubleAnimation
+            //Check to see if its the X button, if so run the animation then return so rest of the code doesnt run
+            if (sender is Button button)
             {
-                From = 1500,
-                To = 1,
-                Duration = TimeSpan.FromSeconds(0.5)
-            };
-            DoubleAnimation opacity = new DoubleAnimation
+                //Update all of the neccessary information for the video the user is about to see
+                clearAllInfo();
+                Panel.SetZIndex(MoreInfoGUI,    -15);
+                Panel.SetZIndex(translucentBox, -15);
+
+                DoubleAnimation transXBack = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 1500,
+                    Duration = TimeSpan.FromSeconds(0.5)
+                };
+                DoubleAnimation opacityBack = new DoubleAnimation
+                {
+                    From = 0.7,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.5)
+                };
+
+
+                Storyboard.SetTarget(opacityBack, translucentBox);
+                Storyboard.SetTargetProperty(opacityBack, new PropertyPath("Opacity"));
+                Storyboard.SetTarget(transXBack, MoreInfoGUI);
+                Storyboard.SetTargetProperty(transXBack, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
+
+                storyboard.Children.Add(opacityBack);
+                storyboard.Children.Add(transXBack);
+                storyboard.Begin();
+
+                return; //The return at the end so the rest of the code doesnt run
+            }
+            else
             {
-                From = 0,
-                To = 0.7,
-                Duration = TimeSpan.FromSeconds(0.5)
-            };
+                //Update all of the neccessary information for the video the user is about to see
+                updateAllInfo(sender, e);
+                Panel.SetZIndex(MoreInfoGUI, 31);
+                Panel.SetZIndex(translucentBox, 30);
+
+                //Set the animation the same as the others, but just coming from the left this time
+                DoubleAnimation transX = new DoubleAnimation
+                {
+                    From = 1500,
+                    To = 1,
+                    Duration = TimeSpan.FromSeconds(0.5)
+                };
+                DoubleAnimation opacity = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 0.7,
+                    Duration = TimeSpan.FromSeconds(0.5)
+                };
 
 
-            Storyboard.SetTarget(opacity, translucentBox);
-            Storyboard.SetTargetProperty(opacity, new PropertyPath("Opacity"));
-            Storyboard.SetTarget(transX, MoreInfoGUI);
-            Storyboard.SetTargetProperty(transX, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
+                Storyboard.SetTarget(opacity, translucentBox);
+                Storyboard.SetTargetProperty(opacity, new PropertyPath("Opacity"));
+                Storyboard.SetTarget(transX, MoreInfoGUI);
+                Storyboard.SetTargetProperty(transX, new PropertyPath("(RenderTransform).(TranslateTransform.X)"));
 
-            storyboard.Children.Add(opacity);
-            storyboard.Children.Add(transX);
-            storyboard.Begin();
+                storyboard.Children.Add(opacity);
+                storyboard.Children.Add(transX);
+                storyboard.Begin();
+            }
+
         }
 
         //Purely really just a cosmetic function
@@ -1220,21 +1266,118 @@ namespace CodeManagementSystem
         //Clear all of the displayed information about a topic in the info GUI //TODO: Add in visibibility and invisiblity of all of the videos in a playlist
         private void clearAllInfo()
         {
-            
+            //Iterate over each child in grid, if child is textbox, set it's content to empty
+            foreach(UIElement item in infoGrid.Children)
+            {
+                if(item is System.Windows.Controls.TextBox tb)
+                {
+                    tb.Text = string.Empty;
+                }
+            }
         }
-
-        private void updateAllInfo()
+        
+        //When view or edit is clicked, update all of the information based on the selected itme and tab
+        private void updateAllInfo(object sender, RoutedEventArgs e)
         {
             if(tabName == "VideoTab")
             {
                 RegularVideo video = VideoListBox.SelectedItem as RegularVideo;
-                moreInfoTitle.Text = video.title;
+                moreInfoTitle.Text = video.title;              
+                titleTB.Text       = video.title;
+                CategoryTB.Text    = video.category;
+                NotesTB.Text       = video.notes;
+                URLTB.Text         = video.url;
+                PlatformTB.Text    = video.platform;
+                ThumbnailTB.Text   = video.thumbNailUrl;
+                DurationTB.Text    = video.durationFormatted;
+                AuthorTB.Text      = video.author;
+                IdTB.Text          = video.id;
+                DescriptionTB.Text = video.description;
             }
             else if (tabName == "PlaylistTab")
             {
 
             }
         }
+
+        //Save all of the data in the gui to the actual object
+        private async void saveAllInfo(object sender, RoutedEventArgs e)
+        {
+            if(tabName == "VideoTab")
+            {
+                //Save all info fromt text to item
+                RegularVideo video = VideoListBox.SelectedItem as RegularVideo;
+                if (TimeSpan.TryParse(DurationTB.Text, out TimeSpan parsedDuration)) { video.duration = parsedDuration; }
+                video.title        = titleTB.Text;
+                video.category     = CategoryTB.Text;
+                video.notes        = NotesTB.Text;
+                video.url          = URLTB.Text;
+                video.platform     = PlatformTB.Text;
+                video.thumbNailUrl = ThumbnailTB.Text;
+                video.author       = AuthorTB.Text;
+                video.id           = IdTB.Text;
+                video.description  = DescriptionTB.Text;
+
+                //Save the content, and update UI to reflect the saving
+                moreInfoSave.IsEnabled = false;
+                moreInfoSave.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                moreInfoSave.Content = "Saving...";
+                await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
+                moreInfoSave.IsEnabled = true;
+                moreInfoSave.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+                moreInfoSave.Content = "Save";
+            }
+            else if (tabName == "PlaylistTab")
+            {
+
+            }
+            else if (tabName == "ShortsTab")
+            {
+                //Update the actual class item
+                ShortsVideo video = ShortsListBox.SelectedItem as ShortsVideo;
+                if (TimeSpan.TryParse(DurationTB.Text, out TimeSpan parsedDuration)) { video.duration = parsedDuration; }
+                video.title        = titleTB.Text;
+                video.category     = CategoryTB.Text;
+                video.notes        = NotesTB.Text;
+                video.url          = URLTB.Text;
+                video.platform     = PlatformTB.Text;
+                video.thumbNailUrl = ThumbnailTB.Text;
+                video.author       = AuthorTB.Text;
+                video.id           = IdTB.Text;
+                video.description  = DescriptionTB.Text;
+
+                //Save the content, and update UI to reflect the saving
+                moreInfoSave.IsEnabled = false;
+                moreInfoSave.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                moreInfoSave.Content = "Saving...";
+                await jsonManagement.SaveShortsAsync(contentManager.ShortsArray);
+                moreInfoSave.IsEnabled = true;
+                moreInfoSave.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+            }
+            else if (tabName == "OtherTab")
+            {
+                //Update the actual class item
+                OtherVideo video = OtherListBox.SelectedItem as OtherVideo;
+                if (TimeSpan.TryParse(DurationTB.Text, out TimeSpan parsedDuration)) { video.duration = parsedDuration; }
+                video.title        = titleTB.Text;
+                video.category     = CategoryTB.Text;
+                video.notes        = NotesTB.Text;
+                video.url          = URLTB.Text;
+                video.platform     = PlatformTB.Text;
+                video.thumbNailUrl = ThumbnailTB.Text;
+                video.author       = AuthorTB.Text;
+                video.id           = IdTB.Text;
+                video.description  = DescriptionTB.Text;
+
+                //Save the content, and update UI to reflect the saving
+                moreInfoSave.IsEnabled = false;
+                moreInfoSave.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                moreInfoSave.Content = "Saving...";
+                await jsonManagement.SaveOtherVideosAsync(contentManager.OtherArray);
+                moreInfoSave.IsEnabled = true;
+                moreInfoSave.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+            }
+        }                               
 
     }
 }
