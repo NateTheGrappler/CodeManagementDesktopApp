@@ -426,7 +426,7 @@ namespace CodeManagementSystem
         public string id                { get; set; } = string.Empty;
         public string title             { get; set; } = string.Empty;
         public string url               { get; set; } = string.Empty;
-        public string thumbNailUrl      { get; set; } = string.Empty;
+        public string thumbNailUrl      { get; set; } = "https://i.ytimg.com/vi/9wafxM-vA0E/maxresdefault.jpg";
         public string author            { get; set; } = string.Empty;
         public TimeSpan duration        { get; set; }
         public string platform          { get; set; } = string.Empty;
@@ -521,7 +521,7 @@ namespace CodeManagementSystem
         public string id           { get; set; } = string.Empty;
         public string title        { get; set; } = string.Empty;
         public string url          { get; set; } = string.Empty;
-        public string thumbNailUrl { get; set; } = string.Empty;
+        public string thumbNailUrl { get; set; } = "https://i.ytimg.com/vi/9wafxM-vA0E/maxresdefault.jpg";
         public string author       { get; set; } = string.Empty;
         public TimeSpan duration   { get; set; }
         public string platform     { get; set; } = string.Empty;
@@ -802,12 +802,28 @@ namespace CodeManagementSystem
         //-------------------------All of the functions for the actual main content listboxes-------------------------------
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            try
             {
-                FileName = e.Uri.AbsoluteUri,
-                UseShellExecute = true
-            });
-            e.Handled = true;
+                //Try to open the link that the user inputted
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = e.Uri.AbsoluteUri,
+                    UseShellExecute = true
+                });
+                e.Handled = true;
+            }
+            catch(Exception ex)
+            {
+                //If link is invalid or is unable to open, then let user know and abort the process so no crash happens
+                MessageBox.Show(
+                    $"Unable to open URL: {e.Uri}. Please enter valid URL and try again.",
+                    "Invalid URL",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+                e.Handled = true; //handle the event so the .net system doesnt kill itself
+            }
+
         }
 
         //Handle button that is attached to the three dots in the main listbox
@@ -1032,6 +1048,7 @@ namespace CodeManagementSystem
                     Notes.Text.ToString(),
                     Platform.Text.ToString()
                     );
+                playlist.title = URL.Text.ToString(); //Set the title as the url before actual title is gotten so you have something to display
 
                 if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist")
                 {
@@ -1084,6 +1101,7 @@ namespace CodeManagementSystem
                     Notes.Text.ToString(),
                     Platform.Text.ToString()
                     );
+                shortsVideo.title = URL.Text.ToString(); //Set the title as the url before actual title is gotten so you have something to display
 
                 //Append it to the list of all shorts
                 contentManager.ShortsArray.Add(shortsVideo);
@@ -1105,6 +1123,7 @@ namespace CodeManagementSystem
                     Notes.Text.ToString(),
                     Platform.Text.ToString()
                     );
+                other.title = URL.Text.ToString(); //Set the title as the url before actual title is gotten so you have something to display
 
                 //Append it to the list of all other videos
                 contentManager.OtherArray.Add(other);
@@ -1279,6 +1298,7 @@ namespace CodeManagementSystem
         //When view or edit is clicked, update all of the information based on the selected itme and tab
         private void updateAllInfo(object sender, RoutedEventArgs e)
         {
+            //Manually set all of the visible data honestly just because it's easier
             if(tabName == "VideoTab")
             {
                 RegularVideo video = VideoListBox.SelectedItem as RegularVideo;
@@ -1296,7 +1316,37 @@ namespace CodeManagementSystem
             }
             else if (tabName == "PlaylistTab")
             {
-
+                //TODO: 
+            }
+            else if (tabName == "ShortsTab")
+            {
+                ShortsVideo shorts = ShortsListBox.SelectedItem as ShortsVideo;
+                moreInfoTitle.Text = shorts.title;
+                titleTB.Text       = shorts.title;
+                CategoryTB.Text    = shorts.category;
+                NotesTB.Text       = shorts.notes;
+                URLTB.Text         = shorts.url;
+                PlatformTB.Text    = shorts.platform;
+                ThumbnailTB.Text   = shorts.thumbNailUrl;
+                DurationTB.Text    = shorts.durationFormatted;
+                AuthorTB.Text      = shorts.author;
+                IdTB.Text          = shorts.id;
+                DescriptionTB.Text = shorts.description;
+            }
+            else if (tabName == "OtherTab")
+            {
+                OtherVideo other = OtherListBox.SelectedItem as OtherVideo;
+                moreInfoTitle.Text = other.title;
+                titleTB.Text       = other.title;
+                CategoryTB.Text    = other.category;
+                NotesTB.Text       = other.notes;
+                URLTB.Text         = other.url;
+                PlatformTB.Text    = other.platform;
+                ThumbnailTB.Text   = other.thumbNailUrl;
+                DurationTB.Text    = other.durationFormatted;
+                AuthorTB.Text      = other.author;
+                IdTB.Text          = other.id;
+                DescriptionTB.Text = other.description;
             }
         }
 
@@ -1326,10 +1376,11 @@ namespace CodeManagementSystem
                 moreInfoSave.IsEnabled = true;
                 moreInfoSave.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
                 moreInfoSave.Content = "Save";
+                openInfoGUI(sender, e); //Close the popup after saving
             }
             else if (tabName == "PlaylistTab")
             {
-
+                //TODO: 
             }
             else if (tabName == "ShortsTab")
             {
@@ -1353,6 +1404,7 @@ namespace CodeManagementSystem
                 await jsonManagement.SaveShortsAsync(contentManager.ShortsArray);
                 moreInfoSave.IsEnabled = true;
                 moreInfoSave.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+                openInfoGUI(sender, e); //Close the popup after saving
             }
             else if (tabName == "OtherTab")
             {
@@ -1376,7 +1428,15 @@ namespace CodeManagementSystem
                 await jsonManagement.SaveOtherVideosAsync(contentManager.OtherArray);
                 moreInfoSave.IsEnabled = true;
                 moreInfoSave.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+                openInfoGUI(sender, e); //Close the popup after saving
             }
+
+            //A bit cheap, but basically refresh all of the itemsources with the update data so that way
+            //the user doesnt have to refresh
+            VideoListBox.Items.Refresh();
+            PlaylistListBox.Items.Refresh();
+            ShortsListBox.Items.Refresh();
+            OtherListBox.Items.Refresh();
         }                               
 
     }

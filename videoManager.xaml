@@ -309,12 +309,12 @@
         </ListBox>
 
         <!--The Playlists ListBox-->
-        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MediumPurple">
+        <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MediumPurple" BorderBrush="#FF0078D7" BorderThickness="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
         </ListBox>
 
         <!--The Shorts ListBox-->
-        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="PaleVioletRed">
+        <ListBox x:Name="ShortsListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="PaleVioletRed" BorderBrush="#FF0078D7" BorderThickness="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -412,7 +412,7 @@
         </ListBox>
 
         <!--The Other ListBox-->
-        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="LightSeaGreen">
+        <ListBox x:Name="OtherListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="LightSeaGreen" BorderBrush="#FF0078D7" BorderThickness="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
