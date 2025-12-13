@@ -294,6 +294,7 @@ namespace CodeManagementSystem
         public string           author           { get; set; } = string.Empty;
         public DateTime         addedDate        { get; set; }
         public string           description      { get; set; } = string.Empty;
+        public bool             watched          { get; set; } = false;
 
         public string   durationFormatted  => duration.ToString(@"hh\:mm\:ss");
         public string   addedDateFormatted => addedDate.ToString("MMM dd, yyyy");
@@ -492,14 +493,8 @@ namespace CodeManagementSystem
             //For each of the videos in the list, get it's information and store it
             foreach (var video in playlistVideos)
             {
-                RegularVideo newVideo = new RegularVideo();
-                newVideo.id = video.Id.Value;
-                newVideo.title = video.Title;
-                newVideo.duration = video.Duration ?? TimeSpan.Zero;
-                newVideo.author = video.Author.ChannelTitle;
-                newVideo.addedDate = DateTime.Now;
-                newVideo.url = video.Url;
-                newVideo.platform = "YouTube";
+                RegularVideo newVideo = new RegularVideo(video.Url, this.category, this.notes, this.platform);
+                await newVideo.updateVideoItems(newVideo.url);
                 regularVideos.Add(newVideo);
             }
 
@@ -510,8 +505,21 @@ namespace CodeManagementSystem
             this.author = playlist.Author.ChannelTitle;
             this.url = URL;
             this.numOfVideos = playlistVideos.Count;
-            //TODO Add in a way to see thumbnail
+            this.thumbNailUrl = GetBestThumbnailUrl(playlist);
 
+        }
+
+        private string GetBestThumbnailUrl(Playlist playlist)
+        {
+            //Try to get the highest quality thumbnail available
+            var thumbnails = playlist.Thumbnails;
+
+            //Order by resolution (width * height) descending to get best quality
+            var bestThumbnail = thumbnails
+                .OrderByDescending(t => t.Resolution.Width * t.Resolution.Height)
+                .FirstOrDefault();
+
+            return bestThumbnail?.Url ?? string.Empty;
         }
     }
 
@@ -1282,7 +1290,7 @@ namespace CodeManagementSystem
 
         //---------------------------Functions For the More Info GUI------------------------------------------
 
-        //Clear all of the displayed information about a topic in the info GUI //TODO: Add in visibibility and invisiblity of all of the videos in a playlist
+        //Clear all of the displayed information about a topic in the info GUI
         private void clearAllInfo()
         {
             //Iterate over each child in grid, if child is textbox, set it's content to empty
@@ -1431,13 +1439,105 @@ namespace CodeManagementSystem
                 openInfoGUI(sender, e); //Close the popup after saving
             }
 
-            //A bit cheap, but basically refresh all of the itemsources with the update data so that way
-            //the user doesnt have to refresh
+            //Refresh all of the itemsources with the update data so the user doesnt have to refresh manually
             VideoListBox.Items.Refresh();
             PlaylistListBox.Items.Refresh();
             ShortsListBox.Items.Refresh();
             OtherListBox.Items.Refresh();
-        }                               
+        }
 
+
+        //------------------------------Extra Functions that help deal with handling playlists-------------------
+        //Button that opens up 
+        private void expandPlaylistVideos(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                //Find the parent using teh helper function
+                Grid parentGrid = FindVisualParent<Grid>(button);
+                if (parentGrid != null)
+                {
+                    //Get the list box, check the visibility, then invert it
+                    ListBox playlistVideoListBox = parentGrid.FindName("playlistVideoListBox") as ListBox;
+
+                    //This check still needs to exist for null, but also because of the going up animation
+                    if (playlistVideoListBox != null && playlistVideoListBox.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        animatePlaylistVideoList(playlistVideoListBox);
+                        playlistVideoListBox.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    else if(playlistVideoListBox != null && playlistVideoListBox.Visibility == System.Windows.Visibility.Collapsed)
+                    {
+                        animatePlaylistVideoList(playlistVideoListBox);
+                    }
+                }
+            }
+        }
+
+        //Helper method to find visual parent - not my own original code
+        private T FindVisualParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindVisualParent<T>(parentObject);
+        }
+
+        //function that handles animation of sliding the playlist videos up and down
+        private void animatePlaylistVideoList(ListBox lb)
+        {
+            Storyboard sb = new Storyboard();
+
+            if (lb.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                lb.Visibility = System.Windows.Visibility.Visible;
+                Panel.SetZIndex(lb, -99);
+                DoubleAnimation goDown = new DoubleAnimation
+                {
+                    From = -100,
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.3)
+                };
+
+                Storyboard.SetTarget(goDown, lb);
+                Storyboard.SetTargetProperty(goDown, new PropertyPath("(RenderTransform).(TranslateTransform.Y)"));
+
+                sb.Children.Add(goDown);
+                sb.Begin();
+            }
+
+            else if (lb.Visibility == System.Windows.Visibility.Visible)
+            {
+                Panel.SetZIndex(lb, -99);
+                DoubleAnimation goUp = new DoubleAnimation
+                {
+                    From = 0,
+                    To = -100,
+                    Duration = TimeSpan.FromSeconds(5)
+                };
+
+                Storyboard.SetTarget(goUp, lb);
+                Storyboard.SetTargetProperty(goUp, new PropertyPath("(RenderTransform).(TranslateTransform.Y)"));
+
+                sb.Children.Add(goUp);
+                sb.Begin();
+
+                lb.Visibility = System.Windows.Visibility.Collapsed;
+
+            }
+
+        }
+
+        private async void watchedVideoCheck_Click(object sender, RoutedEventArgs e)
+        {
+            await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
+        }
     }
 }

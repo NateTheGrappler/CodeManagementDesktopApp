@@ -212,7 +212,6 @@
         <!--The List View Boxes that hold all of the content, and also are controlled by the tabs-->
         <!--The Longer Form Videos ListBox-->
         <ListBox x:Name="VideoListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="LightBlue" BorderBrush="#FF0078D7" BorderThickness="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel HorizontalAlignment="Stretch"/>
@@ -228,7 +227,7 @@
                     <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
                     <Setter Property="BorderBrush"                Value="#E1E8ED"/>
                     <Setter Property="BorderThickness"            Value="1"/>
-                    <Setter Property="Margin"                     Value="0"/>
+                    <Setter Property="Margin"                     Value="0, 0, 0, 3"/>
                     <Setter Property="Padding"                    Value="0"/>
                     <!--Customize the look whenever the mouse hovers over one of the items-->
                     <Style.Triggers>
@@ -243,8 +242,8 @@
                     </Style.Triggers>
                 </Style>
             </ListBox.ItemContainerStyle>
-                
-         
+
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
@@ -263,8 +262,8 @@
                         <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
 
                         <!--Background rectange for color?-->
-                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="5"/>
-                        
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="3, 0, 0, 3"/>
+
                         <!--The (Editable?) text box with the link-->
                         <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
                             <WrapPanel MaxWidth="1500">
@@ -277,16 +276,14 @@
                         </Viewbox>
 
                         <!--The Category Box-->
-                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0" >
-                            <Viewbox Stretch="Uniform" MaxHeight="50">
-                                <WrapPanel MaxWidth="80">
-                                    <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
-                                </WrapPanel>
+                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0" BorderThickness="1, 0, 1, 0" >
+                            <Viewbox Stretch="Uniform">
+                                <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
                             </Viewbox>
                         </Border>
 
-                         <!--The Button that should hold the avaliable options-->
-                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="3"/>
+                        <!--The Button that should hold the avaliable options-->
+                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0, 8, 8, 0"/>
                         <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -303,7 +300,7 @@
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            
+
             <!--Example Data for dev purposes-->
 
         </ListBox>
@@ -311,6 +308,193 @@
         <!--The Playlists ListBox-->
         <ListBox x:Name="PlaylistListBox"  Grid.Row="1" Grid.Column="1" Margin="20,10,20,30" Background="MediumPurple" BorderBrush="#FF0078D7" BorderThickness="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel HorizontalAlignment="Stretch" IsVirtualizing ="False"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <!--Set the style for the inner contents of the listbox-->
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalAlignment"          Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
+                    <Setter Property="BorderBrush"                Value="#E1E8ED"/>
+                    <Setter Property="BorderThickness"            Value="1"/>
+                    <Setter Property="Margin"                     Value="0, 0, 0, 3"/>
+                    <Setter Property="Padding"                    Value="0"/>
+                    <!--Customize the look whenever the mouse hovers over one of the items-->
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F0F8FF"/>
+                            <Setter Property="BorderBrush" Value="#4A90E2"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#E8F4FF"/>
+                            <Setter Property="BorderBrush" Value="#4A90E2"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!--The Thumbnail that is visible-->
+                        <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+
+                        <!--Background rectange for color? && The (Editable?) text box with the link-->
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="3, 0, 0, 3"/>
+                        <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
+                            <WrapPanel MaxWidth="1500">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Right" FontSize="16">
+                                    <Hyperlink NavigateUri="{Binding url}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Run Text="{Binding title}" Foreground="MediumPurple" FontWeight="SemiBold"/>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </WrapPanel>
+                        </Viewbox>
+
+                        <!--The Category Box-->
+                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0" BorderThickness="1, 0, 1, 0">
+                            <Viewbox Stretch="Uniform" MaxHeight="50">
+                                <TextBlock Text="{Binding category}" TextWrapping="NoWrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
+                            </Viewbox>
+                        </Border>
+
+                        <!--The Button that should hold the avaliable options-->
+                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0" BorderThickness="0, 0, 1, 0"/>
+                        <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="DarkBlue" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/images/verticalDots.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <!--The button to see all playlist videos-->
+                        <Border Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0, 8, 8, 0"/>
+                        <Button Grid.Column="4" BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="openPlaylistVideos" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="Transparent" BorderBrush="#FF0078D7" ToolTip="Open Playlist" Click="expandPlaylistVideos" ContextMenu="{StaticResource VideoContextMenuKey}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="15" Height="15" Fill="DarkBlue" VerticalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/images/expand.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        
+                        <!--The List View Box That holds all of the videos in the playlist-->
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" MinHeight="0" MaxHeight="200">
+                            <ListBox x:Name="playlistVideoListBox" ItemsSource="{Binding regularVideos}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                                <!--Just copy the style of the video listbox-->
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel HorizontalAlignment="Stretch"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="VerticalAlignment"          Value="Stretch"/>
+                                        <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
+                                        <Setter Property="BorderBrush"                Value="#E1E8ED"/>
+                                        <Setter Property="BorderThickness"            Value="1"/>
+                                        <Setter Property="Margin"                     Value="0"/>
+                                        <Setter Property="Padding"                    Value="0"/>
+                                        <!--Customize the look whenever the mouse hovers over one of the items-->
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F0F8FF"/>
+                                                <Setter Property="BorderBrush" Value="#4A90E2"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#E8F4FF"/>
+                                                <Setter Property="BorderBrush" Value="#4A90E2"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="60"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="60"/>
+                                                <ColumnDefinition Width="30"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!--The Thumbnail that is visible-->
+                                            <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+
+                                            <!--Background rectange for color?-->
+                                            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="5"/>
+
+                                            <!--The (Editable?) text box with the link-->
+                                            <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
+                                                <WrapPanel MaxWidth="1500">
+                                                    <TextBlock TextWrapping="Wrap" TextAlignment="Right" FontSize="16">
+                                    <Hyperlink NavigateUri="{Binding url}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Run Text="{Binding title}" Foreground="MediumPurple" FontWeight="SemiBold"/>
+                                    </Hyperlink>
+                                                    </TextBlock>
+                                                </WrapPanel>
+                                            </Viewbox>
+
+                                            <!--The Category Box-->
+                                            <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0" >
+                                                <Viewbox Stretch="Uniform" MaxHeight="50">
+                                                    <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
+                                                </Viewbox>
+                                            </Border>
+
+                                            <!--Implement the check for whether a video has been watched or not-->
+                                            <CheckBox x:Name="watchedVideoCheck" IsChecked="{Binding watched}" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray" Height="20" Width="20" Foreground="White" Click="watchedVideoCheck_Click"/>
+
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.RenderTransform>
+                                    <TranslateTransform Y="-100"/>
+                                </ListBox.RenderTransform>
+                                <!--Extra render transform for animation-->
+                            </ListBox>
+
+                        </ScrollViewer>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <!--Example Data for dev purposes-->
         </ListBox>
 
         <!--The Shorts ListBox-->
@@ -331,7 +515,7 @@
                     <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
                     <Setter Property="BorderBrush"                Value="#E1E8ED"/>
                     <Setter Property="BorderThickness"            Value="1"/>
-                    <Setter Property="Margin"                     Value="0"/>
+                    <Setter Property="Margin"                     Value="0, 0, 0, 3"/>
                     <Setter Property="Padding"                    Value="0"/>
                     <!--Customize the look whenever the mouse hovers over one of the items-->
                     <Style.Triggers>
@@ -366,7 +550,7 @@
                         <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
 
                         <!--Background rectange for color?-->
-                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="5"/>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="3, 0, 0, 3"/>
 
                         <!--The (Editable?) text box with the link-->
                         <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
@@ -380,16 +564,14 @@
                         </Viewbox>
 
                         <!--The Category Box-->
-                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0" >
-                            <Viewbox Stretch="Uniform" MaxHeight="50">
-                                <WrapPanel MaxWidth="80">
-                                    <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
-                                </WrapPanel>
+                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0" BorderThickness="1, 0, 1, 0" >
+                            <Viewbox Stretch="Uniform">
+                                <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
                             </Viewbox>
                         </Border>
 
                         <!--The Button that should hold the avaliable options-->
-                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="3"/>
+                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0, 8, 8, 0"/>
                         <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -429,7 +611,7 @@
                     <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
                     <Setter Property="BorderBrush"                Value="#E1E8ED"/>
                     <Setter Property="BorderThickness"            Value="1"/>
-                    <Setter Property="Margin"                     Value="0"/>
+                    <Setter Property="Margin"                     Value="0, 0, 0, 3"/>
                     <Setter Property="Padding"                    Value="0"/>
                     <!--Customize the look whenever the mouse hovers over one of the items-->
                     <Style.Triggers>
@@ -464,7 +646,7 @@
                         <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
 
                         <!--Background rectange for color?-->
-                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="5"/>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="3, 0, 0, 3"/>
 
                         <!--The (Editable?) text box with the link-->
                         <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
@@ -478,16 +660,14 @@
                         </Viewbox>
 
                         <!--The Category Box-->
-                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0" >
-                            <Viewbox Stretch="Uniform" MaxHeight="50">
-                                <WrapPanel MaxWidth="80">
-                                    <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
-                                </WrapPanel>
+                        <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0" BorderThickness="1, 0, 1, 0" >
+                            <Viewbox Stretch="Uniform">
+                                <TextBlock Text="{Binding category}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
                             </Viewbox>
                         </Border>
 
                         <!--The Button that should hold the avaliable options-->
-                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="3"/>
+                        <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0, 8, 8, 0"/>
                         <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">

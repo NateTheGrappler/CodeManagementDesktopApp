@@ -16,6 +16,7 @@
     <None Remove="fileFolderButtonImg.png" />
     <None Remove="Images\blackVerticalDots.png" />
     <None Remove="Images\Close.png" />
+    <None Remove="Images\expand.png" />
     <None Remove="Images\verticalDots.png" />
     <None Remove="JackOLanternSpirte-removebg-preview.png" />
     <None Remove="JackOLanternSpirte.png" />
@@ -48,6 +49,9 @@
     <Resource Include="Images\blueFolder-removebg-preview.png" />
     <Resource Include="Images\Close.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\expand.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\fileFolderButtonImg.png" />
     <Resource Include="Images\circleBackButton.png" />
