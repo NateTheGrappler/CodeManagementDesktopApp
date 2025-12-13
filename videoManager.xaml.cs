@@ -973,6 +973,15 @@ namespace CodeManagementSystem
                 //Change the add button to be a loading as an indicator
                 SaveNewContentButton.IsEnabled = false;
                 SaveNewContentButton.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                SaveNewContentButton.Content = "Loading...";
+
+                //Add in an extra check to let the user know that loading playlists takes a while
+                MessageBox.Show(
+                    "Playlists with a large number of videos can take a LONG time to load. Please do not exit out of application.",
+                    "Playlist Length Warning",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                    );
 
                 //Get all of the proper meta data for the playlist
                 await playlist.updatePlaylistItems(playlist.url);
@@ -982,6 +991,7 @@ namespace CodeManagementSystem
                 //Reset Add Button Color
                 SaveNewContentButton.IsEnabled = true;
                 SaveNewContentButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
+                SaveNewContentButton.Content = "Add";
 
                 //After Saving, clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
@@ -1323,8 +1333,20 @@ namespace CodeManagementSystem
                 DescriptionTB.Text = video.description;
             }
             else if (tabName == "PlaylistTab")
-            {
-                //TODO: 
+            { 
+                PlayList playlist = PlaylistListBox.SelectedItem as PlayList;
+                moreInfoTitle.Text = playlist.title;              
+                titleTB.Text       = playlist.title;
+                CategoryTB.Text    = playlist.category;
+                NotesTB.Text       = playlist.notes;
+                URLTB.Text         = playlist.url;
+                PlatformTB.Text    = playlist.platform;
+                ThumbnailTB.Text   = playlist.thumbNailUrl;
+                DurationTB.Text    = playlist.numOfVideos.ToString();
+                AuthorTB.Text      = playlist.author;
+                IdTB.Text          = playlist.id;
+                DescriptionTB.Text = playlist.addedDateFormatted;
+
             }
             else if (tabName == "ShortsTab")
             {
