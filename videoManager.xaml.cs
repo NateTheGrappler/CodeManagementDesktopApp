@@ -63,6 +63,8 @@ namespace CodeManagementSystem
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CodeInformationManagingSystem\\JsonFolder", "OtherVideos.json"
         );
+        public delegate void ProgressChangedHandler(string status, int progress);
+        public event ProgressChangedHandler progressChanged;
 
         //--------------------------------------Save Methods--------------------------------------
 
@@ -90,6 +92,9 @@ namespace CodeManagementSystem
         {
             Debug.WriteLine($"Saving data to: {filePath}");
 
+            //Change the progress changed to reflect on starting the save process
+            progressChanged?.Invoke("Preparing to save...", 10);
+
             string? directory = System.IO.Path.GetDirectoryName(filePath);
             if (directory == null) //Make sure that the directory given is valid
             {
@@ -99,6 +104,7 @@ namespace CodeManagementSystem
             if (!Directory.Exists(directory)) //If the folder doesnt exist, create it
             {
                 Directory.CreateDirectory(directory);
+                progressChanged?.Invoke("Creating directory...", 20);
             }
 
             //This creates the necessary classes to create the json files
@@ -110,11 +116,14 @@ namespace CodeManagementSystem
             };
 
             //This writes all of the json text given the data
+            progressChanged?.Invoke("Serializing data...", 40);
             string json = JsonSerializer.Serialize(serializableList, options);
+            progressChanged?.Invoke("Writing to file...", 60);
             await File.WriteAllTextAsync(filePath, json);
-            Debug.WriteLine("Data saved successfully");
+            progressChanged?.Invoke("Saving complete!", 100);
+
         }
-       
+
 
         //-------------------------All of the load values for each type of file-----------
         public async Task<ObservableCollection<RegularVideo>> LoadRegularVideosAsync()
@@ -913,7 +922,6 @@ namespace CodeManagementSystem
         //THE FUNCTION THAT HANDLES ALL LOADING BACKEND FUNCTIONALITY
         private async void addNewContent(object sender, RoutedEventArgs e)
         {
-         
             //Check To see if any content is null
             if(string.IsNullOrEmpty(URL.Text.ToString())) 
             {
@@ -924,6 +932,11 @@ namespace CodeManagementSystem
                     MessageBoxImage.Error);
                 return;
             }
+
+
+            //After checking if input is valid, disable buttons
+            SaveNewContentButton.IsEnabled = false;
+            ClearNewContentButton.IsEnabled = false;
 
 
             //Have a safeguard for if a person is in the wrong tab when adding content, by passing the other stuff if its a link from yt
@@ -938,6 +951,10 @@ namespace CodeManagementSystem
                 video.title = URL.Text.ToString(); //Set the title as the url before actual title is gotten so you have something to display
 
                 Debug.WriteLine("New Video Created with title: " + video.title);
+                
+                //Upgrade the Progress bar that is visible for the user
+                SaveProgressBar.Value = 20;
+                ProgressText.Content = "Getting video information...";
 
                 //Change the add button to be a loading as an indicator
                 SaveNewContentButton.IsEnabled = false;
@@ -946,7 +963,13 @@ namespace CodeManagementSystem
 
                 //Update all of it's internal variables and then save it
                 await video.updateVideoItems(video.url);
+                SaveProgressBar.Value = 60;
+                ProgressText.Content = "Adding to collection...";
                 contentManager.VideosArray.Add(video);
+
+                //Save all of the gotten information to the json
+                SaveProgressBar.Value = 80;
+                ProgressText.Content = "Saving to file...";
                 await jsonManagement.SaveRegularVideosAsync(contentManager.VideosArray);
 
                 //Reset Add Button Color
@@ -975,6 +998,10 @@ namespace CodeManagementSystem
                 SaveNewContentButton.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
                 SaveNewContentButton.Content = "Loading...";
 
+                //Set the progress bar also to show user saving
+                SaveProgressBar.Value = 10;
+                ProgressText.Content = "Loading playlist information...";
+
                 //Add in an extra check to let the user know that loading playlists takes a while
                 MessageBox.Show(
                     "Playlists with a large number of videos can take a LONG time to load. Please do not exit out of application.",
@@ -985,13 +1012,23 @@ namespace CodeManagementSystem
 
                 //Get all of the proper meta data for the playlist
                 await playlist.updatePlaylistItems(playlist.url);
+                SaveProgressBar.Value = 60;
+                ProgressText.Content = "Processing videos...";
                 contentManager.PlaylistArray.Add(playlist);
+
+                //Save all of the playlist data 
+                SaveProgressBar.Value = 80;
+                ProgressText.Content = "Saving playlist...";
                 await jsonManagement.SavePlaylistsAsync(contentManager.PlaylistArray);
 
                 //Reset Add Button Color
                 SaveNewContentButton.IsEnabled = true;
                 SaveNewContentButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0078D7"));
                 SaveNewContentButton.Content = "Add";
+
+                //Indicate Saving completion
+                SaveProgressBar.Value = 100;
+                ProgressText.Content = "Fully Saved!";
 
                 //After Saving, clear the textFields, then close the popup
                 clearCurrentGUI(sender, e);
@@ -1155,6 +1192,10 @@ namespace CodeManagementSystem
                 NewButton_Click(sender, e);
                 TabControl.SelectedItem = OtherTab;
             }
+
+            //At the end of everything reset the progress bar
+            SaveProgressBar.Value = 0;
+            ProgressText.Content = "Progress Bar: ";
         }
 
 
@@ -1167,6 +1208,9 @@ namespace CodeManagementSystem
             Category.Text = string.Empty;
             Notes.Text = string.Empty;
             Platform.Text = string.Empty;
+            //Also enable the buttons
+            SaveNewContentButton.IsEnabled = true;
+            ClearNewContentButton.IsEnabled = true;
         }
 
 
