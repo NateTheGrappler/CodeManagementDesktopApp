@@ -50,7 +50,7 @@ namespace CodeManagementSystem
             };
         }
     
-
+        //-----------------------------------Functions that change the page you see-----------------------------
         private void buttonClick(object sender, EventArgs e)
         {
             // Reset the button state immediately before navigation
@@ -63,6 +63,20 @@ namespace CodeManagementSystem
             }
 
             this.NavigationService.Navigate(new Page2());
+        }
+
+        private void BookManagerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("You clicked the book Manager button");
+            foreach (UIElement element in mainGrid.Children)
+            {
+                if (element is System.Windows.Controls.Button button)
+                {
+                    resetButtonImmediately(button);
+                }
+            }
+
+            this.NavigationService.Navigate(new bookManager());
         }
 
         private void CheckListManagerButton_Click(object sender, RoutedEventArgs e)
@@ -91,6 +105,8 @@ namespace CodeManagementSystem
             }
             this.NavigationService.Navigate(new videoManager());
         }
+        
+        //-------------------------------------Set Up the Neural Network Look------------------------
         private void CreateNNLines()
         {
             var main = Window.GetWindow(this) as MainWindow;
@@ -138,7 +154,47 @@ namespace CodeManagementSystem
             }
         }
 
-        private void addFunctions()
+        private void initNeuralNetwork()
+        {
+
+            neuralNetwork.Clear();
+            xPositions.Clear();
+
+            foreach (UIElement element in mainGrid.Children)
+            {
+                if (element is System.Windows.Controls.Button button)
+                {
+                    Point relativePosition = button.TransformToAncestor(mainGrid).Transform(new Point(0, 0));
+
+                    // Include the actual rendered position
+                    double actualX = relativePosition.X + button.Margin.Left;
+                    double actualY = relativePosition.Y + button.Margin.Top;
+
+                    if (!neuralNetwork.ContainsKey(actualX))
+                    {
+                        List<UIElement> buttonList = new List<UIElement>();
+                        neuralNetwork.Add(actualX, buttonList);
+                    }
+                    neuralNetwork[actualX].Add(element);
+                }
+            }
+
+            xPositions.AddRange(neuralNetwork.Keys);
+            xPositions.Sort();
+        }
+
+        private Point GetElementCenter(FrameworkElement element)
+        {
+            Point relativePosition = element.TransformToAncestor(mainGrid).Transform(new Point(0, 0));
+            return new Point(
+                relativePosition.X + element.ActualWidth / 2,
+                relativePosition.Y + element.ActualHeight / 2
+            );
+        }
+
+        //------------------------------------Functionality Functions--------------------------------
+        
+        private void addFunctions() //Add in each button click function
         {
             foreach (KeyValuePair<double, List<UIElement>> keyValuePair in neuralNetwork)
             {
@@ -154,6 +210,7 @@ namespace CodeManagementSystem
                         if (lastTwoDigits == "PN")      { button.Click += buttonClick; }
                         else if (lastTwoDigits == "CM") { button.Click += CheckListManagerButton_Click; }
                         else if (lastTwoDigits == "VM") { button.Click += VideoManagerButtonVM_Click; }
+                        else if (lastTwoDigits == "BM") { button.Click += BookManagerButton_Click; }
                         else { button.Click += buttonClick; }
                     }
                 }
@@ -311,43 +368,6 @@ namespace CodeManagementSystem
             translucentBox.Visibility = Visibility.Collapsed;
             translucentBox.Opacity = 0;
             Panel.SetZIndex(translucentBox, -1);
-        }
-        private void initNeuralNetwork()
-        {
-
-            neuralNetwork.Clear();
-            xPositions.Clear();
-
-            foreach (UIElement element in mainGrid.Children)
-            {
-                if (element is System.Windows.Controls.Button button)
-                {
-                    Point relativePosition = button.TransformToAncestor(mainGrid).Transform(new Point(0, 0));
-
-                    // Include the actual rendered position
-                    double actualX = relativePosition.X + button.Margin.Left;
-                    double actualY = relativePosition.Y + button.Margin.Top;
-
-                    if (!neuralNetwork.ContainsKey(actualX))
-                    {
-                        List<UIElement> buttonList = new List<UIElement>();
-                        neuralNetwork.Add(actualX, buttonList);
-                    }
-                    neuralNetwork[actualX].Add(element);
-                }
-            }
-
-            xPositions.AddRange(neuralNetwork.Keys);
-            xPositions.Sort();
-        }
-
-        private Point GetElementCenter(FrameworkElement element)
-        {
-            Point relativePosition = element.TransformToAncestor(mainGrid).Transform(new Point(0, 0));
-            return new Point(
-                relativePosition.X + element.ActualWidth / 2,
-                relativePosition.Y + element.ActualHeight / 2
-            );
         }
 
         private void isLoaded(object sender, RoutedEventArgs e)
