@@ -96,5 +96,28 @@
             
         </ListBox>
 
+        
+        
+        <!--____________________________The Pop Up GUI for Downloading______________________________-->
+        <Border Grid.Column="2" BorderBrush="{StaticResource MainBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="2" Margin="20" BorderThickness="3" CornerRadius="30">    
+            
+            <Grid>  <!--The main content grid + row and column defs-->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!--The URL input and button for testing backend-->
+                <TextBox x:Name="URLInput" Height="40" Margin="10"/>
+                <Button x:Name="UrlButton" Height="40" Grid.Column="2" Margin="0, 0, 5 0" Content="Save" Click="UrlButton_Click"/>
+
+            </Grid>
+            
+
+        </Border>
+        
     </Grid>
 </Page>
