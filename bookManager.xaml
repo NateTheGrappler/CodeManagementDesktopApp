@@ -185,7 +185,7 @@
                     </Grid.RowDefinitions>
 
                     <!--The URL input-->
-                    <Label   Content="URL: " Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock x:Name="URLLabel"  Text="URL: " Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
                     <TextBox x:Name="URLTextBox" Grid.Column="1" Grid.Row="0" Margin="0, 10, 10, 10"/>
 
                     <!--The Title Input-->
@@ -193,8 +193,8 @@
                     <TextBox x:Name="TitleTextBox" Grid.Column="1" Grid.Row="1" Margin="0, 10, 10, 10"/>
 
                     <!--The Category Input if Need Be -->
-                    <Label Content="Category: " Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
-                    <TextBox x:Name="CategoryTextBox" Grid.Column="1" Grid.Row="2" Margin="0, 10, 10, 10"/>
+                    <Label Content="Subject: " Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
+                    <TextBox x:Name="SubjectTextBox" Grid.Column="1" Grid.Row="2" Margin="0, 10, 10, 10"/>
 
                     <!--The Radio Buttons Between from File Or From Url-->
                     <Grid x:Name="RadioButtonGrid" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
@@ -204,8 +204,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Select Form of Book Upload:  " Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="12"/>
-                        <RadioButton x:Name="DriveRadioButton" Content="From Drive" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <RadioButton x:Name="URLRadioButton" Content="From URL"   Grid.Column="1" HorizontalAlignment="Center" IsChecked="True" VerticalAlignment="Center"/>
+                        <RadioButton x:Name="DriveRadioButton" Content="From Drive" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="changedRadioButtons"/>
+                        <RadioButton x:Name="URLRadioButton" Content="From URL"     Grid.Column="1" HorizontalAlignment="Center" IsChecked="True" VerticalAlignment="Center" Checked="changedRadioButtons"/>
                     </Grid>
 
                     <!--The A Progress Bar to show loading (Maybe)-->
@@ -226,7 +226,7 @@
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
 

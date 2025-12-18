@@ -65,7 +65,7 @@ namespace CodeManagementSystem
     }
 
 
-    public class BookManager //The class that holds the book source list and has functions managing that list if needed
+    public class BooksManager //The class that holds the book source list and has functions managing that list if needed
     {
         //---------------------------------The Variables------------------------------------------
         public ObservableCollection<Book> books = new ObservableCollection<Book>();
@@ -75,7 +75,7 @@ namespace CodeManagementSystem
 
         //---------------------------------Saving Functions---------------------------------------
         //Save a pdf book by just moving it from whatever folder it is in to the roaming apps folder
-        public void saveFromDrive()
+        public string saveFromDrive()
         {
 
             //Create a new file Dialog for user, that filters through only pdf files
@@ -104,10 +104,13 @@ namespace CodeManagementSystem
                     fileName,
                     System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName)
                 );
+                return System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName);
             }
+
+            return System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName);
         }
         //Save a book from an online url
-        public async Task saveFromURL(string url, string pdfname)
+        public async Task<string> saveFromURL(string url)
         {
             try
             {
@@ -120,31 +123,29 @@ namespace CodeManagementSystem
                 {
                     //get the pdf information via the byte array, then set the path, and save the file
                     byte[] pdfBytes = await client.GetByteArrayAsync(url);
-                    string path = System.IO.Path.Combine(_driveDownloadPath, pdfname);
+                    string uniqueFileName = $"{Guid.NewGuid()}.png";
+                    string path = System.IO.Path.Combine(_driveDownloadPath, uniqueFileName);
                     await System.IO.File.WriteAllBytesAsync(path, pdfBytes);
+                    return path;
                 }
             }
             catch(Exception ex)
             {
                 //A message box for the user incase of error
                 MessageBox.Show(
-                    "Unable to Download PDf. Please Check if URL is valid and try again.",
+                    "Unable to Download PDF. Please Check if URL is valid and try again.",
                     "Invalid URL.",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
                     );
+                return "";
             }
         }
 
         //-------------------------------The loading functions-------------------------------------
 
         //--------------------------------Constructor--------------------------------------------
-        public BookManager() { }
-
-        private void NewButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        public BooksManager() { }
     }
 
 
@@ -223,7 +224,7 @@ namespace CodeManagementSystem
 
     public partial class bookManager : Page
     {
-        private BookManager      bookMange       = new BookManager();
+        private BooksManager     bookMange       = new BooksManager();
         private bookJsonManager  jsonBookManager = new bookJsonManager();
 
         public bookManager()
@@ -254,7 +255,7 @@ namespace CodeManagementSystem
 
             //await jsonBookManager.saveToJson(bookMange.books);
 
-            //BookListBox.ItemsSource = bookMange.books;
+            BookListBox.ItemsSource = bookMange.books;
         }
 
         //--------------------------------------Front UI------------------------------------------
@@ -308,7 +309,7 @@ namespace CodeManagementSystem
 
                 }
                 //if coming from the close button inside GUI, undo animation
-                else if(button.Name == "CloseAddGUI")
+                else if(button.Name == "CloseAddGUI" || button.Name == "AddNewContentButton")
                 {
                     Storyboard storyboard = new Storyboard();
 
@@ -350,15 +351,104 @@ namespace CodeManagementSystem
         {
             //Clear all of the input fields, and change back the radio buttons
             URLTextBox.Text            = string.Empty;
-            CategoryTextBox.Text       = string.Empty;
+            SubjectTextBox.Text        = string.Empty;
             TitleTextBox.Text          = string.Empty;
             DriveRadioButton.IsChecked = false;
             URLRadioButton.IsChecked   = true;
         }
 
-        private void AddNewContentButton_Click(object sender, RoutedEventArgs e)
+        private async void AddNewContentButton_Click(object sender, RoutedEventArgs e)
         {
+            //disable buttons
+            AddNewContentButton.IsEnabled = false;
+            ClearNewContentButton.IsEnabled = false;
 
+            //Check which of the radio button options the user chose
+            if (DriveRadioButton.IsChecked == true)
+            {
+                //After the person opens the right file, get the new path of the file moved by .saveFromDrive()
+                string filePath = bookMange.saveFromDrive();
+
+                //Init a new book using the path gotten, and also load all of it's data
+                Book newBook = new Book(filePath);
+                newBook.loadImageFromDrive(newBook.imagePath);
+
+                //Update any of the information if the user put it in
+                if(!string.IsNullOrEmpty(TitleTextBox.Text))   { newBook.title   = TitleTextBox.Text; }
+                if(!string.IsNullOrEmpty(SubjectTextBox.Text)) { newBook.subject = SubjectTextBox.Text; }
+
+                //Add the book to the collection, then also save it's data in json
+                bookMange.books.Add(newBook);
+                await jsonBookManager.saveToJson(bookMange.books);
+
+                //Close the Gui on save
+                playAddContentGUI(sender, e);
+            }
+            else if(URLRadioButton.IsChecked == true)
+            {
+                if(!string.IsNullOrEmpty(URLTextBox.Text))
+                {
+                    try
+                    {
+                        //download the pdf from file, and also move it correctly and get the data
+                        string filePath = await bookMange.saveFromURL(URLTextBox.Text);
+
+                        //Create a new book with the filepath that was gotten from the saveFromURL Function
+                        Book newBook = new Book(filePath);
+                        newBook.loadImageFromDrive(newBook.imagePath);
+
+                        //Update any of the information if the user put it in
+                        if (!string.IsNullOrEmpty(TitleTextBox.Text)) { newBook.title = TitleTextBox.Text; }
+                        if (!string.IsNullOrEmpty(SubjectTextBox.Text)) { newBook.subject = SubjectTextBox.Text; }
+
+                        //Add the book to the collection, then also save it's data in json
+                        bookMange.books.Add(newBook);
+                        await jsonBookManager.saveToJson(bookMange.books);
+
+                        //Close the Gui on save
+                        playAddContentGUI(sender, e);
+                    }
+                    catch
+                    {
+                        //A message box for the user incase of error
+                        MessageBox.Show(
+                            "If Issue Persists, see if manual download for your PDF is avaliable.",
+                            "Tried Again.",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                            );
+                        //Clear all of the incorrect data
+                        ClearNewContentButton_Click(sender, e);
+                    }
+                }
+            }
+
+            //enable buttons
+            AddNewContentButton.IsEnabled = true;
+            ClearNewContentButton.IsEnabled = true;
+        }
+
+        private void changedRadioButtons(object sender, RoutedEventArgs e) //Purely decorational for user
+        {
+            if(sender is RadioButton button)
+            {
+                //If the Drive Radio button is pressed, disable URL Input
+                if (button.Name == "DriveRadioButton")
+                {
+                    URLTextBox.Text = string.Empty;
+                    URLTextBox.IsEnabled = false;
+                    URLLabel.TextDecorations = TextDecorations.Strikethrough;
+                    URLLabel.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(155, 155, 155));
+                }
+                //Otherwise, just enable it back if need be
+                else if (button.Name == "URLRadioButton")
+                {
+                    URLTextBox.Text = string.Empty;
+                    URLTextBox.IsEnabled = true;
+                    URLLabel.TextDecorations = null;
+                    URLLabel.Foreground = (SolidColorBrush)this.FindResource("MainBorderBrushKey");
+                }
+            }
         }
     }
 }
