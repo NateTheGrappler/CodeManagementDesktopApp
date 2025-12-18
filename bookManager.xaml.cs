@@ -18,6 +18,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -139,6 +140,11 @@ namespace CodeManagementSystem
 
         //--------------------------------Constructor--------------------------------------------
         public BookManager() { }
+
+        private void NewButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 
@@ -210,27 +216,8 @@ namespace CodeManagementSystem
 
         public void loadImageFromDrive(string imagePath)
         {
-            Debug.WriteLine("Loading: " + imagePath);
-            try
-            {
-                if (File.Exists(imagePath))
-                {
-                    Debug.WriteLine("Loading: " + imagePath);
-                    Uri uri = new Uri(imagePath);
-                    cover = new BitmapImage(uri);
-                }
-                else
-                {
-                    Debug.WriteLine("Image file not found: " + imagePath);
-                    // Set a default image or null
-                    cover = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error loading image {imagePath}: {ex.Message}");
-                cover = null;
-            }
+            Uri uri = new Uri(imagePath);
+            cover = new BitmapImage(uri);
         }
     }
 
@@ -247,27 +234,27 @@ namespace CodeManagementSystem
 
         private async void InitializeListBox()
         {
-            Book testBook = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\PDFBook-2Designing-data-intensive-applications.pdf");
-            bookMange.books.Add(testBook);
-            testBook.loadImageFromDrive(testBook.imagePath);
+            //Book testBook = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\PDFBook-2Designing-data-intensive-applications.pdf");
+            //bookMange.books.Add(testBook);
+            //testBook.loadImageFromDrive(testBook.imagePath);
 
-            Book testBook2 = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\randomPdfName.pdf");
-            bookMange.books.Add(testBook2);
-            testBook2.loadImageFromDrive(testBook2.imagePath);
+            //Book testBook2 = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\randomPdfName.pdf");
+            //bookMange.books.Add(testBook2);
+            //testBook2.loadImageFromDrive(testBook2.imagePath);
 
-            Book testBook3 = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\a_complete_guide_to_standard_cpp_algorithms_v1_0_1.pdf");
-            bookMange.books.Add(testBook3);
-            testBook3.loadImageFromDrive(testBook3.imagePath);
+            //Book testBook3 = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\a_complete_guide_to_standard_cpp_algorithms_v1_0_1.pdf");
+            //bookMange.books.Add(testBook3);
+            //testBook3.loadImageFromDrive(testBook3.imagePath);
 
-            foreach(Book book in bookMange.books)
-            {
-                Debug.WriteLine("The imagePath: " + book.imagePath);
-                Debug.WriteLine("The cover: "     + book.cover);
-            }
+            //foreach(Book book in bookMange.books)
+            //{
+            //    Debug.WriteLine("The imagePath: " + book.imagePath);
+            //    Debug.WriteLine("The cover: "     + book.cover);
+            //}
 
-            await jsonBookManager.saveToJson(bookMange.books);
+            //await jsonBookManager.saveToJson(bookMange.books);
 
-            BookListBox.ItemsSource = bookMange.books;
+            //BookListBox.ItemsSource = bookMange.books;
         }
 
         //--------------------------------------Front UI------------------------------------------
@@ -278,10 +265,87 @@ namespace CodeManagementSystem
             this.NavigationService.GoBack();
         }
 
-        //TODO: Delete This Function
-        private async void UrlButton_Click(object sender, RoutedEventArgs e)
+        private async void playAddContentGUI(object sender, RoutedEventArgs e)
         {
-            await bookMange.saveFromURL(URLInput.Text, "randomPdfName.pdf");
+            if(sender is Button button)
+            {
+                //Add in a scale information for the Gui That Opens when a new Book is made
+                if(button.Name == "NewButton")
+                {
+                    Storyboard storyboard = new Storyboard();
+
+                    //Set the transform origin on the Border itself
+                    AddBookBorder.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                    Panel.SetZIndex(AddBookBorder, 11);
+
+                    DoubleAnimation scaleYUP = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(scaleYUP, AddBookBorder);
+                    Storyboard.SetTargetProperty(scaleYUP, new PropertyPath("RenderTransform.ScaleY"));
+
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    storyboard.Children.Add(scaleYUP);
+                    storyboard.Children.Add(opacityAdd);
+                    storyboard.Begin();
+
+                }
+                //if coming from the close button inside GUI, undo animation
+                else if(button.Name == "CloseAddGUI")
+                {
+                    Storyboard storyboard = new Storyboard();
+
+                    Panel.SetZIndex(TranslucentBox, -20);
+
+                    //Set the transform origin on the Border itself
+                    AddBookBorder.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation scaleYDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                    };
+                    DoubleAnimation opacityTake = new DoubleAnimation
+                    {
+                        From = 0.7,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(scaleYDOWN, AddBookBorder);
+                    Storyboard.SetTargetProperty(scaleYDOWN, new PropertyPath("RenderTransform.ScaleY"));
+
+                    Storyboard.SetTarget(opacityTake, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityTake, new PropertyPath("Opacity"));
+
+                    storyboard.Children.Add(scaleYDOWN);
+                    storyboard.Children.Add(opacityTake);
+                    storyboard.Begin();
+                }
+            }
         }
+
+
+        //--------------------------------------Pop Up GUI Functions
+
     }
 }

@@ -29,8 +29,8 @@
 
         <!--The Title-->
         <Border Grid.Column="2" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
-            <Viewbox Stretch="Uniform">
-                <TextBlock Text="Book Manager / Reader" Margin="2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+            <Viewbox Stretch="Uniform" Margin="1">
+                <TextBlock Text="Book Manager / Reader" Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
             </Viewbox>
         </Border>
 
@@ -50,7 +50,7 @@
 
         <!--The Add New Book Button-->
         <Border BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3" Grid.Column="3" Margin="2,2,2,2">
-            <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" Grid.Row="0" ToolTip="Add In A New Video">
+            <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" Grid.Row="0" ToolTip="Add In A New Book" Click="playAddContentGUI">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
@@ -130,26 +130,72 @@
 
 
         <!--____________________________The Pop Up GUI for Downloading______________________________-->
-        <Border Grid.Column="2" BorderBrush="{StaticResource MainBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="3" Margin="20,20,20,20" BorderThickness="3" CornerRadius="30">
+        
+        <!--The Translucent Box for background darkening-->
+        <Rectangle x:Name="TranslucentBox" Fill="Black" Grid.ColumnSpan="5" Grid.RowSpan="3" Opacity="0" Panel.ZIndex="-10"/>
 
+        <!--The Border the holds the actual gui and is rounded-->
+        <Border x:Name="AddBookBorder" Grid.Column="1" Grid.ColumnSpan="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="3" Margin="20,20,20,20" BorderThickness="3" CornerRadius="15" ClipToBounds="True">
+            <!--The main content grid + row and column defs-->
             <Grid>
-                <!--The main content grid + row and column defs-->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="45"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="45"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
 
-                <!--The URL input and button for testing backend-->
-                <TextBox x:Name="URLInput" Height="40" Margin="10"/>
-                <Button x:Name="UrlButton" Height="40" Grid.Column="2" Margin="0, 0, 5 0" Content="Save" Click="UrlButton_Click"/>
+                <!--The Title-->
+                <Border Margin="0, 0, 2, 2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 3, 3" BorderBrush="{StaticResource DarkBorderBrushKey}">
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
+                        <TextBlock Text="Add A New Book To Your Library" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="4" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
+                    </Viewbox>
+                </Border >
+                
+                <!--The Back Button-->
+                <Border Grid.Column="1" Margin="2, 0, 0, 2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="3, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="CloseAddGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="playAddContentGUI">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="\Images\Close.png" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Border>
+
+                 <!--The URL input-->
+                
+                <!--The Title Input-->
+                
+                <!--The Category Input if Need Be -->
+                
+                <!--The Check List Between from File Or From Url-->
+                
+                <!--The A Progress Bar to show loading-->
+                
+                <!--The Grid Holding the Add and Clear Buttons-->
+                <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="5, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--The Save and Delete New books Buttons-->
+                    <Button x:Name="SaveNewContentButton"  BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="6, 6, 2, 6" Style="{DynamicResource TwoRoundedCornersLeft}"  Content="Add"   Foreground="White" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei"/>
+                    <Button x:Name="ClearNewContentButton" BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="2, 6, 6, 6" Style="{DynamicResource TwoRoundedCornersRight}" Content="Clear" Foreground="White" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei"/>
+                </Grid>
 
             </Grid>
 
             <Border.RenderTransform>
-                <TranslateTransform X="-1500"/>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
 
