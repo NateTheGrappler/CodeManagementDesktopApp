@@ -170,15 +170,46 @@
                     </Button>
                 </Border>
 
-                 <!--The URL input-->
-                
-                <!--The Title Input-->
-                
-                <!--The Category Input if Need Be -->
-                
-                <!--The Check List Between from File Or From Url-->
-                
-                <!--The A Progress Bar to show loading-->
+                <!--The Grid That Holds the entire data input-->
+                <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+
+                    <!--The URL input-->
+                    <Label   Content="URL: " Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
+                    <TextBox x:Name="URLTextBox" Grid.Column="1" Grid.Row="0" Margin="0, 10, 10, 10"/>
+
+                    <!--The Title Input-->
+                    <Label Content="Title: " Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
+                    <TextBox x:Name="TitleTextBox" Grid.Column="1" Grid.Row="1" Margin="0, 10, 10, 10"/>
+
+                    <!--The Category Input if Need Be -->
+                    <Label Content="Category: " Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="16"/>
+                    <TextBox x:Name="CategoryTextBox" Grid.Column="1" Grid.Row="2" Margin="0, 10, 10, 10"/>
+
+                    <!--The Radio Buttons Between from File Or From Url-->
+                    <Grid x:Name="RadioButtonGrid" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Select Form of Book Upload:  " Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontSize="12"/>
+                        <RadioButton x:Name="DriveRadioButton" Content="From Drive" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <RadioButton x:Name="URLRadioButton" Content="From URL"   Grid.Column="1" HorizontalAlignment="Center" IsChecked="True" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!--The A Progress Bar to show loading (Maybe)-->
+                </Grid>
                 
                 <!--The Grid Holding the Add and Clear Buttons-->
                 <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="5, 0">
@@ -188,14 +219,14 @@
                     </Grid.ColumnDefinitions>
 
                     <!--The Save and Delete New books Buttons-->
-                    <Button x:Name="SaveNewContentButton"  BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="6, 6, 2, 6" Style="{DynamicResource TwoRoundedCornersLeft}"  Content="Add"   Foreground="White" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei"/>
-                    <Button x:Name="ClearNewContentButton" BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="2, 6, 6, 6" Style="{DynamicResource TwoRoundedCornersRight}" Content="Clear" Foreground="White" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei"/>
+                    <Button x:Name="AddNewContentButton"  BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="6, 6, 2, 6" Style="{DynamicResource TwoRoundedCornersLeft}"  Content="Add"   Foreground="White" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei" Click="AddNewContentButton_Click"/>
+                    <Button x:Name="ClearNewContentButton" BorderBrush="#FF075A9B" BorderThickness="3"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF0078D7" Margin="2, 6, 6, 6" Style="{DynamicResource TwoRoundedCornersRight}" Content="Clear" Foreground="White" FontSize="14" FontWeight="Bold" FontFamily="Microsoft YaHei" Click="ClearNewContentButton_Click"/>
                 </Grid>
 
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
 

@@ -312,8 +312,6 @@ namespace CodeManagementSystem
                 {
                     Storyboard storyboard = new Storyboard();
 
-                    Panel.SetZIndex(TranslucentBox, -20);
-
                     //Set the transform origin on the Border itself
                     AddBookBorder.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
 
@@ -340,12 +338,27 @@ namespace CodeManagementSystem
                     storyboard.Children.Add(scaleYDOWN);
                     storyboard.Children.Add(opacityTake);
                     storyboard.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, -20);
                 }
             }
         }
 
 
-        //--------------------------------------Pop Up GUI Functions
+        //--------------------------------Pop Up GUI Functions--------------------------------------------
+        private void ClearNewContentButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Clear all of the input fields, and change back the radio buttons
+            URLTextBox.Text            = string.Empty;
+            CategoryTextBox.Text       = string.Empty;
+            TitleTextBox.Text          = string.Empty;
+            DriveRadioButton.IsChecked = false;
+            URLRadioButton.IsChecked   = true;
+        }
 
+        private void AddNewContentButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
