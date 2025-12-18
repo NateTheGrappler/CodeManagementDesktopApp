@@ -27,12 +27,17 @@ using Microsoft.Win32;
 using PdfiumViewer;
 namespace CodeManagementSystem
 {
+    //Purely for loading and saving the pdf metaData 
     public class bookJsonManager
     { 
         //---------------------------------The Variables-------------------------------------------
         private readonly string _JsonPath = System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CodeInformationManagingSystem\\BookManagement\\JSON\\");
+        private readonly string _jsonStoragePath = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "CodeInformationManagingSystem\\BookManagement\\JSON\\");
+
 
         //save to json informaton
         public async Task saveToJson(ObservableCollection<Book> books)
@@ -56,16 +61,41 @@ namespace CodeManagementSystem
             await File.WriteAllTextAsync(System.IO.Path.Combine(_JsonPath, "books.json"), json);
         }
 
-        public async Task loadFromJson()
+        //-------------------------------The loading functions-------------------------------------
+        public async Task<ObservableCollection<T>> loadJsonData<T>()
         {
+            // Check to see if path exists, if not return empty
+            if (!File.Exists(System.IO.Path.Combine(_jsonStoragePath, "books.json")))
+            {
+                return new ObservableCollection<T>();
+            }
 
+
+            //Await until all of the json data is read
+            string json = await File.ReadAllTextAsync(System.IO.Path.Combine(_jsonStoragePath, "books.json"));
+
+            //Create the JsonSerializerOptions
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            //Use serializer in order to deserialize the data and return the type of data inputed
+            var itemList = JsonSerializer.Deserialize<List<T>>(json, options);
+            return itemList != null
+                ? new ObservableCollection<T>(itemList)
+                : new ObservableCollection<T>();
         }
 
+
+        //------------------------------------Constructor------------------------------------------
         public bookJsonManager() { }
     }
 
 
-    public class BooksManager //The class that holds the book source list and has functions managing that list if needed
+
+    //The class that holds the book source list and has functions managing that list if needed
+    public class BooksManager 
     {
         //---------------------------------The Variables------------------------------------------
         public ObservableCollection<Book> books = new ObservableCollection<Book>();
@@ -142,11 +172,11 @@ namespace CodeManagementSystem
             }
         }
 
-        //-------------------------------The loading functions-------------------------------------
-
         //--------------------------------Constructor--------------------------------------------
         public BooksManager() { }
     }
+
+
 
 
     //The Class the holds the data that can be acutally found in each of the books
@@ -222,6 +252,10 @@ namespace CodeManagementSystem
         }
     }
 
+
+
+
+
     public partial class bookManager : Page
     {
         private BooksManager     bookMange       = new BooksManager();
@@ -233,40 +267,31 @@ namespace CodeManagementSystem
             InitializeListBox(); //Load all the data for viewing
         }
 
-        private async void InitializeListBox()
+        private async void InitializeListBox()                                               //loads all of the information into the listbox
         {
-            //Book testBook = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\PDFBook-2Designing-data-intensive-applications.pdf");
-            //bookMange.books.Add(testBook);
-            //testBook.loadImageFromDrive(testBook.imagePath);
+            //Load all of the meta data for the books from the json file
+            bookMange.books = await jsonBookManager.loadJsonData<Book>();
 
-            //Book testBook2 = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\randomPdfName.pdf");
-            //bookMange.books.Add(testBook2);
-            //testBook2.loadImageFromDrive(testBook2.imagePath);
+            //Also Load all of the stored covers of the images as well
+            foreach(Book book in bookMange.books )
+            {
+                book.loadImageFromDrive(book.imagePath);
+            }
 
-            //Book testBook3 = new Book("C:\\Users\\guzin\\AppData\\Roaming\\CodeInformationManagingSystem\\BookManagement\\PDF\\a_complete_guide_to_standard_cpp_algorithms_v1_0_1.pdf");
-            //bookMange.books.Add(testBook3);
-            //testBook3.loadImageFromDrive(testBook3.imagePath);
-
-            //foreach(Book book in bookMange.books)
-            //{
-            //    Debug.WriteLine("The imagePath: " + book.imagePath);
-            //    Debug.WriteLine("The cover: "     + book.cover);
-            //}
-
-            //await jsonBookManager.saveToJson(bookMange.books);
-
+            //Then set the source for the list box as the books that were gotten
             BookListBox.ItemsSource = bookMange.books;
         }
 
         //--------------------------------------Front UI------------------------------------------
 
-        //This function is for main backbutton thats in the title to go back to the neural network
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private async void BackButton_Click(object sender, RoutedEventArgs e)                //Goes back to the front page
         {
             this.NavigationService.GoBack();
+            //redundent save call bc why not
+            await jsonBookManager.saveToJson(bookMange.books);
         }
 
-        private async void playAddContentGUI(object sender, RoutedEventArgs e)
+        private async void playAddContentGUI(object sender, RoutedEventArgs e)               //Does the animation for add gui
         {
             if(sender is Button button)
             {
@@ -345,9 +370,8 @@ namespace CodeManagementSystem
             }
         }
 
-
         //--------------------------------Pop Up GUI Functions--------------------------------------------
-        private void ClearNewContentButton_Click(object sender, RoutedEventArgs e)
+        private void ClearNewContentButton_Click(object sender, RoutedEventArgs e)          //Clears all the text in the add gui
         {
             //Clear all of the input fields, and change back the radio buttons
             URLTextBox.Text            = string.Empty;
@@ -357,7 +381,7 @@ namespace CodeManagementSystem
             URLRadioButton.IsChecked   = true;
         }
 
-        private async void AddNewContentButton_Click(object sender, RoutedEventArgs e)
+        private async void AddNewContentButton_Click(object sender, RoutedEventArgs e)      //Calls the main backend save functions for covers, pdf, etc
         {
             //disable buttons
             AddNewContentButton.IsEnabled = false;
@@ -413,7 +437,7 @@ namespace CodeManagementSystem
                         //A message box for the user incase of error
                         MessageBox.Show(
                             "If Issue Persists, see if manual download for your PDF is avaliable.",
-                            "Tried Again.",
+                            "Unable to Load PDF",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error
                             );
@@ -428,7 +452,7 @@ namespace CodeManagementSystem
             ClearNewContentButton.IsEnabled = true;
         }
 
-        private void changedRadioButtons(object sender, RoutedEventArgs e) //Purely decorational for user
+        private void changedRadioButtons(object sender, RoutedEventArgs e)                  //Purely decorational for user
         {
             if(sender is RadioButton button)
             {
