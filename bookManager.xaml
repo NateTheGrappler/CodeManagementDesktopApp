@@ -93,9 +93,7 @@
                     <Setter Property="HorizontalAlignment" Value="Left"/>
                     <Setter Property="VerticalAlignment"   Value="Top" />
                     <Setter Property="Margin"              Value="0, 5, 0, 0"   />
-
                 </Style>
-
             </ListBox.ItemContainerStyle>
 
             <!--The Actual Content thats displayed inside of each item-->
@@ -103,21 +101,25 @@
                 <DataTemplate>
                     <Border CornerRadius="3" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource MainBorderBrushKey}">
                         <!--The main Grid-->
-                        <Grid>
+                        <Grid MinHeight="200">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="40"/>
                             </Grid.RowDefinitions>
 
                             <!--The First Page of the PDF as a Cover-->
-                            <Image Margin="3" Grid.Column="0" Grid.Row="0" Source="{Binding cover}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            <Viewbox Margin="3" Grid.Column="0" Grid.Row="0" Stretch="UniformToFill">
+                                <Image Source="{Binding cover}" Stretch="Uniform"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            </Viewbox>
 
                             <!--The Title of the Book-->
                             <Border  Grid.Row="1" Margin="2" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}">
-                                <TextBlock Text="{Binding title}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                                    <TextBlock Text="{Binding title}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                </ScrollViewer>
                             </Border>
 
                         </Grid>

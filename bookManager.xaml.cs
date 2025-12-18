@@ -116,29 +116,35 @@ namespace CodeManagementSystem
 
             //Then open the actual dialog and pause application to let user choose pdf
             bool? result = openFileDialog.ShowDialog();
-
-            if(result == true)
+            try
             {
-                //After a pdf is successfully chosen, get it's file name
-                string fileName = openFileDialog.FileName;
-                Debug.WriteLine(fileName);
-
-                //if the directory doesnt exist, create it
-                if(!System.IO.Directory.Exists(_driveDownloadPath))
+                if (result == true)
                 {
-                    System.IO.Directory.CreateDirectory(_driveDownloadPath);
+                    //After a pdf is successfully chosen, get it's file name
+                    string fileName = openFileDialog.FileName;
+                    Debug.WriteLine(fileName);
+
+                    //if the directory doesnt exist, create it
+                    if (!System.IO.Directory.Exists(_driveDownloadPath))
+                    {
+                        System.IO.Directory.CreateDirectory(_driveDownloadPath);
+                    }
+
+                    //Move the File over from whatever location it was at, to then the roaming apps folder
+                    System.IO.File.Move
+                    (
+                        fileName,
+                        System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName)
+                    );
+                    return System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName);
                 }
-
-                //Move the File over from whatever location it was at, to then the roaming apps folder
-                System.IO.File.Move
-                (
-                    fileName,
-                    System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName)
-                );
-                return System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName);
+                return "";
             }
-
-            return System.IO.Path.Combine(_driveDownloadPath, openFileDialog.SafeFileName);
+            catch(Exception ex)
+            {
+                //Return empty if error happens
+                return "";
+            }
         }
         //Save a book from an online url
         public async Task<string> saveFromURL(string url)
@@ -250,8 +256,10 @@ namespace CodeManagementSystem
         {
             try
             {
+                //Set up a file stream to load all of the data to memory
                 using (FileStream stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
+                    //set up the bitmap image and then cache the image from the imagepath
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     bitmap.CacheOption = BitmapCacheOption.OnLoad;
@@ -262,6 +270,7 @@ namespace CodeManagementSystem
                     cover = bitmap;
                 }
             }
+            //Incase loading the image fails for some reason
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading image: {ex.Message}");
@@ -349,6 +358,7 @@ namespace CodeManagementSystem
                     storyboard.Children.Add(scaleYUP);
                     storyboard.Children.Add(opacityAdd);
                     storyboard.Begin();
+                    ClearNewContentButton_Click(sender, e);
 
                 }
                 //if coming from the close button inside GUI, undo animation
@@ -384,11 +394,12 @@ namespace CodeManagementSystem
                     storyboard.Begin();
 
                     Panel.SetZIndex(TranslucentBox, -20);
+                    ClearNewContentButton_Click(sender, e);
                 }
             }
         }
 
-        private async void DeleteButton_Click(object sender, RoutedEventArgs e)                   //Delete the selected book in listbox
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)              //Delete the selected book in listbox
         {
             if (BookListBox.SelectedItem == null)
             {
@@ -415,12 +426,14 @@ namespace CodeManagementSystem
                 //If they say yes proceed with deletion
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Simply remove and delete - no file locks!
+                    //Remove the item from the list
                     bookMange.books.Remove(selectedItem);
 
+                    //Delete the pdf and image at their given paths
                     File.Delete(selectedItem.imagePath);
                     File.Delete(selectedItem.filePath);
 
+                    //Also update the json data to remove the deleted book
                     await jsonBookManager.saveToJson(bookMange.books);
                 }
             }
@@ -448,6 +461,9 @@ namespace CodeManagementSystem
             {
                 //After the person opens the right file, get the new path of the file moved by .saveFromDrive()
                 string filePath = bookMange.saveFromDrive();
+
+                //check to see if valid path was given
+                if(filePath == "") { ClearNewContentButton_Click(sender, e); AddNewContentButton.IsEnabled = true; ClearNewContentButton.IsEnabled = true; return; }
 
                 //Init a new book using the path gotten, and also load all of it's data
                 Book newBook = new Book(filePath);
