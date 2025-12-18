@@ -981,6 +981,11 @@ namespace CodeManagementSystem
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
                 TabControl.SelectedItem = VideoTab;
+
+                //At the end of everything reset the progress bar
+                SaveProgressBar.Value = 0;
+                ProgressText.Content = "Progress Bar: ";
+
                 return;
             }
             else if (contentManager.CheckLinkType(URL.Text.ToString()) == "playlist")
@@ -1034,6 +1039,11 @@ namespace CodeManagementSystem
                 clearCurrentGUI(sender, e);
                 NewButton_Click(sender, e);
                 TabControl.SelectedItem = PlaylistTab;
+
+                //At the end of everything reset the progress bar
+                SaveProgressBar.Value = 0;
+                ProgressText.Content = "Progress Bar: ";
+
                 return;
             }
 

@@ -848,7 +848,7 @@
                             <RowDefinition Height="40"/>
                             <!--Platform-->
                             <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="25"/>
                             <RowDefinition Height="25"/>
                             
                         </Grid.RowDefinitions>
