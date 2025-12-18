@@ -10,7 +10,7 @@
 
     <!--Main Grid that Holds everything-->
     <Grid Background="{StaticResource MainBackgroundBrushKey}">
-        
+
         <!--The Definitions for the Grid rows and columns-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>
@@ -21,49 +21,50 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="67*"/>
+            <RowDefinition Height="323*"/>
         </Grid.RowDefinitions>
-        
+
         <!--__________________________The Top of the UI________________________________-->
-        
+
         <!--The Title-->
-        <Border Grid.Column="2" Margin="2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
+        <Border Grid.Column="2" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
             <Viewbox Stretch="Uniform">
                 <TextBlock Text="Book Manager / Reader" Margin="2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
             </Viewbox>
         </Border>
-        
+
         <!--The Button to back to the main menu-->
-        <Border Grid.Column="0" Margin="2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
+        <Border Grid.Column="0" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
             <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
                 <TextBlock Text="&lt;" FontSize="32" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
             </Button>
         </Border>
-        
+
         <!--The Help Button to Explain how this page works-->
-        <Border Grid.Column="1" Margin="2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
+        <Border Grid.Column="1" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
             <Button x:Name="HelpButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
                 <TextBlock Text="?" FontSize="32" FontWeight="Bold" FontFamily="Arial" Margin="0,0 0,3"/>
             </Button>
-        </Border>        
-        
-        <!--The Add New Book Button-->
-        <Border BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3" Grid.Column="3" Margin="2">
-            <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" Grid.Row="0" ToolTip="Add In A New Video">
-            <Button.Content>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </StackPanel>
-            </Button.Content>
-        </Button>
         </Border>
-        
+
+        <!--The Add New Book Button-->
+        <Border BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3" Grid.Column="3" Margin="2,2,2,2">
+            <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" Grid.Row="0" ToolTip="Add In A New Video">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </Border>
+
         <!--The Delete A Selected Book Button-->
-        <Border BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3" Grid.Column="4" Margin="2">
+        <Border BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3" Grid.Column="4" Margin="2,2,2,2">
             <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="4" Grid.Row="0" ToolTip="Deleted Selected Video">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
@@ -78,30 +79,61 @@
         </Border>
 
         <!--__________________________The List Box That Stores the PDFs data________________________________-->
+        <ListBox x:Name="BookListBox" Grid.Row="1" Grid.ColumnSpan="5" Margin="20,10,20,20" Background="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.RowSpan="2">
 
-        <ListBox Grid.Row="1" Grid.ColumnSpan="5" Margin="20, 10, 20, 20" Background="LightGray">
+            <!--Set up a uniform grid so that way the book objects are oranized from side to side-->
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="4"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
-                    
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="VerticalAlignment"   Value="Top" />
+                    <Setter Property="Margin"              Value="0, 5, 0, 0"   />
+
                 </Style>
+
             </ListBox.ItemContainerStyle>
-            
+
             <!--The Actual Content thats displayed inside of each item-->
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    
+                    <Border CornerRadius="3" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource MainBorderBrushKey}">
+                        <!--The main Grid-->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!--The First Page of the PDF as a Cover-->
+                            <Image Margin="3" Grid.Column="0" Grid.Row="0" Source="{Binding cover}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+                            <!--The Title of the Book-->
+                            <Border  Grid.Row="1" Margin="2" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}">
+                                <TextBlock Text="{Binding title}" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Microsoft Yi Baiti" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                            </Border>
+
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            
+
         </ListBox>
 
-        
-        
+
+
         <!--____________________________The Pop Up GUI for Downloading______________________________-->
-        <Border Grid.Column="2" BorderBrush="{StaticResource MainBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="2" Margin="20" BorderThickness="3" CornerRadius="30">    
-            
-            <Grid>  <!--The main content grid + row and column defs-->
+        <Border Grid.Column="2" BorderBrush="{StaticResource MainBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="3" Margin="20,20,20,20" BorderThickness="3" CornerRadius="30">
+
+            <Grid>
+                <!--The main content grid + row and column defs-->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="60"/>
@@ -109,15 +141,17 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
+
                 <!--The URL input and button for testing backend-->
                 <TextBox x:Name="URLInput" Height="40" Margin="10"/>
                 <Button x:Name="UrlButton" Height="40" Grid.Column="2" Margin="0, 0, 5 0" Content="Save" Click="UrlButton_Click"/>
 
             </Grid>
-            
 
+            <Border.RenderTransform>
+                <TranslateTransform X="-1500"/>
+            </Border.RenderTransform>
         </Border>
-        
+
     </Grid>
 </Page>
