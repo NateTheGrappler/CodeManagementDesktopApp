@@ -65,7 +65,7 @@
 
         <!--The Delete A Selected Book Button-->
         <Border BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3" Grid.Column="4" Margin="2,2,2,2">
-            <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="4" Grid.Row="0" ToolTip="Deleted Selected Video">
+            <Button BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="DeleteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="4" Grid.Row="0" ToolTip="Deleted Selected Video" Click="DeleteButton_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Rectangle Width="27" Height="27" Fill="#FF0078D7" VerticalAlignment="Center">

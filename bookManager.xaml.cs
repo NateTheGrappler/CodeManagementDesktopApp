@@ -22,6 +22,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Microsoft.Win32;
 //Add in the pdf nu-get package that is needed:
 using PdfiumViewer;
@@ -153,7 +154,7 @@ namespace CodeManagementSystem
                 {
                     //get the pdf information via the byte array, then set the path, and save the file
                     byte[] pdfBytes = await client.GetByteArrayAsync(url);
-                    string uniqueFileName = $"{Guid.NewGuid()}.png";
+                    string uniqueFileName = $"{Guid.NewGuid()}.pdf";
                     string path = System.IO.Path.Combine(_driveDownloadPath, uniqueFileName);
                     await System.IO.File.WriteAllBytesAsync(path, pdfBytes);
                     return path;
@@ -247,8 +248,25 @@ namespace CodeManagementSystem
 
         public void loadImageFromDrive(string imagePath)
         {
-            Uri uri = new Uri(imagePath);
-            cover = new BitmapImage(uri);
+            try
+            {
+                using (FileStream stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.StreamSource = stream;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
+
+                    cover = bitmap;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading image: {ex.Message}");
+                cover = null;
+            }
         }
     }
 
@@ -370,6 +388,44 @@ namespace CodeManagementSystem
             }
         }
 
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)                   //Delete the selected book in listbox
+        {
+            if (BookListBox.SelectedItem == null)
+            {
+                //Tell user that they need to select a book to delete
+                var result = MessageBox.Show(
+                    $"Please select a book to delete.",
+                    "No selection found.",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+            }
+            else
+            {
+                //Grab the selected item as a book then ask if they really want to delete it
+                var selectedItem = BookListBox.SelectedItem as Book;
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete book: {selectedItem.title}.",
+                    "WARNING!",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
+
+                    );
+
+                //If they say yes proceed with deletion
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Simply remove and delete - no file locks!
+                    bookMange.books.Remove(selectedItem);
+
+                    File.Delete(selectedItem.imagePath);
+                    File.Delete(selectedItem.filePath);
+
+                    await jsonBookManager.saveToJson(bookMange.books);
+                }
+            }
+        }
+        
         //--------------------------------Pop Up GUI Functions--------------------------------------------
         private void ClearNewContentButton_Click(object sender, RoutedEventArgs e)          //Clears all the text in the add gui
         {
