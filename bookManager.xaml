@@ -307,7 +307,7 @@
                     <TextBox x:Name="bookKeywords" Grid.Column="1" Grid.Row="3" Margin="10"/>
 
                     <!--The Button to open the book for reading-->
-                    <Button Grid.ColumnSpan="2" Grid.Row="6" Margin="10" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" Foreground="White">
+                    <Button x:Name="readBookButton" Grid.ColumnSpan="2" Grid.Row="6" Margin="10" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" Foreground="White" Click="readBookButton_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="10"/>
@@ -348,27 +348,23 @@
                 <!--A grid to hold all of the button functions-->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        
-                        <ColumnDefinition Width="*"/> <!--Close Button-->
                         <ColumnDefinition Width="40"/> <!--Close Button-->
-                        <ColumnDefinition Width="*"/> <!--Fullscreen Button-->
                         <ColumnDefinition Width="40"/> <!--Fullscreen Button-->
-                        <ColumnDefinition Width="*"/> <!--Next Page Button-->
+                        <ColumnDefinition Width="40"/> <!--Reload Button-->
                         <ColumnDefinition Width="40"/> <!--Next Page Button-->
-                        <ColumnDefinition Width="*"/> <!--Previous Page Button-->
                         <ColumnDefinition Width="40"/> <!--Previous Page Button-->
+                        <ColumnDefinition Width="40"/> <!--Zoom in Button-->
                         <ColumnDefinition Width="*"/> <!--Zoom in Button-->
                         <ColumnDefinition Width="40"/> <!--Zoom in Button-->
-                        <ColumnDefinition Width="*"/> <!--Zoom Out Button-->
+                        <ColumnDefinition Width="40"/> <!--Zoom in Button-->
                         <ColumnDefinition Width="40"/> <!--Zoom Out Button-->
-                        <ColumnDefinition Width="*"/> <!--Print Button-->
                         <ColumnDefinition Width="40"/> <!--Print Button-->
                     </Grid.ColumnDefinitions>
                     
                     
                     <!--The Close Button-->
-                    <Border Grid.Row="1" Grid.Column="1" Margin="2, 0, 0, 2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
-                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ClosePdfView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="openBookMenu">
+                    <Border Grid.Row="1" Grid.Column="0" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ClosePdfView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="openAndCloseAnimation">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -382,17 +378,147 @@
                     </Border>
                     
                     <!--The FullScreen Button-->
+                    <Border Grid.Row="1" Grid.Column="1" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="fullscreenButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="openBookMenu">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/fullScreenArrows.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
+                    <!--The Reload Button-->
+                    <Border Grid.Row="1" Grid.Column="2" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ReloadButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Reload The PDF" Click="reloadPDF">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/reload.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
                     <!--The Zoom in Button-->
+                    <Border Grid.Row="1" Grid.Column="3" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="zoomInButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Zoom In by 10%" Click="zoomInPDF">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/zoomIn.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
                     <!--The Zoom Out Button-->
-                    <!--The Next Page Button-->
+                    <Border Grid.Row="1" Grid.Column="4" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ZoomOutButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Zoom Out by 10%" Click="zoomOutPDF">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/zoomOut.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
+                    <!--The Reset Zoom Button-->
+                    <Border Grid.Row="1" Grid.Column="5" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="LastPageButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Reset Zoom" Click="resetZoom">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/resetZoom.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
                     <!--The Previous Page Button-->
+                    <Border Grid.Row="1" Grid.Column="9" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="PreviousPageButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go To The Previous Page" Click="previousPage">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/leftArrow.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
+                    <!--The Next Page Button-->
+                    <Border Grid.Row="1" Grid.Column="10" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="NextPageButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go To The Next Page" Click="nextPage">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/rightArrow.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+
+                    <!--The Scroll Down Button-->
+                    <Border Grid.Row="1" Grid.Column="7" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <RepeatButton Margin="3" BorderThickness="3" Style="{DynamicResource RoundRepeatButton}" x:Name="scrollDownButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go To The Next Page" Click="scrollDown">
+                            <RepeatButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/downArrow.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </RepeatButton.Content>
+                        </RepeatButton>
+                    </Border>
+
+                    <!--The Scroll Up Button-->
+                    <Border Grid.Row="1" Grid.Column="8" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <RepeatButton Margin="3" BorderThickness="3" Style="{DynamicResource RoundRepeatButton}" x:Name="scrollUpButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0"  ToolTip="Scroll Up" Click="scrollUp">
+                            <RepeatButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/upArrow.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </RepeatButton.Content>
+                        </RepeatButton>
+                    </Border>
+
                 </Grid>
                 
             </Grid>
 
             <!--Border Render Transform for opening/closing animaiton-->
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+                <TranslateTransform X="0" Y="-1000"/>
             </Border.RenderTransform>
         </Border>
 

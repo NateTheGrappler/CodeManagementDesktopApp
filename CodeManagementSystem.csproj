@@ -16,8 +16,21 @@
     <None Remove="fileFolderButtonImg.png" />
     <None Remove="Images\blackVerticalDots.png" />
     <None Remove="Images\Close.png" />
+    <None Remove="Images\downArrow.png" />
     <None Remove="Images\expand.png" />
+    <None Remove="Images\fitScreen.png" />
+    <None Remove="Images\fullScreenArrows.png" />
+    <None Remove="Images\fullScreenExit.png" />
+    <None Remove="Images\lastPageButton.png" />
+    <None Remove="Images\leftArrow.png" />
+    <None Remove="Images\NoRedircle.png" />
+    <None Remove="Images\reload.png" />
+    <None Remove="Images\resetZoom.png" />
+    <None Remove="Images\rightArrow.png" />
+    <None Remove="Images\upArrow.png" />
     <None Remove="Images\verticalDots.png" />
+    <None Remove="Images\zoomIn.png" />
+    <None Remove="Images\zoomOut.png" />
     <None Remove="JackOLanternSpirte-removebg-preview.png" />
     <None Remove="JackOLanternSpirte.png" />
     <None Remove="pencil-icon-png-9.jpg" />
@@ -29,6 +42,7 @@
 
   <ItemGroup>
     <PackageReference Include="FFMpegCore" Version="5.4.0" />
+    <PackageReference Include="InputSimulator" Version="1.0.4" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3650.58" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
@@ -48,28 +62,91 @@
 
   <ItemGroup>
     <Resource Include="Images\blackVerticalDots.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\brushIcon.png" />
-    <Resource Include="Images\blueFolder-removebg-preview.png" />
+    <Resource Include="Images\brushIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\blueFolder-removebg-preview.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\Close.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\downArrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\expand.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\fileFolderButtonImg.png" />
-    <Resource Include="Images\circleBackButton.png" />
-    <Resource Include="Images\codeManagerIcon.png" />
-    <Resource Include="Images\codeManagerIconColor.png" />
-    <Resource Include="Images\JackOLanternSpirte-removebg-preview.png" />
-    <Resource Include="Images\JackOLanternSpirte.png" />
-    <Resource Include="Images\plusButtonImage-removebg-preview.png" />
-    <Resource Include="Images\saveButtonImage.png" />
-    <Resource Include="Images\pencil-icon-png-9.jpg" />
-    <Resource Include="Images\trashcanPng.png" />
+    <Resource Include="Images\fileFolderButtonImg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\circleBackButton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\codeManagerIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\codeManagerIconColor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\fitScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\fullScreenArrows.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\fullScreenExit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\JackOLanternSpirte-removebg-preview.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\JackOLanternSpirte.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\lastPageButton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\leftArrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\NoRedircle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\plusButtonImage-removebg-preview.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\reload.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\resetZoom.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\rightArrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\saveButtonImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\pencil-icon-png-9.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\trashcanPng.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\upArrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\verticalDots.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\zoomIn.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\zoomOut.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

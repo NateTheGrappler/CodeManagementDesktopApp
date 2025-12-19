@@ -14,7 +14,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -24,9 +26,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AngleSharp.Text;
 using Microsoft.Win32;
 //Add in the pdf nu-get package that is needed:
 using PdfiumViewer;
+using WindowsInput;
+using WindowsInput.Native;
+using static System.Net.Mime.MediaTypeNames;
 namespace CodeManagementSystem
 {
     //Purely for loading and saving the pdf metaData 
@@ -101,6 +107,7 @@ namespace CodeManagementSystem
     {
         //---------------------------------The Variables------------------------------------------
         public ObservableCollection<Book> books = new ObservableCollection<Book>();
+        public InputSimulator inputSimulator = new InputSimulator();
         private readonly string _driveDownloadPath = System.IO.Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "CodeInformationManagingSystem\\BookManagement\\PDF\\");
@@ -306,9 +313,8 @@ namespace CodeManagementSystem
                 book.loadImageFromDrive(book.imagePath);
             }
 
-
-            await pdfWebView.EnsureCoreWebView2Async(); //init the webview?
-            pdfWebView.CoreWebView2.Navigate(bookMange.books[0].filePath);
+            //Also init the web view for loading the pdfs
+            await pdfWebView.EnsureCoreWebView2Async(null);
 
             //Then set the source for the list box as the books that were gotten
             BookListBox.ItemsSource = bookMange.books;
@@ -686,7 +692,125 @@ namespace CodeManagementSystem
                 if(!string.IsNullOrEmpty(bookPageCount.Text)) { book.pageCount = bookPageCount.Text;}
                 if(!string.IsNullOrEmpty(bookKeywords.Text))  { book.keyWords  = bookKeywords.Text; }
             }   
-        }       
+        }
+
+        private void readBookButton_Click(object sender, RoutedEventArgs e)                //Redirect to the animation function
+        {
+            openAndCloseAnimation(sender, e);
+        }
+
+        //-------------------------------------PDF Control Functions---------------------------------------
+
+        private void openAndCloseAnimation(object sender, RoutedEventArgs e)               //Animate the opening of the pdf
+        {
+            if (sender is Button button)
+            {
+                if (button.Name == "readBookButton")
+                {
+                    openPDF();
+                    Storyboard storyboard = new Storyboard();
+
+                    Panel.SetZIndex(readBookBorder, 15);
+
+                    DoubleAnimation moveYDOWN = new DoubleAnimation
+                    {
+                        From = -1000,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+
+                    Storyboard.SetTarget(moveYDOWN, readBookBorder);
+                    Storyboard.SetTargetProperty(moveYDOWN, new PropertyPath("RenderTransform.Y"));
+
+                    storyboard.Children.Add(moveYDOWN);
+                    storyboard.Begin();
+                }
+                else if (button.Name == "ClosePdfView")
+                {
+                    Storyboard storyboard = new Storyboard();
+
+                    DoubleAnimation moveYUP = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = -1000,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+
+                    Storyboard.SetTarget(moveYUP, readBookBorder);
+                    Storyboard.SetTargetProperty(moveYUP, new PropertyPath("RenderTransform.Y"));
+
+                    storyboard.Children.Add(moveYUP);
+                    storyboard.Begin();
+
+                }
+            }
+        }
+    
+        private void openPDF()                                                             //Set the web2view to the open book pdf 
+        {
+            if(BookListBox.SelectedItem != null)
+            {
+                var book = BookListBox.SelectedItem as Book;
+                pdfWebView.CoreWebView2.Navigate(book.filePath); //Then get the open view to display the book
+            }
+        }
+
+        private async void nextPage(object sender, RoutedEventArgs e)
+        {
+            //Focus element so key press works
+            pdfWebView.Focus();
+
+            //Press the right arrow key once to simulate skipping to the next page
+            bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.RIGHT);
+            bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.RIGHT); ;
+        }
+        private void previousPage(object sender, RoutedEventArgs e)
+        {
+            //Focus element so key press works
+            pdfWebView.Focus();
+
+            //Press the right arrow key once to simulate skipping to the next page
+            bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.LEFT);
+            bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.LEFT); ;
+        }
+        private void reloadPDF(object sender, RoutedEventArgs e)
+        {
+            pdfWebView.Reload();
+        }
+        private void zoomInPDF(object sender, RoutedEventArgs e)
+        {
+            //zoom in by 10%
+            pdfWebView.ZoomFactor += 0.1;
+        }
+        private void zoomOutPDF(object sender, RoutedEventArgs e)
+        {
+            //zoom out by 10%
+            pdfWebView.ZoomFactor -= 0.1;
+        }
+        private void resetZoom(object sender, RoutedEventArgs e)
+        {
+            //reset zoom factor to original
+            pdfWebView.ZoomFactor = 1.0f;
+        }
+        private void scrollDown(object sender, RoutedEventArgs e)
+        {
+            //Focus element so key press works
+            pdfWebView.Focus();
+
+            //Press the right arrow key once to simulate skipping to the next page
+            bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DOWN);
+            bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.DOWN); ;
+        }
+        private void scrollUp(object sender, RoutedEventArgs e)
+        {
+            //Focus element so key press works
+            pdfWebView.Focus();
+
+            //Press the right arrow key once to simulate skipping to the next page
+            bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.UP);
+            //bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.UP); ;
+        }
+
     }           
 }               
                 

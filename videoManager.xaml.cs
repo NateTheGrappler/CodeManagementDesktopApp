@@ -508,11 +508,23 @@ namespace CodeManagementSystem
             }
 
             //Also get all of the infomration of the playlist itself
-            this.id = playlist.Id.ToString();
-            this.title = playlist.Title;
+            if (!string.IsNullOrEmpty(playlist.Id.ToString()))
+            {
+                this.id = playlist.Id.ToString();
+            }
+            if(!string.IsNullOrEmpty(playlist.Title))
+            {
+                this.title = playlist.Title;
+            }
             this.addedDate = DateTime.Now;
-            this.author = playlist.Author.ChannelTitle;
-            this.url = URL;
+            if(!string.IsNullOrEmpty(playlist.Author.ChannelTitle))
+            {
+                this.author = playlist.Author.ChannelTitle;
+            }
+            if(!string.IsNullOrEmpty(URL))
+            {
+                this.url = URL;
+            }
             this.numOfVideos = playlistVideos.Count;
             this.thumbNailUrl = GetBestThumbnailUrl(playlist);
 
