@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
@@ -546,5 +547,142 @@ namespace CodeManagementSystem
                 }
             }
         }
-    }
-}
+    
+        //------------------------------Book Menu GUI Functions-------------------------------------------
+
+        private void openBookMenu(object sender, RoutedEventArgs e)                        //Do The Animations for the book menu
+        {
+            if(sender is Button button)
+            {
+                if(button.Name == "OpenBookMenu")
+                {
+                    SetUpData(sender, e); //Load all the book metaData to book menu
+                    Storyboard storyboard = new Storyboard();
+
+                    //Set the transform origin on the Border itself
+                    bookMenuBorder.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                    Panel.SetZIndex(bookMenuBorder, 11);
+
+                    DoubleAnimation scaleYUP = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(scaleYUP, bookMenuBorder);
+                    Storyboard.SetTargetProperty(scaleYUP, new PropertyPath("RenderTransform.ScaleY"));
+
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    storyboard.Children.Add(scaleYUP);
+                    storyboard.Children.Add(opacityAdd);
+                    storyboard.Begin();
+                }
+                else if (button.Name == "CloseBookMenu" )
+                {
+                    Storyboard storyboard = new Storyboard();
+
+                    //Set the transform origin on the Border itself
+                    bookMenuBorder.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation scaleYDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                    };
+                    DoubleAnimation opacityTake = new DoubleAnimation
+                    {
+                        From = 0.7,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(scaleYDOWN, bookMenuBorder);
+                    Storyboard.SetTargetProperty(scaleYDOWN, new PropertyPath("RenderTransform.ScaleY"));
+
+                    Storyboard.SetTarget(opacityTake, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityTake, new PropertyPath("Opacity"));
+
+                    storyboard.Children.Add(scaleYDOWN);
+                    storyboard.Children.Add(opacityTake);
+                    storyboard.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, -20);
+
+                    //After Closing the window, also save all of the changed content to the item
+                    saveDataToBook();
+                }
+            }
+        }
+    
+        private void SetUpData(object sender, RoutedEventArgs e)                           //Loads the meta data from book into book menu
+        {
+            //Check to see if youre a button in the list, and if so, get that list, and select the item that you pressed the button from
+            if (sender is Button button)
+            {
+                //Find the parent ListBoxItem
+                DependencyObject parent = VisualTreeHelper.GetParent(button);
+
+                //Get the parent of the button object
+                while (parent != null && !(parent is ListBoxItem))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                if (parent is ListBoxItem listBoxItem)
+                {
+                    //Select the ListBoxItem
+                    listBoxItem.IsSelected = true;
+                    ListBox listBox = ItemsControl.ItemsControlFromItemContainer(listBoxItem) as ListBox;
+
+                    //Make the item the selected one in the list box
+                    if (listBox != null)
+                    {
+                        var selectedItem = listBox.SelectedItem;
+                    }
+                }
+            }
+
+            if (BookListBox.SelectedItem != null)
+            {
+                var book = BookListBox.SelectedItem as Book;
+                BookMenuCover.Source = book.cover;
+                bookTitle.Text       = book.title;
+                bookAuthor.Text      = book.author;
+                bookSubject.Text     = book.subject;
+                bookPageCount.Text   = book.pageCount;
+                bookKeywords.Text    = book.keyWords;
+            }            
+        }
+        
+        private void saveDataToBook()                                                      //Save all of the data from the book menu gui to the book on close
+        {
+            
+            if (BookListBox.SelectedItem != null)
+            {
+                var book = BookListBox.SelectedItem as Book;
+                if(!string.IsNullOrEmpty(bookTitle.Text))     { book.title     = bookTitle.Text;    }
+                if(!string.IsNullOrEmpty(bookAuthor.Text))    { book.author    = bookAuthor.Text;   }
+                if(!string.IsNullOrEmpty(bookSubject.Text))   { book.subject   = bookSubject.Text;  }
+                if(!string.IsNullOrEmpty(bookPageCount.Text)) { book.pageCount = bookPageCount.Text;}
+                if(!string.IsNullOrEmpty(bookKeywords.Text))  { book.keyWords  = bookKeywords.Text; }
+            }   
+        }       
+    }           
+}               
+                
