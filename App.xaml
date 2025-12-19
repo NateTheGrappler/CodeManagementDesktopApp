@@ -20,7 +20,47 @@
         <SolidColorBrush x:Key="MainBorderBrushKey"     x:Name="MainBorderBrush"        Color="#FF0078D7"/>
         <SolidColorBrush x:Key="DarkBorderBrushKey"     x:Name="darkBorderBrush"        Color="#FF075A9B"/>
         <SolidColorBrush x:Key="MainBackgroundBrushKey" x:Name="MainBackgroundBrushKey" Color="#FFEEE8E8"/>
+
         
+        <!--Set up a transparent button style-->
+        <Style x:Key="TransparentHoverButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="0">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- This trigger handles the hover state -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!-- We don't set a background here, leaving the background as the default 'Transparent' -->
+                                <!-- If you had another hover color, you would set it here. Leaving it out makes it transparent. -->
+                            </Trigger>
+
+                            <!-- Optional: Add a trigger for when the button is pressed -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#33000000"/>
+                                <!-- Example: a very light gray when pressed -->
+                            </Trigger>
+
+                            <!-- Optional: Add a trigger for when the button is disabled -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
 
         <Style x:Key="FocusVisual">
