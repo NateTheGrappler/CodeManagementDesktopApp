@@ -306,6 +306,10 @@ namespace CodeManagementSystem
                 book.loadImageFromDrive(book.imagePath);
             }
 
+
+            await pdfWebView.EnsureCoreWebView2Async(); //init the webview?
+            pdfWebView.CoreWebView2.Navigate(bookMange.books[0].filePath);
+
             //Then set the source for the list box as the books that were gotten
             BookListBox.ItemsSource = bookMange.books;
         }
