@@ -379,12 +379,12 @@
                     
                     <!--The FullScreen Button-->
                     <Border Grid.Row="1" Grid.Column="1" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
-                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="fullscreenButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="openBookMenu">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="fullscreenButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="fullscreenPDF">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="/Images/fullScreenArrows.png" Stretch="Uniform"/>
+                                            <ImageBrush x:Name="FullScreenImage" ImageSource="/Images/fullScreenArrows.png" Stretch="Uniform"/>
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
                                 </StackPanel>

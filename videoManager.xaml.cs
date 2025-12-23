@@ -507,26 +507,38 @@ namespace CodeManagementSystem
                 regularVideos.Add(newVideo);
             }
 
-            //Also get all of the infomration of the playlist itself
-            if (!string.IsNullOrEmpty(playlist.Id.ToString()))
+            try
             {
-                this.id = playlist.Id.ToString();
+                //Also get all of the infomration of the playlist itself
+                if (!string.IsNullOrEmpty(playlist.Id.ToString()))
+                {
+                    this.id = playlist.Id.ToString();
+                }
+                if (!string.IsNullOrEmpty(playlist.Title))
+                {
+                    this.title = playlist.Title;
+                }
+                this.addedDate = DateTime.Now;
+                if (!string.IsNullOrEmpty(playlist.Author.ChannelTitle))
+                {
+                    this.author = playlist.Author.ChannelTitle;
+                }
+                if (!string.IsNullOrEmpty(URL))
+                {
+                    this.url = URL;
+                }
+                this.numOfVideos = playlistVideos.Count;
+                this.thumbNailUrl = GetBestThumbnailUrl(playlist);
             }
-            if(!string.IsNullOrEmpty(playlist.Title))
+            catch
             {
-                this.title = playlist.Title;
+                MessageBox.Show(
+                    "Unable to download a video, proceeding anyways!",
+                    "Error!",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                    );
             }
-            this.addedDate = DateTime.Now;
-            if(!string.IsNullOrEmpty(playlist.Author.ChannelTitle))
-            {
-                this.author = playlist.Author.ChannelTitle;
-            }
-            if(!string.IsNullOrEmpty(URL))
-            {
-                this.url = URL;
-            }
-            this.numOfVideos = playlistVideos.Count;
-            this.thumbNailUrl = GetBestThumbnailUrl(playlist);
 
         }
 
@@ -705,9 +717,6 @@ namespace CodeManagementSystem
                 Debug.WriteLine("ERROR");
             }
         }
-
-
-
         
         //---------------------------------------All Left Sidebar Buttons------------------------------------
         //Open up a new popup that allows for the creation of a new Video, Short, Playlist, or Other

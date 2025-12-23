@@ -33,6 +33,8 @@ using PdfiumViewer;
 using WindowsInput;
 using WindowsInput.Native;
 using static System.Net.Mime.MediaTypeNames;
+
+
 namespace CodeManagementSystem
 {
     //Purely for loading and saving the pdf metaData 
@@ -295,6 +297,8 @@ namespace CodeManagementSystem
     {
         private BooksManager     bookMange       = new BooksManager();
         private bookJsonManager  jsonBookManager = new bookJsonManager();
+        private WindowState      originalWindowState;
+        private WindowStyle      originalWindowStyle;
 
         public bookManager()
         {
@@ -727,6 +731,15 @@ namespace CodeManagementSystem
                 }
                 else if (button.Name == "ClosePdfView")
                 {
+
+                    //Add in an extra check to see if the user is full screened or not and close them out if they are
+                    if (Window.GetWindow(this).WindowState == WindowState.Maximized)
+                    {
+                        Window.GetWindow(this).WindowState = originalWindowState;
+                        Window.GetWindow(this).WindowStyle = originalWindowStyle;
+                    }
+
+
                     Storyboard storyboard = new Storyboard();
 
                     DoubleAnimation moveYUP = new DoubleAnimation
@@ -742,6 +755,9 @@ namespace CodeManagementSystem
                     storyboard.Children.Add(moveYUP);
                     storyboard.Begin();
 
+                    //Also reload the pdf view to fix rendering glitch
+                    reloadPDF(sender, e);
+
                 }
             }
         }
@@ -755,7 +771,7 @@ namespace CodeManagementSystem
             }
         }
 
-        private async void nextPage(object sender, RoutedEventArgs e)
+        private async void nextPage(object sender, RoutedEventArgs e)                      //Manually press right arrow to change pages
         {
             //Focus element so key press works
             pdfWebView.Focus();
@@ -764,7 +780,7 @@ namespace CodeManagementSystem
             bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.RIGHT);
             bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.RIGHT); ;
         }
-        private void previousPage(object sender, RoutedEventArgs e)
+        private void previousPage(object sender, RoutedEventArgs e)                        //Manually press left arrow to change pages
         {
             //Focus element so key press works
             pdfWebView.Focus();
@@ -773,26 +789,26 @@ namespace CodeManagementSystem
             bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.LEFT);
             bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.LEFT); ;
         }
-        private void reloadPDF(object sender, RoutedEventArgs e)
+        private void reloadPDF(object sender, RoutedEventArgs e)                           //Manually reload the pdf as a refresh
         {
             pdfWebView.Reload();
         }
-        private void zoomInPDF(object sender, RoutedEventArgs e)
+        private void zoomInPDF(object sender, RoutedEventArgs e)                           //Set the zoom to 10% more
         {
             //zoom in by 10%
             pdfWebView.ZoomFactor += 0.1;
         }
-        private void zoomOutPDF(object sender, RoutedEventArgs e)
+        private void zoomOutPDF(object sender, RoutedEventArgs e)                          //Set the zoom to 10% less
         {
             //zoom out by 10%
             pdfWebView.ZoomFactor -= 0.1;
         }
-        private void resetZoom(object sender, RoutedEventArgs e)
+        private void resetZoom(object sender, RoutedEventArgs e)                           //Set the zoom to normal
         {
             //reset zoom factor to original
             pdfWebView.ZoomFactor = 1.0f;
         }
-        private void scrollDown(object sender, RoutedEventArgs e)
+        private void scrollDown(object sender, RoutedEventArgs e)                          //Scroll down by a fraction
         {
             //Focus element so key press works
             pdfWebView.Focus();
@@ -801,16 +817,43 @@ namespace CodeManagementSystem
             bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DOWN);
             bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.DOWN); ;
         }
-        private void scrollUp(object sender, RoutedEventArgs e)
+        private void scrollUp(object sender, RoutedEventArgs e)                            //Scroll up by a fraction
         {
             //Focus element so key press works
             pdfWebView.Focus();
 
             //Press the right arrow key once to simulate skipping to the next page
             bookMange.inputSimulator.Keyboard.KeyDown(VirtualKeyCode.UP);
-            //bookMange.inputSimulator.Keyboard.KeyUp(VirtualKeyCode.UP); ;
         }
+        private void fullscreenPDF(object sendder, RoutedEventArgs e)                      //FullScreen The Pdf for viewing
+        {
 
+            if(Window.GetWindow(this).WindowState != WindowState.Maximized)
+            {
+                //Save the window state in the class, and then also change it to be maximized
+                originalWindowState = Window.GetWindow(this).WindowState;
+                originalWindowStyle = Window.GetWindow(this).WindowStyle;
+                Window.GetWindow(this).WindowState = WindowState.Maximized;
+                Window.GetWindow(this).WindowStyle = WindowStyle.None;
+
+                //Change the image of the fullscreen button to indicate you're fullscreened
+                FullScreenImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/fullScreenExit.png"));
+            }
+            else if (Window.GetWindow(this).WindowState == WindowState.Maximized)
+            {
+                //Set the window state back to the saved state in the class
+                Window.GetWindow(this).WindowState = originalWindowState;
+                Window.GetWindow(this).WindowStyle = originalWindowStyle;
+
+                //Change the image of the fullscreen button to indicate you're not fullscreened
+                FullScreenImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/fullScreenArrows.png"));
+            }
+
+        }
+    
+        //------------------------------------For The Text To Speech part------------------------------------------
+
+    
     }           
 }               
                 
