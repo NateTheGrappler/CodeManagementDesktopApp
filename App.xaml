@@ -15,13 +15,13 @@
             <!--<Separator/>-->
             <MenuItem Header="Exit" />
         </ContextMenu>
-        
+
         <!--Add In a main foreground color brush, and a main background colorbrush-->
         <SolidColorBrush x:Key="MainBorderBrushKey"     x:Name="MainBorderBrush"        Color="#FF0078D7"/>
         <SolidColorBrush x:Key="DarkBorderBrushKey"     x:Name="darkBorderBrush"        Color="#FF075A9B"/>
         <SolidColorBrush x:Key="MainBackgroundBrushKey" x:Name="MainBackgroundBrushKey" Color="#FFEEE8E8"/>
 
-        
+
         <!--Set up a transparent button style-->
         <Style x:Key="TransparentHoverButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -72,7 +72,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
         <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
         <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
@@ -166,9 +166,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
-        
+
+
+
         <Style x:Key="FocusVisual1">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -273,6 +273,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
 
 
     </Application.Resources>

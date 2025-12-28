@@ -27,8 +27,12 @@
     <None Remove="Images\reload.png" />
     <None Remove="Images\resetZoom.png" />
     <None Remove="Images\rightArrow.png" />
+    <None Remove="Images\speedReset.png" />
+    <None Remove="Images\textToSpeech.png" />
     <None Remove="Images\upArrow.png" />
     <None Remove="Images\verticalDots.png" />
+    <None Remove="Images\volumeOff.png" />
+    <None Remove="Images\volumeUp.png" />
     <None Remove="Images\zoomIn.png" />
     <None Remove="Images\zoomOut.png" />
     <None Remove="JackOLanternSpirte-removebg-preview.png" />
@@ -43,6 +47,7 @@
   <ItemGroup>
     <PackageReference Include="FFMpegCore" Version="5.4.0" />
     <PackageReference Include="InputSimulator" Version="1.0.4" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.3.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3650.58" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
@@ -133,6 +138,12 @@
     <Resource Include="Images\pencil-icon-png-9.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\speedReset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\textToSpeech.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\trashcanPng.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -140,6 +151,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\verticalDots.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\volumeOff.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\volumeUp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\zoomIn.png">
