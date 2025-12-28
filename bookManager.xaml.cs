@@ -295,10 +295,14 @@ namespace CodeManagementSystem
 
     public partial class bookManager : Page
     {
-        private BooksManager     bookMange       = new BooksManager();
-        private bookJsonManager  jsonBookManager = new bookJsonManager();
+        private BooksManager     bookMange             = new BooksManager();
+        private bookJsonManager  jsonBookManager       = new bookJsonManager();
+        private string           pdfWords              = "Empty"; 
+        private int              volumeSave            = 50; 
         private WindowState      originalWindowState;
         private WindowStyle      originalWindowStyle;
+        
+
 
         public bookManager()
         {
@@ -319,6 +323,7 @@ namespace CodeManagementSystem
 
             //Also init the web view for loading the pdfs
             await pdfWebView.EnsureCoreWebView2Async(null);
+            await textToSpeechWebView.EnsureCoreWebView2Async(null);
 
             //Then set the source for the list box as the books that were gotten
             BookListBox.ItemsSource = bookMange.books;
@@ -568,7 +573,7 @@ namespace CodeManagementSystem
         {
             if(sender is Button button)
             {
-                if(button.Name == "OpenBookMenu")
+                if(button.Name == "OpenBookMenu" || button.Name == "closeTextToSpeech")
                 {
                     SetUpData(sender, e); //Load all the book metaData to book menu
                     Storyboard storyboard = new Storyboard();
@@ -605,7 +610,7 @@ namespace CodeManagementSystem
                     storyboard.Children.Add(opacityAdd);
                     storyboard.Begin();
                 }
-                else if (button.Name == "CloseBookMenu" )
+                else if (button.Name == "CloseBookMenu" || button.Name == "doTextToSpeech" )
                 {
                     Storyboard storyboard = new Storyboard();
 
@@ -709,7 +714,7 @@ namespace CodeManagementSystem
         {
             if (sender is Button button)
             {
-                if (button.Name == "readBookButton")
+                if (button.Name == "readBookButton" || button.Name == "closeTextToSpeech")
                 {
                     openPDF();
                     Storyboard storyboard = new Storyboard();
@@ -729,14 +734,14 @@ namespace CodeManagementSystem
                     storyboard.Children.Add(moveYDOWN);
                     storyboard.Begin();
                 }
-                else if (button.Name == "ClosePdfView")
+                else if (button.Name == "ClosePdfView" || button.Name == "doTextToSpeech")
                 {
 
                     //Add in an extra check to see if the user is full screened or not and close them out if they are
                     if (Window.GetWindow(this).WindowState == WindowState.Maximized)
                     {
                         Window.GetWindow(this).WindowState = originalWindowState;
-                        Window.GetWindow(this).WindowStyle = originalWindowStyle;
+                        Window.GetWindow(this).WindowStyle = WindowStyle.SingleBorderWindow; //set default value lowkey
                     }
 
 
@@ -853,7 +858,166 @@ namespace CodeManagementSystem
     
         //------------------------------------For The Text To Speech part------------------------------------------
 
-    
+        private void doTextToSpeechAnimation(object sender, RoutedEventArgs e)             //The animation that handles closing all other windows and opening tts window
+        {
+            if (sender is Button button)
+            {
+                if (button.Name == "doTextToSpeech" )
+                {
+                    //Get the text from the pdf and the title as well
+                    initTextToSpeechView(sender, e);
+
+                    //Also close all of the other things that have been opened
+                    openAndCloseAnimation(sender, e);
+                    openBookMenu(sender, e);
+
+                    //Reset the progress bar
+                    textToSpeechProgress.Value = 0;
+
+                    Storyboard storyboard = new Storyboard();
+
+                    Panel.SetZIndex(textToSpeechBorder, 20);
+                    Panel.SetZIndex(TranslucentBox, 10);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = -1000,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, textToSpeechBorder);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.Y"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    storyboard.Children.Add(moveDOWN);
+                    storyboard.Children.Add(opacityAdd);
+                    storyboard.Begin();
+                }
+                else if (button.Name == "closeTextToSpeech")
+                {
+                    disposeSpeechView();
+                    Storyboard storyboard = new Storyboard();
+                    openAndCloseAnimation(sender, e); 
+                    openBookMenu(sender, e);
+
+                    Panel.SetZIndex(TranslucentBox, -5);
+
+
+                    DoubleAnimation moveYUP = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = -1000,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityTake = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveYUP, textToSpeechBorder);
+                    Storyboard.SetTargetProperty(moveYUP, new PropertyPath("RenderTransform.Y"));
+                    Storyboard.SetTarget(opacityTake, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityTake, new PropertyPath("Opacity"));
+
+                    storyboard.Children.Add(moveYUP);
+                    storyboard.Children.Add(opacityTake);
+                    storyboard.Begin();
+
+                }
+            }
+        }
+        private void initTextToSpeechView(object sender, RoutedEventArgs e)                //Get the text from pdf and set up proper view
+        {
+            if (BookListBox.SelectedItem != null)
+            {
+                //Get the book as a variable
+                var book = BookListBox.SelectedItem as Book;
+
+                //Get all of the text from the book and set in class var
+                pdfWords = getTextFromCurrentPDF(sender, e);
+
+                //Set the text box to the book text
+                TextToSpeechTitle.Text = book.title;
+
+                //init the webview so book renders
+                textToSpeechWebView.CoreWebView2.Navigate(book.filePath); //Then get the open view to display the book
+            }
+        }
+        private string getTextFromCurrentPDF(object sender, RoutedEventArgs e)             //A helper function to get the text from each page
+        {
+            //Check to see if book is not empty, and then get the book
+            if(BookListBox.SelectedItem != null)
+            {
+                Book book = BookListBox.SelectedItem as Book;
+
+                //init an empty string to append to
+                string allTextInPdf = "";
+
+                using (var pdf = PdfDocument.Load(book.filePath))
+                {
+                    //Get the text from each page, and then add it to the empty string
+                    int pageCount;
+                    textToSpeechProgress.Minimum = 0;
+                    if(int.TryParse(book.pageCount, out pageCount))
+                    {
+                        textToSpeechProgress.Maximum = pageCount;
+                        for (int i = 0; i < pageCount; i++)
+                        {
+                            allTextInPdf +=  pdf.GetPdfText(i);
+                            Debug.WriteLine($"Got text from Page: {i}");
+                            textToSpeechProgress.Value = i;
+                        }
+                        //Return Full string
+                        return allTextInPdf;
+                    }
+                }
+            }
+            //Back up incase of failure
+            return "Unable To Get Text From PDF";
+        }
+        private void disposeSpeechView()                                                   //Clear up page view and reset sliders
+        {
+            //Clear the text in the box and the title as well for faster load times
+            pdfWords = "Empty";
+            TextToSpeechTitle.Text = "";
+
+            //Reset the slider values as well
+            SpeedSlider.Value  = 1;
+            VolumeSlider.Value = 50;
+        }
+        private void muteAndUnmute(object sender, RoutedEventArgs e)                       //Either set the volume to zero or reset it
+        {
+            //if it is not zero, then save it and set it to zero
+            if(VolumeSlider.Value != 0)
+            {
+                volumeSave = (int)VolumeSlider.Value;
+                VolumeSlider.Value = 0;
+                VolumeImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/volumeOff.png"));
+            }
+            //If the volume is zero, change it to saved value
+            else if (VolumeSlider.Value == 0)
+            {
+                VolumeSlider.Value = volumeSave;
+                VolumeImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/volumeUp.png"));
+            }
+        }
+        private void resetSpeed(object sender, RoutedEventArgs e)                        //Reset the speed that exists in the rate slider
+        {
+            //Just straight up set it to 1
+            SpeedSlider.Value = 1;
+        }
     }           
 }               
                 

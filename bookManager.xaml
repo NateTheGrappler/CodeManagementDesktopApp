@@ -354,6 +354,7 @@
                         <ColumnDefinition Width="40"/> <!--Next Page Button-->
                         <ColumnDefinition Width="40"/> <!--Previous Page Button-->
                         <ColumnDefinition Width="40"/> <!--Zoom in Button-->
+                        <ColumnDefinition Width="40"/> <!--Zoom in Button-->
                         <ColumnDefinition Width="*"/> <!--Zoom in Button-->
                         <ColumnDefinition Width="40"/> <!--Zoom in Button-->
                         <ColumnDefinition Width="40"/> <!--Zoom in Button-->
@@ -451,9 +452,25 @@
                             </Button.Content>
                         </Button>
                     </Border>
+                    
+                    <!--The Text To Speech Button-->
+                    <Border Grid.Row="1" Grid.Column="6" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="doTextToSpeech" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Reset Zoom" Click="doTextToSpeechAnimation">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/textToSpeech.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
 
+                    
                     <!--The Previous Page Button-->
-                    <Border Grid.Row="1" Grid.Column="9" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Border Grid.Row="1" Grid.Column="10" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
                         <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="PreviousPageButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go To The Previous Page" Click="previousPage">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -468,7 +485,7 @@
                     </Border>
 
                     <!--The Next Page Button-->
-                    <Border Grid.Row="1" Grid.Column="10" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Border Grid.Row="1" Grid.Column="11" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
                         <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="NextPageButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go To The Next Page" Click="nextPage">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -483,7 +500,7 @@
                     </Border>
 
                     <!--The Scroll Down Button-->
-                    <Border Grid.Row="1" Grid.Column="7" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Border Grid.Row="1" Grid.Column="8" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
                         <RepeatButton Margin="3" BorderThickness="3" Style="{DynamicResource RoundRepeatButton}" x:Name="scrollDownButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go To The Next Page" Click="scrollDown">
                             <RepeatButton.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -498,7 +515,7 @@
                     </Border>
 
                     <!--The Scroll Up Button-->
-                    <Border Grid.Row="1" Grid.Column="8" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Border Grid.Row="1" Grid.Column="9" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
                         <RepeatButton Margin="3" BorderThickness="3" Style="{DynamicResource RoundRepeatButton}" x:Name="scrollUpButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0"  ToolTip="Scroll Up" Click="scrollUp">
                             <RepeatButton.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -512,6 +529,8 @@
                         </RepeatButton>
                     </Border>
 
+                    <!--The Progress Bar To display text loading-->
+                    <ProgressBar x:Name="textToSpeechProgress" Grid.Row="1" Grid.Column="7" Margin="5"/>
                 </Grid>
                 
             </Grid>
@@ -521,6 +540,146 @@
                 <TranslateTransform X="0" Y="-1000"/>
             </Border.RenderTransform>
         </Border>
+        
+        <!--___________________________________Text To Speech GUI___________________________________-->
+        <Border x:Name="textToSpeechBorder" Grid.Column="0" Grid.ColumnSpan="5" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="3" Margin="50,60,50,80" BorderThickness="3" CornerRadius="15, 15, 15, 15" ClipToBounds="True">
 
+            <!--Main Grid to hold all content-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+               <!--The Exit out button-->
+                <Border Grid.Row="0" Grid.Column="2" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeTextToSpeech" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="doTextToSpeechAnimation">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="\Images\Close.png" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Border>
+
+                <!--The Webview displaying the book maybe that holds the book text-->
+                <wv2:WebView2 x:Name="textToSpeechWebView" Margin="5" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"/>
+
+
+                <!--The Title of The Book-->
+                <Viewbox Stretch="Uniform" Grid.Column="0" Grid.ColumnSpan="2">
+                    <TextBlock x:Name="TextToSpeechTitle" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
+                </Viewbox>
+
+               <!--Grid that holds all of the functional stuff-->
+                <Grid Grid.Row="1" Margin="0,10,0, 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+
+                    <!--The Grid to hold sliders and buttons-->
+                    <Grid Margin="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--The Volume Slider Button-->
+                        <Border Grid.Row="0" Grid.Column="0" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                            <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="volumeButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Max/Min Volume" Click="muteAndUnmute">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="30" Height="30" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush x:Name="VolumeImage" ImageSource="/Images/volumeUp.png" Stretch="Uniform"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Border>
+                        <!--The Volume Slider-->
+                        <Slider x:Name="VolumeSlider" Grid.Column="1" Grid.Row="0" Value="50" Minimum="0" IsSnapToTickEnabled="True" TickFrequency="1" Maximum="100" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <!--The Value of the Volume Slider-->
+                        <Viewbox Margin="10" Grid.Column="2" Grid.Row="0" >
+                            <TextBlock Text="{Binding ElementName=VolumeSlider, Path=Value}" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
+                        </Viewbox>
+
+                        
+                        <!--The Speed Slider Button-->
+                        <Border Grid.Row="1" Grid.Column="0" Margin="0, 0, 0, 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                            <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="speedSliderButton" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Reset Speed Slider" Click="resetSpeed">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="30" Height="30" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="/Images/speedReset.png" Stretch="Uniform"/>
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </Border>
+                        <!--The Speed Slider-->
+                        <Slider x:Name="SpeedSlider" Grid.Column="1" Grid.Row="1" Minimum="0" Value="1" Maximum="2" IsSnapToTickEnabled="True" TickFrequency="0.25" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <!--The Speed Value-->
+                        <Viewbox Margin="10" Grid.Column="2" Grid.Row="1" >
+                            <TextBlock Text="{Binding ElementName=SpeedSlider, Path=Value}" FontWeight="Bold"  Foreground="{StaticResource MainBorderBrushKey}"/>
+                        </Viewbox>
+
+                    </Grid>
+
+                    <!--The Grid to hold buttons-->
+                    <Grid Grid.Row="1" Margin="10, 0, 5, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--The Start and stop reading button-->
+                        <Button Style="{DynamicResource TwoRoundedCornersLeft}" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3">
+                            <Viewbox Stretch="Uniform" Margin="3">
+                                <TextBlock Text="Start" FontWeight="Bold" />
+                            </Viewbox>
+                        </Button>
+                        <!--The save as a Wave Button-->
+                        <Button Grid.Column="1" Style="{DynamicResource TwoRoundedCornersRight}" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3">
+                            <Viewbox Stretch="Uniform" Margin="3">
+                                <TextBlock Text="Save as .WAV" FontWeight="Bold" />
+                            </Viewbox>
+                        </Button>
+                    </Grid>
+
+                </Grid>
+
+
+            </Grid>
+
+            <!--Border Render Transform for opening/closing animaiton-->
+            <Border.RenderTransform>
+                <TranslateTransform X="0" Y="-1000"/>
+            </Border.RenderTransform>
+        </Border>
+
+        
+        
+        
     </Grid>
 </Page>
