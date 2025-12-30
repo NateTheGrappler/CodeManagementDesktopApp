@@ -30,6 +30,7 @@ using AngleSharp.Text;
 using Microsoft.Win32;
 //Add in the pdf nu-get package that is needed:
 using PdfiumViewer;
+using System.Speech.Synthesis;
 using WindowsInput;
 using WindowsInput.Native;
 using static System.Net.Mime.MediaTypeNames;
@@ -295,19 +296,22 @@ namespace CodeManagementSystem
 
     public partial class bookManager : Page
     {
-        private BooksManager     bookMange             = new BooksManager();
-        private bookJsonManager  jsonBookManager       = new bookJsonManager();
-        private string           pdfWords              = "Empty"; 
-        private int              volumeSave            = 50; 
-        private WindowState      originalWindowState;
-        private WindowStyle      originalWindowStyle;
+        private BooksManager      bookMange             = new BooksManager();
+        private bookJsonManager   jsonBookManager       = new bookJsonManager();
+        private string            pdfWords              = "Empty"; 
+        private int               volumeSave            = 50; 
+        private WindowState       originalWindowState;
+        private WindowStyle       originalWindowStyle;
+        private SpeechSynthesizer speechSynthesizer;
         
 
 
         public bookManager()
         {
             InitializeComponent();
-            InitializeListBox(); //Load all the data for viewing
+            InitializeListBox();     //Load all the data for viewing
+            InitializeSpeechSynth(); //Set up the speech synth and add all of the functions
+            loadAvailableVoices();   //Get all of the voices from windows
         }
 
         private async void InitializeListBox()                                               //loads all of the information into the listbox
@@ -327,6 +331,25 @@ namespace CodeManagementSystem
 
             //Then set the source for the list box as the books that were gotten
             BookListBox.ItemsSource = bookMange.books;
+        }
+        private async void InitializeSpeechSynth()                                           //Set up the speech sysnthesis
+        {
+            speechSynthesizer = new SpeechSynthesizer();
+
+            //speechSynthesizer.SpeakStarted   += Synthesizer_SpeakStarted;
+            //speechSynthesizer.SpeakCompleted += Synthesizer_SpeakCompleted;
+            //speechSynthesizer.StateChanged   += Synthesizer_StateChanged;
+        }
+        private void loadAvailableVoices()                                                   //Load all of the variable voices from windows
+        {
+            var voices = speechSynthesizer.GetInstalledVoices();
+            VoiceComboBox.ItemsSource = voices;
+            VoiceComboBox.DisplayMemberPath = "VoiceInfo.Name";
+
+            if (voices.Count > 0)
+            {
+                VoiceComboBox.SelectedIndex = 0;
+            }
         }
 
         //--------------------------------------Front UI------------------------------------------
@@ -856,8 +879,8 @@ namespace CodeManagementSystem
 
         }
     
+        
         //------------------------------------For The Text To Speech part------------------------------------------
-
         private void doTextToSpeechAnimation(object sender, RoutedEventArgs e)             //The animation that handles closing all other windows and opening tts window
         {
             if (sender is Button button)
@@ -1013,11 +1036,12 @@ namespace CodeManagementSystem
                 VolumeImage.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Images/volumeUp.png"));
             }
         }
-        private void resetSpeed(object sender, RoutedEventArgs e)                        //Reset the speed that exists in the rate slider
+        private void resetSpeed(object sender, RoutedEventArgs e)                          //Reset the speed that exists in the rate slider
         {
             //Just straight up set it to 1
             SpeedSlider.Value = 1;
         }
+
     }           
 }               
                 

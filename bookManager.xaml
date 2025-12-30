@@ -542,7 +542,7 @@
         </Border>
         
         <!--___________________________________Text To Speech GUI___________________________________-->
-        <Border x:Name="textToSpeechBorder" Grid.Column="0" Grid.ColumnSpan="5" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="3" Margin="50,60,50,80" BorderThickness="3" CornerRadius="15, 15, 15, 15" ClipToBounds="True">
+        <Border x:Name="textToSpeechBorder" Grid.Column="0" Grid.ColumnSpan="5" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBackgroundBrushKey}" Grid.Row="0" Grid.RowSpan="3" Margin="50,40,50,60" BorderThickness="3" CornerRadius="15, 15, 15, 15" ClipToBounds="True">
 
             <!--Main Grid to hold all content-->
             <Grid>
@@ -574,7 +574,6 @@
                 <!--The Webview displaying the book maybe that holds the book text-->
                 <wv2:WebView2 x:Name="textToSpeechWebView" Margin="5" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"/>
 
-
                 <!--The Title of The Book-->
                 <Viewbox Stretch="Uniform" Grid.Column="0" Grid.ColumnSpan="2">
                     <TextBlock x:Name="TextToSpeechTitle" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
@@ -596,6 +595,7 @@
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="*"/>
@@ -644,6 +644,9 @@
                             <TextBlock Text="{Binding ElementName=SpeedSlider, Path=Value}" FontWeight="Bold"  Foreground="{StaticResource MainBorderBrushKey}"/>
                         </Viewbox>
 
+                        <!--The Combo box to check out what voice to speak-->
+                        <ComboBox x:Name="VoiceComboBox" Grid.Row="2" Grid.ColumnSpan="3" Margin="10,10, 10, 10">
+                        </ComboBox>
                     </Grid>
 
                     <!--The Grid to hold buttons-->
