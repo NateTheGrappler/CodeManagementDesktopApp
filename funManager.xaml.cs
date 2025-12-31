@@ -20,9 +20,17 @@ namespace CodeManagementSystem
     /// </summary>
     public partial class funManager : Page
     {
+
+        private int turnCount = 0;
+
         public funManager()
         {
             InitializeComponent();
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.GoBack();
         }
     }
 }
