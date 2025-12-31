@@ -262,7 +262,6 @@ namespace CodeManagementSystem
                 imagePath = fullImagePath;
             }
         }
-
         public void loadImageFromDrive(string imagePath)
         {
             try
@@ -761,11 +760,11 @@ namespace CodeManagementSystem
                 {
 
                     //Add in an extra check to see if the user is full screened or not and close them out if they are
-                    if (Window.GetWindow(this).WindowState == WindowState.Maximized)
-                    {
-                        Window.GetWindow(this).WindowState = originalWindowState;
-                        Window.GetWindow(this).WindowStyle = WindowStyle.SingleBorderWindow; //set default value lowkey
-                    }
+                    //if (Window.GetWindow(this).WindowState == WindowState.Maximized)
+                    //{
+                    //    Window.GetWindow(this).WindowState = originalWindowState;
+                    //    Window.GetWindow(this).WindowStyle = WindowStyle.SingleBorderWindow; //set default value lowkey
+                    //}
 
 
                     Storyboard storyboard = new Storyboard();
@@ -879,7 +878,6 @@ namespace CodeManagementSystem
 
         }
     
-        
         //------------------------------------For The Text To Speech part------------------------------------------
         private void doTextToSpeechAnimation(object sender, RoutedEventArgs e)             //The animation that handles closing all other windows and opening tts window
         {
@@ -1041,7 +1039,97 @@ namespace CodeManagementSystem
             //Just straight up set it to 1
             SpeedSlider.Value = 1;
         }
+        private void changeVolume(object sender,RoutedPropertyChangedEventArgs<double> e)  //Function that responds to volume change in speech 
+        {
+            if(speechSynthesizer != null)
+            {
+                speechSynthesizer.Volume = (int)VolumeSlider.Value;
+            }
+        }   
+        private void changeRate(object sender,RoutedPropertyChangedEventArgs<double> e)   //Change the speed at  which the voice talks
+        {
+            if (speechSynthesizer != null)
+            {
+                speechSynthesizer.Rate = (int)SpeedSlider.Value;
+            }
+        }
+        private void saveAsWav(object sender, RoutedEventArgs e)                           //Save the audio recording as a .WAV file (in roaming apps)
+        {           
+            //set up the path to the roaming apps folder for the user
+            string wavoutputPath = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "CodeInformationManagingSystem\\BookManagement\\AudioFiles\\");
 
-    }           
+            //create a unique id for this wave file and then combine the fullpaths
+            string uniqueFileName = $"{Guid.NewGuid()}.png";
+            string fullWavPath = System.IO.Path.Combine(wavoutputPath, uniqueFileName);
+
+            try
+            {
+                //Set the output to the saved path, and update button to show saving
+                speechSynthesizer.SetOutputToWaveFile(fullWavPath);
+                SaveAsWav.IsEnabled = false;
+                wavText.Text = "Saving...";
+
+                //Speech the audio to save it and then update button again
+                speechSynthesizer.SpeakAsync(pdfWords);
+                wavText.Text = "Saving...";
+
+                //messagebox to show saving is happening
+                MessageBox.Show("Saving File Now, may take a while.", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                //messagebox incase an error happens while saving.
+                MessageBox.Show("Unable to save as .wav file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }                           
+        private void startPlaying(object sender, RoutedEventArgs e)                       //Start playing the text to speech
+        {     
+            if(startAndStopText.Text == "Start")
+            {
+                //Get the voice that is selected for speech
+                if (VoiceComboBox.SelectedItem is InstalledVoice voice)
+                {
+                    speechSynthesizer.SelectVoice(voice.VoiceInfo.Name);
+                }
+
+                //set the speed and volume according to the sliders
+                speechSynthesizer.Rate = (int)SpeedSlider.Value;
+                speechSynthesizer.Volume = (int)VolumeSlider.Value;
+
+                //start actually speaking the words
+                speechSynthesizer.SpeakAsync(pdfWords);
+
+                //change the button text to represent that speaking as started
+                startAndStopText.Text = "Stop";
+            }
+            else if(startAndStopText.Text == "Stop")
+            {
+                speechSynthesizer.SpeakAsyncCancelAll();
+                startAndStopText.Text = "Start";
+            }
+
+        }                                                                                  
+        private void pauseOrResumePlaying(object sender, RoutedEventArgs e)               //Pause or resume the speech
+        {          
+            if(pauseAndResumeText.Text == "Pause" && speechSynthesizer.State == SynthesizerState.Speaking)
+            {
+                speechSynthesizer.Pause();
+                pauseAndResumeText.Text = "Resume";
+            }
+            else if(pauseAndResumeText.Text == "Resume" && speechSynthesizer.State == SynthesizerState.Paused)
+            {
+                speechSynthesizer.Resume();
+                pauseAndResumeText.Text = "Pause";
+            }
+        }                                 
+        private void disposeSpeech()
+        {
+            speechSynthesizer.Dispose();
+        }
+
+    }                                
 }               
                 

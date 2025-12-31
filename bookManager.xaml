@@ -616,7 +616,7 @@
                             </Button>
                         </Border>
                         <!--The Volume Slider-->
-                        <Slider x:Name="VolumeSlider" Grid.Column="1" Grid.Row="0" Value="50" Minimum="0" IsSnapToTickEnabled="True" TickFrequency="1" Maximum="100" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <Slider x:Name="VolumeSlider" Grid.Column="1" Grid.Row="0" Value="50" Minimum="0" IsSnapToTickEnabled="True" TickFrequency="1" Maximum="100" HorizontalAlignment="Stretch" VerticalAlignment="Center" ValueChanged="changeVolume"/>
                         <!--The Value of the Volume Slider-->
                         <Viewbox Margin="10" Grid.Column="2" Grid.Row="0" >
                             <TextBlock Text="{Binding ElementName=VolumeSlider, Path=Value}" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
@@ -638,7 +638,7 @@
                             </Button>
                         </Border>
                         <!--The Speed Slider-->
-                        <Slider x:Name="SpeedSlider" Grid.Column="1" Grid.Row="1" Minimum="0" Value="1" Maximum="2" IsSnapToTickEnabled="True" TickFrequency="0.25" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        <Slider x:Name="SpeedSlider" Grid.Column="1" Grid.Row="1" Minimum="0" Value="1" Maximum="2" IsSnapToTickEnabled="True" TickFrequency="0.25" HorizontalAlignment="Stretch" VerticalAlignment="Center" ValueChanged="changeRate"/>
                         <!--The Speed Value-->
                         <Viewbox Margin="10" Grid.Column="2" Grid.Row="1" >
                             <TextBlock Text="{Binding ElementName=SpeedSlider, Path=Value}" FontWeight="Bold"  Foreground="{StaticResource MainBorderBrushKey}"/>
@@ -654,18 +654,27 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <!--The Start and stop reading button-->
-                        <Button Style="{DynamicResource TwoRoundedCornersLeft}" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3">
+                        <Button x:Name="StartAndStop" Style="{DynamicResource TwoRoundedCornersLeft}" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Click="startPlaying">
                             <Viewbox Stretch="Uniform" Margin="3">
-                                <TextBlock Text="Start" FontWeight="Bold" />
+                                <TextBlock x:Name="startAndStopText" Text="Start" FontWeight="Bold" />
                             </Viewbox>
                         </Button>
-                        <!--The save as a Wave Button-->
-                        <Button Grid.Column="1" Style="{DynamicResource TwoRoundedCornersRight}" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3">
+
+                        <!--The button to pause and resume the playing-->
+                        <Button x:Name="PauseTTS" Grid.Column="1" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Click="pauseOrResumePlaying">
                             <Viewbox Stretch="Uniform" Margin="3">
-                                <TextBlock Text="Save as .WAV" FontWeight="Bold" />
+                                <TextBlock x:Name="pauseAndResumeText" Text="Pause" FontWeight="Bold" />
+                            </Viewbox>
+                        </Button>
+
+                        <!--The save as a Wave Button-->
+                        <Button x:Name="SaveAsWav" Grid.Column="2" Style="{DynamicResource TwoRoundedCornersRight}" Margin="0, 5, 5, 5" Foreground="White" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Click="saveAsWav">
+                            <Viewbox Stretch="Uniform" Margin="3">
+                                <TextBlock x:Name="wavText" Text="Save as .WAV" FontWeight="Bold" />
                             </Viewbox>
                         </Button>
                     </Grid>
