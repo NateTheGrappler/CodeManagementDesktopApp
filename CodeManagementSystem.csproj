@@ -24,6 +24,7 @@
     <None Remove="Images\lastPageButton.png" />
     <None Remove="Images\leftArrow.png" />
     <None Remove="Images\NoRedircle.png" />
+    <None Remove="Images\oTicTacToe.png" />
     <None Remove="Images\reload.png" />
     <None Remove="Images\resetZoom.png" />
     <None Remove="Images\rightArrow.png" />
@@ -33,6 +34,7 @@
     <None Remove="Images\verticalDots.png" />
     <None Remove="Images\volumeOff.png" />
     <None Remove="Images\volumeUp.png" />
+    <None Remove="Images\xTicTacToe.png" />
     <None Remove="Images\zoomIn.png" />
     <None Remove="Images\zoomOut.png" />
     <None Remove="JackOLanternSpirte-removebg-preview.png" />
@@ -121,6 +123,9 @@
     <Resource Include="Images\NoRedircle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\oTicTacToe.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\plusButtonImage-removebg-preview.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -158,6 +163,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\volumeUp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\xTicTacToe.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\zoomIn.png">

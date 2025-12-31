@@ -43,7 +43,7 @@
             </Grid.ColumnDefinitions>
 
             <!--Grid for actual Tic Tac Toe Board-->
-            <Grid Grid.Column="0" Margin="30, 10, 30, 10">
+            <Grid Grid.Column="0" Margin="40, 00, 40, 00">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -53,44 +53,141 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="45"/>
                     </Grid.RowDefinitions>
 
-                    <!--The Buttons that make up the actual tic tac toe board-->
+                <!--The Buttons that make up the actual tic tac toe board-->
 
-                    <!--The Top Row of buttons-->
-                    <Button Grid.Column="0" Grid.Row="0" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="topLeft" BorderThickness="0, 0, 5, 5" BorderBrush="Black">
-                        <TextBlock x:Name="topLeftText"/>
-                    </Button>
-                    <Button Grid.Column="1" Grid.Row="0" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="midTop" BorderThickness="5, 0, 5, 5" BorderBrush="Black">
-                        <TextBlock x:Name="midTopText"/>
-                    </Button>
-                    <Button Grid.Column="2" Grid.Row="0" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="topRight" BorderThickness="5, 0, 0, 5" BorderBrush="Black">
-                        <TextBlock x:Name="topRightText"/>
-                    </Button>
+                <!--The Top Row of buttons-->
+                <Button Grid.Column="0" Grid.Row="0" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="TL" BorderThickness="0, 0, 5, 5" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle x:Name="topLeftRec" Width="40" Height="40" Fill="DarkBlue" VerticalAlignment="Center" >
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="topLeftImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="1" Grid.Row="0" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="TM" BorderThickness="5, 0, 5, 5" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="topMidRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="topMidImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="2" Grid.Row="0" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="TR" BorderThickness="5, 0, 0, 5" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="topRightRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="topRightImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
 
-                    <!--The Middle Row of buttons-->
-                    <Button Grid.Column="0" Grid.Row="1" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="midLeft" BorderThickness="0, 5, 5, 5" BorderBrush="Black">
-                        <TextBlock x:Name="midLeftText"/>
-                    </Button>
-                    <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="midMid" BorderThickness="5, 5, 5, 5" BorderBrush="Black">
-                        <TextBlock x:Name="midMidText"/>
-                    </Button>
-                    <Button Grid.Column="2" Grid.Row="1" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="midRight" BorderThickness="5, 5, 0, 5" BorderBrush="Black">
-                        <TextBlock x:Name="midRightText"/>
-                    </Button>
+                <!--The Middle Row of buttons-->
+                <Button Grid.Column="0" Grid.Row="1" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="ML" BorderThickness="0, 5, 5, 5" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="midLeftRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="midLeftImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="MM" BorderThickness="5, 5, 5, 5" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="midMidRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="midMidImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="2" Grid.Row="1" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="MR" BorderThickness="5, 5, 0, 5" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="midRightRec" Width="27" Height="27" Fill="DarkBlue" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="midRightImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
 
-                    <!--The Bottom Row of buttons-->
-                    <Button Grid.Column="0" Grid.Row="2" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="bottomLeft" BorderThickness="0, 5, 5, 0" BorderBrush="Black">
-                        <TextBlock x:Name="bottomLeftText"/>
-                    </Button>
-                    <Button Grid.Column="1" Grid.Row="2" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="bottomMid" BorderThickness="5, 5, 5, 0" BorderBrush="Black">
-                        <TextBlock x:Name="bottomMidText"/>
-                    </Button>
-                    <Button Grid.Column="2" Grid.Row="2" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="bottomRight" BorderThickness="5, 5, 0, 0" BorderBrush="Black">
-                        <TextBlock x:Name="bottomRightText"/>
-                    </Button>
+                <!--The Bottom Row of buttons-->
+                <Button Grid.Column="0" Grid.Row="2" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="BL" BorderThickness="0, 5, 5, 0" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="bottomLeftRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="bottomLeftImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="1" Grid.Row="2" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="BM" BorderThickness="5, 5, 5, 0" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="bottomMidRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="bottomMidImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="2" Grid.Row="2" Style="{StaticResource TransparentHoverButtonStyle}" x:Name="BR" BorderThickness="5, 5, 0, 0" BorderBrush="Black" Click="boardButtonClick">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Stretch="Uniform" Margin="0">
+                                <Rectangle  x:Name="bottomRightRec" Width="27" Height="27" Fill="Red" VerticalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush x:Name="bottomRightImage" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
 
-                </Grid>
+                <!--Text To Indicate Play Type-->
+                <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Margin="0, 10, 0, 0">
+                    <Viewbox Stretch="Uniform" Margin="0">
+                        <TextBlock x:Name="playTypeText" Text="Please Pick A Play Option" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
+                    </Viewbox>
+                </Border>
+            </Grid>
             
             
             <!--Grid for actual Functionallity Buttons-->
@@ -108,13 +205,13 @@
                     </Grid.RowDefinitions>
 
                     <!--The play vs friend button-->
-                    <Button x:Name="PlayVsFriendButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}">
+                    <Button x:Name="PlayVsFriendButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" Click="pvpButtonClick">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Play Vs Friend" Margin="5" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
                     </Button>
                     <!--The play vs robot button-->
-                    <Button Grid.Row="1" x:Name="PlayVsRobotButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}">
+                        <Button Grid.Row="1" x:Name="PlayVsRobotButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" Click="pvrButtonClick">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Play Vs Robot" Margin="5" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
@@ -137,9 +234,8 @@
                             <TextBlock Text="Redo Move" Margin="5" FontWeight="Bold" Foreground="Gray" />
                         </Viewbox>
                     </Button>
-
-                    <!--The redo move button button-->
-                    <Button Grid.Row="4" x:Name="ClearButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" IsEnabled="true">
+                    <!--The clear board button-->
+                    <Button Grid.Row="4" x:Name="ClearButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" IsEnabled="true" Click="resetBoard">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Clear Board" Margin="5" FontWeight="Bold" Foreground="White" />
                         </Viewbox>
@@ -147,7 +243,7 @@
 
                     <!--Maybe Add in a turn thingy here-->
                     <Viewbox Stretch="Uniform" Grid.Row="5">
-                        <TextBlock Grid.Row="5" Margin="5" Text="Nobody's Turn" FontWeight="Bold" Foreground="{StaticResource DarkBorderBrushKey}"/>
+                        <TextBlock x:Name="TurnText" Grid.Row="5" Margin="5" Text="Nobody's Turn" FontWeight="Bold" Foreground="{StaticResource DarkBorderBrushKey}"/>
                     </Viewbox>
 
 
