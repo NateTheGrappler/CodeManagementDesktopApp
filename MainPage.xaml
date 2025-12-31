@@ -24,8 +24,8 @@
         <Button x:Name="GithubButtonGT" HorizontalAlignment="Left" Margin="450,167,0,0" VerticalAlignment="Top" Style="{DynamicResource RounddButton}" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
             <TextBlock Text="Github Tools Library" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
         </Button>
-        <Button x:Name="PlaylistManagerButtonPM" Style="{DynamicResource RounddButton}" HorizontalAlignment="Center" Margin="0,122,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
-            <TextBlock Text="Playlist Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
+        <Button x:Name="FunManagerButtonFM" Style="{DynamicResource RounddButton}" HorizontalAlignment="Center" Margin="0,122,0,0" VerticalAlignment="Top" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7" Click="funManagerButtonFM_Click">
+            <TextBlock Text="Fun Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />
         </Button>
         <Button x:Name="BookManagerButtonBM" HorizontalAlignment="Center" Margin="0,197,0,0" VerticalAlignment="Top" Style="{DynamicResource RounddButton}" Height="70" Width="70" BorderThickness="4,4,4,4" BorderBrush="#FF0E0E0E" Background="White" FontWeight="Bold" FontFamily="Microsoft YaHei" Foreground="#FF0078D7">
             <TextBlock Text="Book Manager" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF0078D7" />

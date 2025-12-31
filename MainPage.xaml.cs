@@ -105,6 +105,18 @@ namespace CodeManagementSystem
             }
             this.NavigationService.Navigate(new videoManager());
         }
+
+        private void funManagerButtonFM_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (UIElement element in mainGrid.Children)
+            {
+                if (element is System.Windows.Controls.Button button)
+                {
+                    resetButtonImmediately(button);
+                }
+            }
+            this.NavigationService.Navigate(new funManager());
+        }
         
         //-------------------------------------Set Up the Neural Network Look------------------------
         private void CreateNNLines()
@@ -211,6 +223,7 @@ namespace CodeManagementSystem
                         else if (lastTwoDigits == "CM") { button.Click += CheckListManagerButton_Click; }
                         else if (lastTwoDigits == "VM") { button.Click += VideoManagerButtonVM_Click; }
                         else if (lastTwoDigits == "BM") { button.Click += BookManagerButton_Click; }
+                        else if (lastTwoDigits == "FM") { button.Click += funManagerButtonFM_Click; }
                         else { button.Click += buttonClick; }
                     }
                 }
