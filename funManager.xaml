@@ -63,7 +63,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <Viewbox Stretch="Uniform" Margin="0">
-                                <Rectangle x:Name="topLeftRec" Width="40" Height="40" Fill="DarkBlue" VerticalAlignment="Center" >
+                                <Rectangle x:Name="topLeftRec" Width="27" Height="27" Fill="DarkBlue" VerticalAlignment="Center" >
                                     <Rectangle.OpacityMask>
                                         <ImageBrush x:Name="topLeftImage" Stretch="Uniform"/>
                                     </Rectangle.OpacityMask>
