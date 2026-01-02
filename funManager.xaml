@@ -43,7 +43,7 @@
             </Grid.ColumnDefinitions>
 
             <!--Grid for actual Tic Tac Toe Board-->
-            <Grid Grid.Column="0" Margin="40, 00, 40, 00">
+            <Grid x:Name="ticTacToeGrid" Grid.Column="0" Margin="40, 00, 40, 00">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -211,7 +211,7 @@
                         </Viewbox>
                     </Button>
                     <!--The play vs robot button-->
-                        <Button Grid.Row="1" x:Name="PlayVsRobotButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" Click="pvrButtonClick">
+                    <Button Grid.Row="1" x:Name="PlayVsRobotButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" Click="pvrButtonClick">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Play Vs Robot" Margin="5" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
@@ -223,15 +223,15 @@
                         </Viewbox>
                     </Button>
                     <!--The undo move button button-->
-                    <Button Grid.Row="2" x:Name="UndoMoveButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" IsEnabled="False">
+                    <Button Grid.Row="2" x:Name="UndoMoveButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" IsEnabled="False" Click="undoMove">
                         <Viewbox Stretch="Uniform">
-                            <TextBlock Text="Undo Move" Margin="5" FontWeight="Bold" Foreground="Gray"/>
+                            <TextBlock x:Name="undoButtonText" Text="Undo Move" Margin="5" FontWeight="Bold" Foreground="Gray"/>
                         </Viewbox>
                     </Button>
                     <!--The redo move button button-->
-                    <Button Grid.Row="3" x:Name="RedoMoveButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" IsEnabled="False">
+                    <Button Grid.Row="3" x:Name="RedoMoveButton" Style="{StaticResource LessRounddButton}" Margin="5" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" Background="{StaticResource MainBorderBrushKey}" IsEnabled="False" Click="redoMove">
                         <Viewbox Stretch="Uniform">
-                            <TextBlock Text="Redo Move" Margin="5" FontWeight="Bold" Foreground="Gray" />
+                            <TextBlock x:Name="redoButtonText" Text="Redo Move" Margin="5" FontWeight="Bold" Foreground="Gray" />
                         </Viewbox>
                     </Button>
                     <!--The clear board button-->
