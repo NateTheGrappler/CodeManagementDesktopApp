@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -95,8 +96,8 @@ namespace CodeManagementSystem
         public string folderPath  { get; set; }
         public DateTime addedDate { get; set; }
         public ImageSource icon   { get; set; }
-        ObservableCollection<projectFile> innerFiles            { get; set; } = new ObservableCollection<projectFile>();
-        ObservableCollection<projectDirectory> innerDirectories { get; set; } = new ObservableCollection<projectDirectory>();
+        public ObservableCollection<projectFile>      innerFiles       { get; set; } = new ObservableCollection<projectFile>();
+        public ObservableCollection<projectDirectory> innerDirectories { get; set; } = new ObservableCollection<projectDirectory>();
         public bool IsExpanded { get; set; }
         public bool HasSubDirectories => innerDirectories.Count > 0;
 
@@ -115,6 +116,40 @@ namespace CodeManagementSystem
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        //----------------------Inner Working Functions----------------------
+        public void loadAllFilesInDirectory(string path)  //load all of the files inside of a directory
+        {
+            //loading all of the files in the from a given directory path
+            try
+            {
+                //all of the file names
+                string[] filePaths = Directory.GetFiles(path);
+                foreach (string filePath in filePaths)
+                {
+                    //set up a way to get all of the metadata on the file
+                    FileInfo fileInfo = new FileInfo(filePath);
+
+                    //create the new file object using the data that was gotten
+                    projectFile newFile = new projectFile(fileInfo.Name, filePath);
+                    newFile.addedDate = fileInfo.LastWriteTime;
+                    newFile.fileSize = fileInfo.Length.ToString();
+                    newFile.fileType = fileInfo.Extension;
+                    innerFiles.Add(newFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                //error box whenever you are unable to load a file
+                MessageBox.Show(
+                    "Unable to load directory, please check if path is correct",
+                    "Unable to load project",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+            }
+        }
+    
     }
 
 
@@ -126,6 +161,7 @@ namespace CodeManagementSystem
         public string fileType    { get; set; }
         public string fileSize    { get; set; }
         public DateTime addedDate { get; set; }
+        public ImageSource icon { get; set; }
 
         //-------------------------Constructors---------------------------
         public projectFile() { }
@@ -151,8 +187,6 @@ namespace CodeManagementSystem
         {
             //load any given data from a json file
             savedDirectories = await jsonManager.loadJsonData<projectDirectory>();
-
-            //maybe do something to load all of the data from the saved directories
 
             //set the saved Directories as the item source for the tree view
             mainTreeView.ItemsSource = savedDirectories;
@@ -206,7 +240,7 @@ namespace CodeManagementSystem
                     sb.Begin();
                 }
                 //the close sequence
-                else if(button.Name == "closeAddGUI")
+                else if(button.Name == "closeAddGUI" || button.Name =="AddNewProjectButton")
                 {
                     //Set the transform origin on the Border itself
                     NewProjecyGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
@@ -239,12 +273,60 @@ namespace CodeManagementSystem
                 }
             }
         }
-    
-        private void clearNewProjectGUI()
+        private void clearNewProjectGUI()                                                //Clears all of the inputed data
         {
             //clear the textboxes that are in view
             projectNameTB.Text = string.Empty;
             projectPathTB.Text = string.Empty;
+        }
+    
+        private async void addNewProject(object sender, RoutedEventArgs e)
+        {
+            //simplify names for easier use
+            string path = projectPathTB.Text.Trim();
+            string name = projectNameTB.Text.Trim();
+
+            //check for empty input texts
+            if (string.IsNullOrEmpty(projectPathTB.Text) || string.IsNullOrEmpty(projectNameTB.Text))
+            {
+                //show an error message if the fields are empty
+                MessageBox.Show(
+                    "Please fill out all fields before you continue",
+                    "Incomplete Fields",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                return;
+            }
+            if(!Directory.Exists(path))
+            {
+                //show an error message if the fields are empty
+                MessageBox.Show(
+                    "Unable To Find Project At That Directory. Please Try Again.",
+                    "Project Not Found",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                return;
+            }
+
+            // Create new project directory
+            var newDirectory = new projectDirectory
+            {
+                folderName = name,
+                folderPath = path,
+                addedDate = DateTime.Now,
+            };
+            //Load all of the files that are visible in that directory and add it to the main list
+            newDirectory.loadAllFilesInDirectory(newDirectory.folderPath);
+            savedDirectories.Add(newDirectory);
+
+            //save all of the data to json
+            await jsonManager.saveToJson(savedDirectories);
+
+            //do the closing animation when finished
+            NewProjectAnimation(sender, e);
+
         }
     }
 }

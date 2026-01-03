@@ -74,6 +74,49 @@
 
         <TreeView x:Name="mainTreeView" Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
             
+            <!--Styling for the tree view-->
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="VerticalAlignment"   Value="Center"/>
+                    <Setter Property="Margin"              Value="0, 0, 0, 5"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            
+            <!--Item template of the main view-->
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding InnerDirectories}">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <!--The Folder icon-->
+                        <Viewbox Stretch="Uniform" Grid.Column="0">
+                            <Rectangle Width="20" Height="20" Fill="{StaticResource DarkBorderBrushKey}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="/Images/fileFolderButtonImg.png" Stretch="Uniform"/>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Viewbox>
+                        <!--The name of the folder/directory-->
+                        <Viewbox Grid.Column="1" Stretch="Uniform" Margin="10, 0">
+                            <TextBlock Text="{Binding folderName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Viewbox>
+                        <!--The date added-->
+                        <Viewbox Grid.Column="2" Stretch="Uniform" Margin="10, 0">
+                            <TextBlock Grid.Column="0" Text="{Binding addedDate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Viewbox>
+                    </Grid>
+                    
+                    
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            
         </TreeView>
         
         <!--______________________________Add In New Project GUI___________________________________-->
@@ -97,7 +140,6 @@
                         <TextBlock Text="Add Existing Project" Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
                     </Viewbox>
                 </Border>
-
                 <!--The Close GUI Button-->
                 <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
                     <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="NewProjectAnimation">
@@ -112,8 +154,7 @@
                         </Button.Content>
                     </Button>
                 </Border>
-
-                <!--The Grid To Hold The button Buttons-->
+                <!--The Grid To Hold The bottom Buttons-->
                 <Grid Grid.Row="2" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -121,7 +162,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!--The Add Project Button-->
-                    <Button Style="{StaticResource TwoRoundedCornersLeft}" Margin="5, 5, 2, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                    <Button x:Name="AddNewProjectButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="5, 5, 2, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="addNewProject">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Add Project" Foreground="White" FontWeight="Bold"/>
                         </Viewbox>
@@ -134,7 +175,6 @@
                         </Viewbox>
                     </Button>
                 </Grid>
-                
                 <!--The Grid to hold the input information-->
                 <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
                     <Grid.ColumnDefinitions>
