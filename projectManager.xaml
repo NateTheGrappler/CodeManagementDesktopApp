@@ -18,11 +18,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         
         <!--Main Back Button and Title-->
-        <Border Grid.Column="0" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
-            <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
+        <Border Grid.Column="0" Grid.Row="0" Margin="2,2,2,2" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
+            <Button x:Name="backButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
                 <TextBlock Text="&lt;" FontSize="32" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
             </Button>
         </Border>
@@ -32,6 +33,103 @@
             </Viewbox>
         </Border>
 
+        <!--The Button To Add in another directory Item-->
+        <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" x:Name="AddButton" Style="{DynamicResource LessRounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="NewProjectAnimation">
+            <Viewbox Stretch="Uniform">
+                <TextBlock Text="Add New Directory" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
+            </Viewbox>
+        </Button>
+        
+        <!--The Translucent black box-->
+        <Rectangle x:Name="TranslucentBox" Grid.ColumnSpan="10" Grid.RowSpan="10" Fill="Black" Opacity="0" Panel.ZIndex="-5"/>
 
+        
+        <!--______________________________Add In New Project GUI___________________________________-->
+        <Border x:Name="NewProjecyGUI" Grid.ColumnSpan="5" Grid.RowSpan="5" Background="{StaticResource MainBackgroundBrushKey}" Margin="150, 20, 150, 20" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" CornerRadius="10">
+
+            <!--Main Grid that holds all of the visible content-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                
+                <!--The Text On Top-->
+                <Border Grid.Column="0" Margin="0" Grid.Row="0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 3, 3">
+                    <Viewbox Stretch="Uniform" Margin="1">
+                        <TextBlock Text="Add Existing Project" Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+                    </Viewbox>
+                </Border>
+
+                <!--The Close GUI Button-->
+                <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="NewProjectAnimation">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="\Images\Close.png" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Border>
+
+                <!--The Grid To Hold The button Buttons-->
+                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--The Add Project Button-->
+                    <Button Style="{StaticResource TwoRoundedCornersLeft}" Margin="5, 5, 2, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                        <Viewbox Stretch="Uniform">
+                            <TextBlock Text="Add Project" Foreground="White" FontWeight="Bold"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!--The Clear Input Fields Button-->
+                    <Button Grid.Column="1" Style="{StaticResource TwoRoundedCornersRight}" Margin="2, 5, 5, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                        <Viewbox Stretch="Uniform">
+                            <TextBlock Text="Clear" Foreground="White" FontWeight="Bold"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+                
+                <!--The Grid to hold the input information-->
+                <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!--The Project Path Input and Text-->
+                    <TextBlock Text="Project Path:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                    <TextBox x:Name="projectPathTB" Grid.Column="1" Margin="5, 15"/>
+
+                    <!--The Project Name Input and Text-->
+                    <TextBlock Grid.Row="1" Text="Project Name:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                    <TextBox x:Name="projectNameTB" Grid.Row="1" Grid.Column="1" Margin="5, 15"/>
+                    
+                </Grid>
+                
+            </Grid>
+            
+            <Border.RenderTransform>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
+            </Border.RenderTransform>
+        </Border>
     </Grid>
 </Page>
