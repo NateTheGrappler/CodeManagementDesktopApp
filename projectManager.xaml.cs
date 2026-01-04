@@ -19,6 +19,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace CodeManagementSystem
 {
@@ -99,7 +100,7 @@ namespace CodeManagementSystem
         public ObservableCollection<projectFile>      innerFiles       { get; set; } = new ObservableCollection<projectFile>();
         public ObservableCollection<projectDirectory> innerDirectories { get; set; } = new ObservableCollection<projectDirectory>();
         public bool IsExpanded { get; set; }
-        public bool HasSubDirectories => innerDirectories.Count > 0;
+        public bool HasSubDirectories = false;
 
         //-------------------------Constructors---------------------------
         public projectDirectory() { }
@@ -118,8 +119,10 @@ namespace CodeManagementSystem
         }
 
         //----------------------Inner Working Functions----------------------
-        public void loadAllFilesInDirectory(string path)  //load all of the files inside of a directory
+        public void loadAllFilesInDirectory(projectDirectory directory)  //load all of the files inside of a directory
         {
+            string path = directory.folderPath;
+
             //loading all of the files in the from a given directory path
             try
             {
@@ -135,7 +138,7 @@ namespace CodeManagementSystem
                     newFile.addedDate = fileInfo.LastWriteTime;
                     newFile.fileSize = fileInfo.Length.ToString();
                     newFile.fileType = fileInfo.Extension;
-                    innerFiles.Add(newFile);
+                    directory.innerFiles.Add(newFile);
                 }
             }
             catch (Exception ex)
@@ -279,8 +282,7 @@ namespace CodeManagementSystem
             projectNameTB.Text = string.Empty;
             projectPathTB.Text = string.Empty;
         }
-    
-        private async void addNewProject(object sender, RoutedEventArgs e)
+        private async void addNewProject(object sender, RoutedEventArgs e)               //Create a new project object revurisvely using 
         {
             //simplify names for easier use
             string path = projectPathTB.Text.Trim();
@@ -317,8 +319,9 @@ namespace CodeManagementSystem
                 folderPath = path,
                 addedDate = DateTime.Now,
             };
-            //Load all of the files that are visible in that directory and add it to the main list
-            newDirectory.loadAllFilesInDirectory(newDirectory.folderPath);
+            //Load all of the files and directories that are visible in that directory and add it to the main list 
+            newDirectory.loadAllFilesInDirectory(newDirectory);
+            checkForInnerDirectories(newDirectory);
             savedDirectories.Add(newDirectory);
 
             //save all of the data to json
@@ -327,6 +330,57 @@ namespace CodeManagementSystem
             //do the closing animation when finished
             NewProjectAnimation(sender, e);
 
+        }
+    
+        private bool checkForInnerDirectories(projectDirectory directory)               //function to set the bool for the directoies that might be within of a directory
+        {
+            //try to get inner directories
+            try
+            {
+                //use the built in tools to get all directory paths
+                string[] directPaths = Directory.GetDirectories(directory.folderPath);
+
+                //if there are paths return true, otherwise false
+                if(directPaths.Length > 0)
+                {
+                    //create a new directory item, and then make sure to update the list properly
+                    foreach(string path in directPaths)
+                    {
+                        // Create new project directory
+                        DirectoryInfo info = new DirectoryInfo(path);
+                        var newDirectory = new projectDirectory
+                        {
+                            folderName = info.Name,
+                            folderPath = path,
+                            addedDate = DateTime.Now,
+                        };
+
+                        //update all of the files in there
+                        newDirectory.loadAllFilesInDirectory(newDirectory);
+
+                        //also call this function recursively to get all other directories and files
+                        checkForInnerDirectories(newDirectory);
+
+                        //add this directory to the list of ones held in main directory
+                        directory.innerDirectories.Add(newDirectory);
+                    }
+
+
+                    //update inner bool and return true cuz why not
+                    directory.HasSubDirectories = true;
+                    return true;
+                }
+                else
+                {
+                    //bool stays the same, just return false
+                    return false;
+                }
+            }
+            //exception in case the directory does not exist
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
