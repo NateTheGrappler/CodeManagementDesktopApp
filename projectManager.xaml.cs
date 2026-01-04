@@ -201,6 +201,8 @@ namespace CodeManagementSystem
             this.NavigationService.GoBack();
         }
 
+        //-----------------------Bottom Buttons Functions--------------------------
+
         //------------------------Add New Project GUI------------------------------
         private void NewProjectAnimation(object sender, RoutedEventArgs e)               //Opens and closes the gui window for adding a new project
         {
@@ -272,11 +274,12 @@ namespace CodeManagementSystem
                     sb.Begin();
 
                     Panel.SetZIndex(TranslucentBox, -5);
+                    clearNewProjectGUI(sender, e);
                     
                 }
             }
         }
-        private void clearNewProjectGUI()                                                //Clears all of the inputed data
+        private void clearNewProjectGUI(object sender, RoutedEventArgs e)                //Clears all of the inputed data
         {
             //clear the textboxes that are in view
             projectNameTB.Text = string.Empty;
@@ -331,8 +334,7 @@ namespace CodeManagementSystem
             NewProjectAnimation(sender, e);
 
         }
-    
-        private bool checkForInnerDirectories(projectDirectory directory)               //function to set the bool for the directoies that might be within of a directory
+        private bool checkForInnerDirectories(projectDirectory directory)                //function to set the bool for the directoies that might be within of a directory
         {
             //try to get inner directories
             try
@@ -380,6 +382,153 @@ namespace CodeManagementSystem
             catch(Exception ex)
             {
                 return false;
+            }
+        }
+    
+        //---------------------Folders and Files GUI-------------------------------
+
+        private void filesAndFoldersAnimation(object sender, MouseButtonEventArgs e)    //The function that would load the opening animation of a project gui
+        {
+            Debug.WriteLine("RAN IN THE OTHER FILES AND FOLDERS ANIMATION");
+            if (sender is TreeView view)
+            {
+                if(view.SelectedItem != null)
+                {
+                    initTreeAndListView();
+                    Storyboard sb = new Storyboard();
+
+                    //Set the transform origin on the Border itself
+                    FilesAndFoldersGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                    Panel.SetZIndex(FilesAndFoldersGUI, 11);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, FilesAndFoldersGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+                }
+            }
+        }
+        private void filesAndFoldersClose(object sender, RoutedEventArgs e)             //The close function for the above GUI
+        {
+            if(sender is Button button)
+            {
+                if(button.Name == "closeFilesAndFoldersGUI")
+                {
+                    Storyboard sb = new Storyboard();
+
+                    //Set the transform origin on the Border itself
+                    FilesAndFoldersGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0.7,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, FilesAndFoldersGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, -5);
+                    clearVisibleLists();
+                }
+            }
+        }
+        private void clearVisibleLists()                                                //Clear the tree view and list view of the ff GUI
+        {
+            ffTreeView.ItemsSource = null;
+            ffListView.ItemsSource = null;
+        }
+        private void initTreeAndListView()                                              //Loads in all information
+        {
+            //Check to see if an item is selected
+            if(mainTreeView.SelectedItem != null)
+            {
+                //get the item as a projectDirectory Class
+                var directory = mainTreeView.SelectedItem as projectDirectory;
+
+                //Fill out proper values
+                ffProjectName.Text     = directory.folderName;
+                ffTreeView.ItemsSource = directory.innerDirectories;
+                ffListView.ItemsSource = directory.innerFiles;
+            }
+        }
+       
+        private void openFile(projectFile file)
+        {
+            try
+            {
+                //check if the file exists
+                if(File.Exists(file.filePath))
+                {
+                    //using the process class, open the file
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = file.filePath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    //warn user that file isnt there and to update their view
+                    MessageBox.Show(
+                        "File no longer exists at that path. Please update and try again",
+                        "Unable to find file",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                        );
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(
+                    "Error opening file!",
+                    "You done goofed up",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+            }
+        }
+        private void ffListView_MouseDoubleClick(object sender, MouseButtonEventArgs e) //Opens a file on double click
+        {
+            //check to see if a file is selected and then open it
+            if(ffListView.SelectedItem != null)
+            {
+                var file = ffListView.SelectedItem as projectFile;
+                openFile(file);
             }
         }
     }
