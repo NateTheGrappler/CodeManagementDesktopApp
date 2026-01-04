@@ -221,18 +221,42 @@
                 <!--The Top Grid-->
                 <Grid Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
                     
-                    <!--The Name Of the folder that is currently open-->
-                    <Border Grid.Column="0" Grid.ColumnSpan="1" Margin="0" Grid.Row="0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 0, 3">
-                        <Viewbox Stretch="Uniform" Margin="1">
-                            <TextBlock x:Name="ffProjectName" Text="SOMEEEEEE TEXTTTT"  Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
-                        </Viewbox>
+                    <!--The Button Go back a directory-->
+                    <Border Grid.Row="0" Grid.Column="0" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ffBackDirectory" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="filesAndFoldersClose">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="\Images\arrowBack.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Border>
+                    <!--The Button Open File Explorer-->
+                    <Border Grid.Row="0" Grid.Column="1" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ffOpenFileExplorer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Open Directory in File Explorer" Click="openFileExplorerAtPath">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="/Images/openFileExplorer.png" Stretch="Uniform"/>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                     </Border>
                     <!--The Button to close this window-->
-                    <Border Grid.Row="0" Grid.Column="1" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Border Grid.Row="0" Grid.Column="3" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
                         <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeFilesAndFoldersGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="filesAndFoldersClose">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
@@ -245,17 +269,18 @@
                             </Button.Content>
                         </Button>
                     </Border>
+                    <!--The Name Of the folder that is currently open-->
+                    <Border Grid.Column="2" Grid.ColumnSpan="1" Margin="0" Grid.Row="0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 0, 3">
+                        <Viewbox Stretch="Uniform" Margin="1">
+                            <TextBlock x:Name="ffProjectName" Text="SOMEEEEEE TEXTTTT"  Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+                        </Viewbox>
+                    </Border>
 
                 </Grid>
                 
                 <!--The tree view that holds all of the folders-->
-                <Border Grid.Row="2" Margin="0, 0, 0, 0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 1, 0">
-                    <Viewbox Stretch="Uniform">
-                        <TextBlock Text="Folders" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
-                    </Viewbox>
-                </Border>
                 <Border Grid.Row="1" Grid.ColumnSpan="1" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 1, 0">
-                    <TreeView x:Name="ffTreeView" Grid.Row="1" Grid.ColumnSpan="1" Margin="5, 5, 0, 0">
+                    <TreeView x:Name="ffTreeView" Grid.Row="1" Grid.ColumnSpan="1" Margin="5, 5, 0, 0" MouseDoubleClick="ffTreeView_MouseDoubleClick">
                         <!--Styling for the tree view-->
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="TreeViewItem">
@@ -299,6 +324,11 @@
                         </TreeView.ItemTemplate>
                     </TreeView>
                 </Border>
+                <Border Grid.Row="2" Margin="0, 0, 0, 0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 1, 0">
+                    <Viewbox Stretch="Uniform">
+                        <TextBlock Text="Folders" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
+                    </Viewbox>
+                </Border>
 
                 <!--The list view that holds all of the folders there as well-->
                 <Border Grid.Row="1" Grid.Column="1" Margin="0, 0, 0, 0"  BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="1, 0, 0, 0">
@@ -327,7 +357,7 @@
                                         </Viewbox>
                                         <!--The name of the folder/directory-->
                                         <Viewbox Grid.Column="1" Stretch="Uniform" Margin="10, 0">
-                                            <TextBlock Text="{Binding fileName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <TextBlock Text="{Binding fileName}" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
                                         </Viewbox>
                                         <!--The date added-->
                                         <Viewbox Grid.Column="2" Stretch="Uniform" Margin="10, 0">

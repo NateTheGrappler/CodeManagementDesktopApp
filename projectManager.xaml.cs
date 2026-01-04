@@ -178,8 +178,9 @@ namespace CodeManagementSystem
 
     public partial class projectManager : Page
     {
-        private projectJsonManagement                   jsonManager     = new projectJsonManagement();
-        private ObservableCollection<projectDirectory> savedDirectories = new ObservableCollection<projectDirectory>();
+        private projectJsonManagement                   jsonManager      = new projectJsonManagement();
+        private ObservableCollection<projectDirectory>  savedDirectories = new ObservableCollection<projectDirectory>();
+        private string                                  currentDir = "";
         public projectManager()
         {
             InitializeComponent();
@@ -204,7 +205,7 @@ namespace CodeManagementSystem
         //-----------------------Bottom Buttons Functions--------------------------
 
         //------------------------Add New Project GUI------------------------------
-        private void NewProjectAnimation(object sender, RoutedEventArgs e)               //Opens and closes the gui window for adding a new project
+        private void NewProjectAnimation(object sender, RoutedEventArgs e)                 //Opens and closes the gui window for adding a new project
         {
             //get button for button name
             if(sender is Button button)
@@ -279,13 +280,13 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void clearNewProjectGUI(object sender, RoutedEventArgs e)                //Clears all of the inputed data
+        private void clearNewProjectGUI(object sender, RoutedEventArgs e)                  //Clears all of the inputed data
         {
             //clear the textboxes that are in view
             projectNameTB.Text = string.Empty;
             projectPathTB.Text = string.Empty;
         }
-        private async void addNewProject(object sender, RoutedEventArgs e)               //Create a new project object revurisvely using 
+        private async void addNewProject(object sender, RoutedEventArgs e)                 //Create a new project object revurisvely using 
         {
             //simplify names for easier use
             string path = projectPathTB.Text.Trim();
@@ -334,7 +335,7 @@ namespace CodeManagementSystem
             NewProjectAnimation(sender, e);
 
         }
-        private bool checkForInnerDirectories(projectDirectory directory)                //function to set the bool for the directoies that might be within of a directory
+        private bool checkForInnerDirectories(projectDirectory directory)                  //function to set the bool for the directoies that might be within of a directory
         {
             //try to get inner directories
             try
@@ -384,10 +385,10 @@ namespace CodeManagementSystem
                 return false;
             }
         }
-    
-        //---------------------Folders and Files GUI-------------------------------
-
-        private void filesAndFoldersAnimation(object sender, MouseButtonEventArgs e)    //The function that would load the opening animation of a project gui
+                                                                                           
+        //---------------------Folders and Files GUI-------------------------------        
+                                                                                           
+        private void filesAndFoldersAnimation(object sender, MouseButtonEventArgs e)       //The function that would load the opening animation of a project gui
         {
             Debug.WriteLine("RAN IN THE OTHER FILES AND FOLDERS ANIMATION");
             if (sender is TreeView view)
@@ -428,7 +429,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void filesAndFoldersClose(object sender, RoutedEventArgs e)             //The close function for the above GUI
+        private void filesAndFoldersClose(object sender, RoutedEventArgs e)                //The close function for the above GUI
         {
             if(sender is Button button)
             {
@@ -467,12 +468,12 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void clearVisibleLists()                                                //Clear the tree view and list view of the ff GUI
+        private void clearVisibleLists()                                                   //Clear the tree view and list view of the ff GUI
         {
             ffTreeView.ItemsSource = null;
             ffListView.ItemsSource = null;
         }
-        private void initTreeAndListView()                                              //Loads in all information
+        private void initTreeAndListView()                                                 //Loads in all information
         {
             //Check to see if an item is selected
             if(mainTreeView.SelectedItem != null)
@@ -484,10 +485,10 @@ namespace CodeManagementSystem
                 ffProjectName.Text     = directory.folderName;
                 ffTreeView.ItemsSource = directory.innerDirectories;
                 ffListView.ItemsSource = directory.innerFiles;
+                currentDir             = directory.folderPath;
             }
         }
-       
-        private void openFile(projectFile file)
+        private void openFile(projectFile file)                                            //Opens a file at the given path it exists at
         {
             try
             {
@@ -522,7 +523,19 @@ namespace CodeManagementSystem
                     );
             }
         }
-        private void ffListView_MouseDoubleClick(object sender, MouseButtonEventArgs e) //Opens a file on double click
+        private void openDirectory(projectDirectory directory)                             //Loads directory information into visible GUI
+        {
+            //change all of the visible content
+            ffProjectName.Text = directory.folderName;
+            ffTreeView.ItemsSource = directory.innerDirectories;
+            ffListView.ItemsSource = directory.innerFiles;
+
+            //update internal var 
+            currentDir = directory.folderPath;
+
+            //also add a way to go back
+        } 
+        private void ffListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)    //Opens a file on double click
         {
             //check to see if a file is selected and then open it
             if(ffListView.SelectedItem != null)
@@ -531,5 +544,24 @@ namespace CodeManagementSystem
                 openFile(file);
             }
         }
+        private void ffTreeView_MouseDoubleClick(object sender, MouseButtonEventArgs e)    //loads directory content on double click
+        {
+            if(ffTreeView.SelectedItem != null)
+            {
+                //get the directory and then run the open function
+                var directory = ffTreeView.SelectedItem as projectDirectory;
+                openDirectory(directory);
+            }
+        }
+        private void openFileExplorerAtPath(object sender, RoutedEventArgs e)              //open up file explorer for user
+        {
+            //check if dir is empty or not
+            if(currentDir != "")
+            {
+                //open with explorer at given path
+                System.Diagnostics.Process.Start("explorer.exe", currentDir);
+            }
+        }
+    
     }
 }

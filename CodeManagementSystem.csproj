@@ -14,6 +14,7 @@
     <None Remove="codeManagerIcon.png" />
     <None Remove="codeManagerIconColor.png" />
     <None Remove="fileFolderButtonImg.png" />
+    <None Remove="Images\arrowBack.png" />
     <None Remove="Images\blackVerticalDots.png" />
     <None Remove="Images\Close.png" />
     <None Remove="Images\downArrow.png" />
@@ -24,6 +25,7 @@
     <None Remove="Images\lastPageButton.png" />
     <None Remove="Images\leftArrow.png" />
     <None Remove="Images\NoRedircle.png" />
+    <None Remove="Images\openFileExplorer.png" />
     <None Remove="Images\oTicTacToe.png" />
     <None Remove="Images\reload.png" />
     <None Remove="Images\resetZoom.png" />
@@ -69,6 +71,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\arrowBack.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\blackVerticalDots.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -121,6 +126,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\NoRedircle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\openFileExplorer.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\oTicTacToe.png">
