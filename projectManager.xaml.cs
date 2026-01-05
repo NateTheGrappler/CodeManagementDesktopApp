@@ -180,7 +180,8 @@ namespace CodeManagementSystem
     {
         private projectJsonManagement                   jsonManager      = new projectJsonManagement();
         private ObservableCollection<projectDirectory>  savedDirectories = new ObservableCollection<projectDirectory>();
-        private string                                  currentDir = "";
+        private projectDirectory                        currentDir       = new projectDirectory();
+        private List<projectDirectory>                  previousDir      = new List<projectDirectory>();
         public projectManager()
         {
             InitializeComponent();
@@ -472,6 +473,11 @@ namespace CodeManagementSystem
         {
             ffTreeView.ItemsSource = null;
             ffListView.ItemsSource = null;
+
+            //clear the previous dir and disable button
+            previousDir.Clear();
+            currentDir  = new projectDirectory();
+            ffBackDirectory.IsEnabled = false;
         }
         private void initTreeAndListView()                                                 //Loads in all information
         {
@@ -485,7 +491,7 @@ namespace CodeManagementSystem
                 ffProjectName.Text     = directory.folderName;
                 ffTreeView.ItemsSource = directory.innerDirectories;
                 ffListView.ItemsSource = directory.innerFiles;
-                currentDir             = directory.folderPath;
+                currentDir             = directory;
             }
         }
         private void openFile(projectFile file)                                            //Opens a file at the given path it exists at
@@ -530,10 +536,19 @@ namespace CodeManagementSystem
             ffTreeView.ItemsSource = directory.innerDirectories;
             ffListView.ItemsSource = directory.innerFiles;
 
-            //update internal var 
-            currentDir = directory.folderPath;
+            currentDir = directory;
 
-            //also add a way to go back
+            //check to see if previous dir is not empty
+            if (previousDir.Count > 0)
+            {
+                //update the previous dir and enable the button
+                ffBackDirectory.IsEnabled = true;
+            }
+            else
+            {
+                //disable button
+                ffBackDirectory.IsEnabled = false;
+            }
         } 
         private void ffListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)    //Opens a file on double click
         {
@@ -548,20 +563,51 @@ namespace CodeManagementSystem
         {
             if(ffTreeView.SelectedItem != null)
             {
-                //get the directory and then run the open function
                 var directory = ffTreeView.SelectedItem as projectDirectory;
+
+                //save the old path
+                previousDir.Add(currentDir);
+
+                //get the directory and then run the open function
                 openDirectory(directory);
             }
         }
         private void openFileExplorerAtPath(object sender, RoutedEventArgs e)              //open up file explorer for user
         {
             //check if dir is empty or not
-            if(currentDir != "")
+            if(!string.IsNullOrEmpty(currentDir.folderPath))
             {
                 //open with explorer at given path
-                System.Diagnostics.Process.Start("explorer.exe", currentDir);
+                System.Diagnostics.Process.Start("explorer.exe", currentDir.folderPath);
             }
         }
-    
+        private void ffbackDirectory_click(object sender, RoutedEventArgs e)               //change directories when button is clicked
+        {
+            Debug.WriteLine("Before Popping");
+            foreach (projectDirectory project in previousDir)
+            {
+                Debug.WriteLine(project.folderPath);
+            }
+
+            //check to see if the path is null
+            if (!string.IsNullOrEmpty(previousDir[previousDir.Count-1].folderPath))
+            {
+                //open the dir and then pop it from the list
+                openDirectory(previousDir[previousDir.Count-1]);
+                previousDir.RemoveAt(previousDir.Count-1);
+            }
+
+            if(previousDir.Count <= 0 )
+            {
+                ffBackDirectory.IsEnabled = false;
+
+            }
+
+            Debug.WriteLine("After Popping");
+            foreach(projectDirectory project in previousDir)
+            {
+                Debug.WriteLine(project.folderPath);
+            }
+        }
     }
 }

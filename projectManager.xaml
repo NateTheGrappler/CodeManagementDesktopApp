@@ -229,7 +229,7 @@
                     
                     <!--The Button Go back a directory-->
                     <Border Grid.Row="0" Grid.Column="0" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
-                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ffBackDirectory" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="filesAndFoldersClose">
+                        <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="ffBackDirectory" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Go Back To Previous Directory" Click="ffbackDirectory_click" IsEnabled="False">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
