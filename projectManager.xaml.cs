@@ -205,6 +205,64 @@ namespace CodeManagementSystem
 
         //-----------------------Bottom Buttons Functions--------------------------
 
+        private async void deleteDirectory(object sender, RoutedEventArgs e)              //delete a main selected directory
+        {
+            //check if a directory is highligted
+            if(mainTreeView.SelectedItem != null)
+            {
+                //get as directory and remove from list
+                var directory = mainTreeView.SelectedItem as projectDirectory;
+                savedDirectories.Remove(directory);
+
+                //also save the deletion
+                await jsonManager.saveToJson(savedDirectories);
+            }
+        }
+        private async void updateAllDirectories(object sender, RoutedEventArgs e)         //recursively update all files for any changes
+        {
+            //create a temp list of directories
+            ObservableCollection<projectDirectory> updatedDirectories = new ObservableCollection<projectDirectory>();
+
+            //loop over current directories and copy/update them
+            foreach(projectDirectory project in savedDirectories)
+            {
+                var newDirectory = new projectDirectory
+                {
+                    folderName = project.folderName,
+                    folderPath = project.folderPath,
+                    addedDate = DateTime.Now,
+                };
+                //Load all of the files and directories that are visible in that directory and add it to the main list 
+                newDirectory.loadAllFilesInDirectory(newDirectory);
+                checkForInnerDirectories(newDirectory);
+                updatedDirectories.Add(newDirectory);
+            }
+
+            //Refresh Set the new saved directories
+            savedDirectories = null;
+            savedDirectories = updatedDirectories;
+            mainTreeView.ItemsSource = savedDirectories;
+
+            //do the button animation if function call came from front UI button
+            if(sender is Button button)
+            {
+                //front UI button
+                if(button.Name == "updateButton")
+                {
+                    //Disable button, wait for effect, and then reenable
+                    updateButton.IsEnabled = false;
+                    UpdateButtonText.Foreground = new SolidColorBrush(Colors.Gray);
+                    await Task.Delay(2000);
+                    updateButton.IsEnabled = true;
+                    UpdateButtonText.Foreground = new SolidColorBrush(Colors.White);
+
+                    //also save to json cuz why not
+                    await jsonManager.saveToJson(savedDirectories);
+                }
+            }
+
+        }
+       
         //------------------------Add New Project GUI------------------------------
         private void NewProjectAnimation(object sender, RoutedEventArgs e)                 //Opens and closes the gui window for adding a new project
         {
@@ -387,8 +445,7 @@ namespace CodeManagementSystem
             }
         }
                                                                                            
-        //---------------------Folders and Files GUI-------------------------------        
-                                                                                           
+        //---------------------Folders and Files GUI-------------------------------                                                                   
         private void filesAndFoldersAnimation(object sender, MouseButtonEventArgs e)       //The function that would load the opening animation of a project gui
         {
             Debug.WriteLine("RAN IN THE OTHER FILES AND FOLDERS ANIMATION");
@@ -609,5 +666,7 @@ namespace CodeManagementSystem
                 Debug.WriteLine(project.folderPath);
             }
         }
+    
+    
     }
 }

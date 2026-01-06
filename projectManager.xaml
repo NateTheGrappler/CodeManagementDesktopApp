@@ -49,7 +49,7 @@
                 </Viewbox>
             </Button>
             <!--The Button To delete any given directory-->
-            <Button Grid.Column="1" Grid.ColumnSpan="1" x:Name="DeleteButton" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,0,4" Background="#FF0078D7" Click="NewProjectAnimation">
+            <Button Grid.Column="1" Grid.ColumnSpan="1" x:Name="DeleteButton" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,0,4" Background="#FF0078D7" Click="deleteDirectory">
                 <Viewbox Stretch="Uniform">
                     <TextBlock Text="Delete Directory" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                 </Viewbox>
@@ -61,9 +61,9 @@
                 </Viewbox>
             </Button>
             <!--The update directory-->
-            <Button Grid.Column="3" Grid.ColumnSpan="1" x:Name="updateButton" Style="{StaticResource TwoRoundedCornersRight}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,1,4" Background="#FF0078D7" Click="NewProjectAnimation">
+            <Button Grid.Column="3" Grid.ColumnSpan="1" x:Name="updateButton" Style="{StaticResource TwoRoundedCornersRight}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,1,4" Background="#FF0078D7" Click="updateAllDirectories">
                 <Viewbox Stretch="Uniform">
-                    <TextBlock Text="Update Directories" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
+                    <TextBlock x:Name="UpdateButtonText" Text="Update Directories" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                 </Viewbox>
             </Button>
         
@@ -278,51 +278,42 @@
 
                 </Grid>
                 
-                <!--The tree view that holds all of the folders-->
+                <!--The listbox that holds all of the folders-->
                 <Border Grid.Row="1" Grid.ColumnSpan="1" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 1, 0">
-                    <TreeView x:Name="ffTreeView" Grid.Row="1" Grid.ColumnSpan="1" Margin="5, 5, 0, 0" MouseDoubleClick="ffTreeView_MouseDoubleClick">
-                        <!--Styling for the tree view-->
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="TreeViewItem">
-                                <Setter Property="HorizontalAlignment" Value="Left"/>
-                                <Setter Property="VerticalAlignment"   Value="Center"/>
-                                <Setter Property="Margin"              Value="0, 0, 0, 5"/>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
+                    <ListBox x:Name="ffTreeView" Grid.Row="1" Grid.ColumnSpan="1" Margin="5, 5, 0, 0" MouseDoubleClick="ffTreeView_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
                         <!--Item template of the main view-->
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding InnerDirectories}">
-                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="30"/>
-                                    </Grid.RowDefinitions>
-                                    <!--The Folder icon-->
-                                    <Viewbox Stretch="Uniform" Grid.Column="0">
-                                        <Rectangle Width="20" Height="20" Fill="{StaticResource DarkBorderBrushKey}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                            <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="/Images/fileFolderButtonImg.png" Stretch="Uniform"/>
-                                            </Rectangle.OpacityMask>
-                                        </Rectangle>
-                                    </Viewbox>
-                                    <!--The name of the folder/directory-->
-                                    <Viewbox Grid.Column="1" Stretch="Uniform" Margin="10, 0">
-                                        <TextBlock Text="{Binding folderName}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                                    </Viewbox>
-                                    <!--The date added-->
-                                    <Viewbox Grid.Column="2" Stretch="Uniform" Margin="10, 0">
-                                        <TextBlock Grid.Column="0" Text="{Binding addedDate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                                    </Viewbox>
-                                </Grid>
-
-
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Viewbox Stretch="Uniform" MaxHeight="35">
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="150"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="45"/>
+                                        </Grid.RowDefinitions>
+                                        <!--The Folder icon-->
+                                        <Viewbox Stretch="Uniform" Grid.Column="0">
+                                            <Rectangle Width="20" Height="20" Fill="{StaticResource DarkBorderBrushKey}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/Images/fileFolderButtonImg.png" Stretch="Uniform"/>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </Viewbox>
+                                        <!--The name of the folder/directory-->
+                                        <TextBlock Margin="10, 0" Grid.Column="1" Text="{Binding folderName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+                                        <!--The date added-->
+                                        <Viewbox Grid.Column="2" Stretch="Uniform" Margin="10, 0">
+                                            <TextBlock Grid.Column="0" Text="{Binding addedDate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Viewbox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Border>
                 <Border Grid.Row="2" Margin="0, 0, 0, 0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 1, 0">
                     <Viewbox Stretch="Uniform">
@@ -337,8 +328,8 @@
                         <!--The Item Style-->
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Viewbox Stretch="Uniform" MaxHeight="45">
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Viewbox Stretch="Uniform" MaxHeight="35">
+                                    <Grid MaxHeight="35" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="40"/>
                                             <ColumnDefinition Width="150"/>
