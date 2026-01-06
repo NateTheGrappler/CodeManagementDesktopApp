@@ -289,8 +289,8 @@
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="200"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="45"/>
@@ -304,10 +304,12 @@
                                             </Rectangle>
                                         </Viewbox>
                                         <!--The name of the folder/directory-->
-                                        <TextBlock Margin="10, 0" Grid.Column="1" Text="{Binding folderName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24"/>
+                                        <Viewbox Grid.Column="1" Stretch="Uniform" Margin="10, 0">
+                                            <TextBlock Text="{Binding folderName}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        </Viewbox>
                                         <!--The date added-->
                                         <Viewbox Grid.Column="2" Stretch="Uniform" Margin="10, 0">
-                                            <TextBlock Grid.Column="0" Text="{Binding addedDate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <TextBlock Grid.Column="0" Text="{Binding addedDate}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         </Viewbox>
                                     </Grid>
                                 </Viewbox>
@@ -405,6 +407,113 @@
                 <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
-    
+
+
+        <!--______________________________project Info GUI___________________________________-->
+        <Border x:Name="ProjectInfoGUI" Grid.ColumnSpan="5" Grid.RowSpan="5" Background="{StaticResource MainBackgroundBrushKey}" Margin="100, 20, 100, 20" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" CornerRadius="10">
+
+            <!--Main Grid that holds all of the visible content-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+
+                <!--The Text On Top-->
+                <Border Grid.Column="0" Margin="0" Grid.Row="0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 3, 3">
+                    <Viewbox Stretch="Uniform" Margin="1">
+                        <TextBlock Text="File Info For: " Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+                    </Viewbox>
+                </Border>
+                <!--The Close GUI Button-->
+                <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeProjectInfoGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="NewProjectAnimation">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="\Images\Close.png" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Border>
+                <!--The Grid To Hold The bottom Buttons-->
+                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--The Save Project Button-->
+                    <Button x:Name="PISaveButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="5, 5, 2, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="addNewProject">
+                        <Viewbox Stretch="Uniform">
+                            <TextBlock Text="Save" Foreground="White" FontWeight="Bold"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!--The Clear Input Fields Button-->
+                    <Button Grid.Column="1" Style="{StaticResource TwoRoundedCornersRight}" Margin="2, 5, 5, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="clearNewProjectGUI">
+                        <Viewbox Stretch="Uniform">
+                            <TextBlock Text="Clear" Foreground="White" FontWeight="Bold"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+                
+                <!--The Grid to hold the input information-->
+                <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--The Project Path Input and Text-->
+                        <TextBlock Text="Project Path:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                        <TextBox x:Name="PIprojectPathTB" Grid.Column="1" Margin="5, 15"/>
+
+                        <!--The Project Name Input and Text-->
+                        <TextBlock Grid.Row="1" Text="Project Name:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                        <TextBox x:Name="PIprojectNameTB" Grid.Row="1" Grid.Column="1" Margin="5, 15"/>
+
+                        <!--The inner directories count-->
+                        <TextBlock Grid.Row="2" Text="Directories #:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                        <TextBox x:Name="PIinnderDirectoriesTB" Grid.Row="2" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
+
+                        <!--The inner files count-->
+                        <TextBlock Grid.Row="3" Text="Inner Files #:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                        <TextBox x:Name="PIinnderFilesTB" Grid.Row="3" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
+
+                        <!--The date added -->
+                        <TextBlock Grid.Row="4" Text="Dated Added:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                        <TextBox x:Name="DateAddedTB" Grid.Row="4" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
+                        
+                        <!--The Total size-->
+                        <TextBlock Grid.Row="5" Text="Total Size:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
+                        <TextBox x:Name="TotalSizeTB" Grid.Row="5" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
+                    </Grid>
+                </ScrollViewer>
+
+            </Grid>
+
+            <Border.RenderTransform>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
+            </Border.RenderTransform>
+        </Border>
     </Grid>
 </Page>

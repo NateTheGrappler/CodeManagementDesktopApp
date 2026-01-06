@@ -93,12 +93,16 @@ namespace CodeManagementSystem
     public class projectDirectory
     {
         //--------------------------Varaibles---------------------------
-        public string folderName  { get; set; }
-        public string folderPath  { get; set; }
-        public DateTime addedDate { get; set; }
-        public ImageSource icon   { get; set; }
+        public string      folderName            { get; set; }
+        public string      folderPath            { get; set; }
+        public DateTime    addedDate             { get; set; }
+        public ImageSource icon                  { get; set; }
+        public int         innerFileCount        { get; set; }
+        public int         innerDirCount         { get; set; }
         public ObservableCollection<projectFile>      innerFiles       { get; set; } = new ObservableCollection<projectFile>();
         public ObservableCollection<projectDirectory> innerDirectories { get; set; } = new ObservableCollection<projectDirectory>();
+
+
         public bool IsExpanded { get; set; }
         public bool HasSubDirectories = false;
 
@@ -144,13 +148,21 @@ namespace CodeManagementSystem
             catch (Exception ex)
             {
                 //error box whenever you are unable to load a file
-                MessageBox.Show(
-                    "Unable to load directory, please check if path is correct",
-                    "Unable to load project",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                    );
+                //MessageBox.Show(
+                //    "Unable to load directory, please check if path is correct",
+                //    "Unable to load project",
+                //    MessageBoxButton.OK,
+                //    MessageBoxImage.Error
+                //    );
             }
+        }
+        public void countAllInnerFiles()
+        {
+
+        }
+        public void countAllInnerDirectories()
+        {
+
         }
     
     }
@@ -666,7 +678,28 @@ namespace CodeManagementSystem
                 Debug.WriteLine(project.folderPath);
             }
         }
-    
-    
+
+        //---------------------Show Project Info-------------------------------                                                                   
+
+        private void doProjectInfoAnimation(object sender, RoutedEventArgs e)              //opens and closes the project info GUI
+        {
+
+        }
+
+        private void loadDirectoryInfo()                                                  //Sets up the textboxes for viewing
+        {
+            //check if an item is selected
+            if(mainTreeView.SelectedItem != null)
+            {
+                //get the item as a directory
+                var dir = mainTreeView.SelectedItem as projectDirectory;
+
+                //update all visuals based on information
+                PIprojectNameTB.Text = dir.folderName;
+                PIprojectPathTB.Text = dir.folderPath;
+
+
+            }
+        }
     }
 }
