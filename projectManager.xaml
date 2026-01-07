@@ -55,7 +55,7 @@
                 </Viewbox>
             </Button>
             <!--Directory info button-->
-            <Button Grid.Column="2" Grid.ColumnSpan="1" x:Name="infoButton" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,0,4" Background="#FF0078D7" Click="NewProjectAnimation">
+            <Button Grid.Column="2" Grid.ColumnSpan="1" x:Name="infoButton" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,0,4" Background="#FF0078D7" ToolTip="Show More Info For Selected Dir" Click="doProjectInfoAnimation">
                 <Viewbox Stretch="Uniform">
                     <TextBlock Text="Show Directory Info" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                 </Viewbox>
@@ -432,7 +432,7 @@
                 </Border>
                 <!--The Close GUI Button-->
                 <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
-                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeProjectInfoGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="NewProjectAnimation">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeProjectInfoGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="doProjectInfoAnimation">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
                                 <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -501,11 +501,11 @@
 
                         <!--The date added -->
                         <TextBlock Grid.Row="4" Text="Dated Added:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
-                        <TextBox x:Name="DateAddedTB" Grid.Row="4" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
+                        <TextBox x:Name="PIDateAddedTB" Grid.Row="4" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
                         
                         <!--The Total size-->
                         <TextBlock Grid.Row="5" Text="Total Size:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}" FontSize="18"/>
-                        <TextBox x:Name="TotalSizeTB" Grid.Row="5" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
+                        <TextBox x:Name="PITotalSizeTB" Grid.Row="5" Grid.Column="1" Margin="5, 15" IsEnabled="False"/>
                     </Grid>
                 </ScrollViewer>
 

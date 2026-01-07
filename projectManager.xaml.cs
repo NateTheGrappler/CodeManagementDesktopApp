@@ -97,8 +97,9 @@ namespace CodeManagementSystem
         public string      folderPath            { get; set; }
         public DateTime    addedDate             { get; set; }
         public ImageSource icon                  { get; set; }
-        public int         innerFileCount        { get; set; }
-        public int         innerDirCount         { get; set; }
+        public int         innerFileCount        { get; set; } = 0;
+        public int         innerDirCount         { get; set; } = 0;
+        public float       size                  { get; set; } = 0;
         public ObservableCollection<projectFile>      innerFiles       { get; set; } = new ObservableCollection<projectFile>();
         public ObservableCollection<projectDirectory> innerDirectories { get; set; } = new ObservableCollection<projectDirectory>();
 
@@ -140,7 +141,7 @@ namespace CodeManagementSystem
                     //create the new file object using the data that was gotten
                     projectFile newFile = new projectFile(fileInfo.Name, filePath);
                     newFile.addedDate = fileInfo.LastWriteTime;
-                    newFile.fileSize = fileInfo.Length.ToString();
+                    newFile.fileSize = (float)fileInfo.Length;
                     newFile.fileType = fileInfo.Extension;
                     directory.innerFiles.Add(newFile);
                 }
@@ -156,27 +157,143 @@ namespace CodeManagementSystem
                 //    );
             }
         }
-        public void countAllInnerFiles()
+        public void countAllInnerFiles(projectDirectory directory)       //recursively count all the files
         {
+            //only add the main files once
+            if(innerFileCount <= 0)
+            {
+                innerFileCount += innerFiles.Count;
+            }
 
+            string[] dirPaths = Directory.GetDirectories(directory.folderPath);
+
+            //if there is folders inside of the folder
+            if(dirPaths.Length > 0)
+            {
+                try
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        //get the amount of files in that folder, and then also check if that folder has inner dirs
+                        string[] filePaths = Directory.GetFiles(dirPath);
+                        innerFileCount += filePaths.Length / 100000000;
+
+                        //set up directory so that way it can be passed into the function as well
+                        var dirInfo = new DirectoryInfo(dirPath);
+                        var newDirectory = new projectDirectory
+                        {
+                            folderPath = dirPath,
+                        };
+
+                        //recall the function to check
+                        countAllInnerFiles(newDirectory);
+                    }
+                }
+                catch(Exception ex)
+                {
+
+                }
+            }
         }
-        public void countAllInnerDirectories()
+        public void countAllInnerDirectories(projectDirectory directory) //Also add recusively counted directories
         {
+            //only add the main dirs once
+            if (innerDirCount <= 0)
+            {
+                innerDirCount += innerDirectories.Count;
+            }
 
+            string[] dirPaths = Directory.GetDirectories(directory.folderPath);
+
+            //if there is folders inside of the folder
+            if (dirPaths.Length > 0)
+            {
+                //try in case you dont have access to some files
+                try
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        //get the amount of dirs in that folder, and then also check if that folder has inner dirs
+                        string[] directPaths = Directory.GetDirectories(dirPath);
+                        innerDirCount += directPaths.Length;
+
+                        //set up directory so that way it can be passed into the function as well
+                        var dirInfo = new DirectoryInfo(dirPath);
+                        var newDirectory = new projectDirectory
+                        {
+                            folderPath = dirPath,
+                        };
+
+                        //recall the function to check
+                        countAllInnerDirectories(newDirectory);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
         }
-    
+        public void calculateSize(projectDirectory directory)
+        {
+            //inital condition
+            if(size <= 0)
+            {
+                foreach(projectFile file in innerFiles)
+                {
+                    size += file.fileSize;
+                }
+            }
+
+            //Check for dirs and inner dirs recursively
+            string[] dirPaths = Directory.GetDirectories(directory.folderPath);
+
+            //if there is folders inside of the folder
+            if (dirPaths.Length > 0)
+            {
+                try
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        //get the amount of files in that folder, and then also check if that folder has inner dirs
+                        string[] filePaths = Directory.GetFiles(dirPath);
+
+                        //loop over all of the files
+                        foreach (string filepath in filePaths)
+                        {
+                            var fileInfo = new FileInfo(filepath);
+                            size += fileInfo.Length;
+                        }
+
+                        //set up directory so that way it can be passed into the function as well
+                        var dirInfo = new DirectoryInfo(dirPath);
+                        var newDirectory = new projectDirectory
+                        {
+                            folderPath = dirPath,
+                        };
+
+                        //recall the function to check
+                        countAllInnerFiles(newDirectory);
+                    }
+                }
+                catch(Exception ex)
+                {
+
+                }
+            }
+        }
     }
 
 
     public class projectFile
     {
         //--------------------------Varaibles---------------------------
-        public string fileName    { get; set; }
-        public string filePath    { get; set; }
-        public string fileType    { get; set; }
-        public string fileSize    { get; set; }
-        public DateTime addedDate { get; set; }
-        public ImageSource icon { get; set; }
+        public string      fileName    { get; set; }
+        public string      filePath    { get; set; }
+        public string      fileType    { get; set; }
+        public float       fileSize    { get; set; }
+        public DateTime    addedDate   { get; set; }
+        public ImageSource icon        { get; set; }
 
         //-------------------------Constructors---------------------------
         public projectFile() { }
@@ -683,7 +800,78 @@ namespace CodeManagementSystem
 
         private void doProjectInfoAnimation(object sender, RoutedEventArgs e)              //opens and closes the project info GUI
         {
+            //get button for button name
+            if (sender is Button button)
+            {
+                Storyboard sb = new Storyboard();
 
+                //The open sequence
+                if (button.Name == "infoButton")
+                {
+                    //load in all of the needed information
+                    loadDirectoryInfo();
+
+                    //Set the transform origin on the Border itself
+                    ProjectInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                    Panel.SetZIndex(ProjectInfoGUI, 11);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, ProjectInfoGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+                }
+                //the close sequence
+                else if (button.Name == "closeProjectInfoGUI")
+                {
+                    //Set the transform origin on the Border itself
+                    ProjectInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0.7,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, ProjectInfoGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, -5);
+                }
+            }
         }
 
         private void loadDirectoryInfo()                                                  //Sets up the textboxes for viewing
@@ -693,11 +881,31 @@ namespace CodeManagementSystem
             {
                 //get the item as a directory
                 var dir = mainTreeView.SelectedItem as projectDirectory;
+                
+                //Check to see if you have un inited counts
+                if(dir.innerFileCount <= 0)
+                {
+                    dir.countAllInnerFiles(dir);
+                }
+                //Also run seperate checks for dirs
+                if(dir.innerDirCount <= 0)
+                {
+                    dir.countAllInnerDirectories(dir);
+                }
+                //Get the physical size of the folder
+                if(dir.size <= 0)
+                {
+                    dir.calculateSize(dir);
+                }
+
 
                 //update all visuals based on information
-                PIprojectNameTB.Text = dir.folderName;
-                PIprojectPathTB.Text = dir.folderPath;
-
+                PIprojectNameTB.Text       = dir.folderName;
+                PIprojectPathTB.Text       = dir.folderPath;
+                PIinnderFilesTB.Text       = dir.innerFileCount.ToString();
+                PIinnderDirectoriesTB.Text = dir.innerDirCount.ToString();
+                PIDateAddedTB.Text         = dir.addedDate.ToString();
+                PITotalSizeTB.Text         = dir.size.ToString();
 
             }
         }
