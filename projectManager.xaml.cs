@@ -841,7 +841,7 @@ namespace CodeManagementSystem
                     sb.Begin();
                 }
                 //the close sequence
-                else if (button.Name == "closeProjectInfoGUI")
+                else if (button.Name == "closeProjectInfoGUI" || button.Name == "PISaveButton")
                 {
                     //Set the transform origin on the Border itself
                     ProjectInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
@@ -873,8 +873,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-
-        private void loadDirectoryInfo()                                                  //Sets up the textboxes for viewing
+        private void loadDirectoryInfo()                                                   //Sets up the textboxes for viewing
         {
             //check if an item is selected
             if(mainTreeView.SelectedItem != null)
@@ -908,6 +907,110 @@ namespace CodeManagementSystem
                 PITotalSizeTB.Text         = dir.size.ToString();
 
             }
+        }
+        private void clearDirectoryInfo(object sender, RoutedEventArgs e)                  //clear path and name of directory 
+        {
+            //ask user if they are sure they want to clear
+            var result = MessageBox.Show(
+                "Are you sure you want to clear all info? This cannot be undone",
+                "Clear all Info?",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question
+                );
+
+            //if cancel then dont do anything
+            if(result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+            //if yes then clear all fields
+            else if(result == MessageBoxResult.OK)
+            {
+                //update all visuals based on information
+                PIprojectNameTB.Text       = string.Empty;
+                PIprojectPathTB.Text       = string.Empty;
+            }
+        }
+        private async void saveDirectoryInfo(object sender, RoutedEventArgs e)             //save any changed dir info
+        {
+            //ask user if they are sure they want to save
+            var result = MessageBox.Show(
+                "Are you sure you want to save all info? This will change data about the file",
+                "Save all Info?",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question
+                );
+
+
+            //if cancel then dont do anything
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+            else if (result == MessageBoxResult.OK)
+            {
+
+                //if all fields are not empty, then udate the inner class project
+                if(mainTreeView.SelectedItem != null && (!string.IsNullOrEmpty(PIprojectNameTB.Text) && !string.IsNullOrEmpty(PIprojectPathTB.Text)))
+                {
+
+                    var dir = mainTreeView.SelectedItem as projectDirectory;
+
+                    //check if the file path exists at path and if so then update, if not then revert
+                    if (Directory.Exists(PIprojectPathTB.Text))
+                    {
+                        dir.folderName      = PIprojectNameTB.Text;
+                        dir.folderPath      = PIprojectPathTB.Text;
+                        dir.size            = 0;
+                        dir.innerDirCount   = 0;
+                        dir.innerFileCount  = 0;
+                        dir.innerDirectories.Clear();
+                        dir.innerFiles.Clear();
+
+                        //clear dir's content and reload it
+                        dir.loadAllFilesInDirectory(dir);
+                        checkForInnerDirectories(dir);
+
+                        //also save to json
+                        await jsonManager.saveToJson(savedDirectories);
+                        doProjectInfoAnimation(sender, e);
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "The Given Path Does not exist, please enter valid path and try again",
+                            "Path Not Found!",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                            );
+
+                        //Revert back to old values
+                        PIprojectNameTB.Text = dir.folderName;
+                    }   PIprojectPathTB.Text = dir.folderPath;
+
+                    
+                }
+                else
+                {
+                    var dir = mainTreeView.SelectedItem as projectDirectory;
+
+                    MessageBox.Show(
+                        "Please fill out all fields",
+                        "Incomlplete Form",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                        );
+
+                    //Revert back to old values
+                    PIprojectNameTB.Text = dir.folderName;
+                    PIprojectPathTB.Text = dir.folderPath;
+                }
+            }
+
+            //also just reload the view
+            mainTreeView.ItemsSource = null;
+            mainTreeView.ItemsSource = savedDirectories;
+
         }
     }
 }

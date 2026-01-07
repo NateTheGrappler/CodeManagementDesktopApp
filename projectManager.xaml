@@ -452,14 +452,14 @@
                     </Grid.ColumnDefinitions>
 
                     <!--The Save Project Button-->
-                    <Button x:Name="PISaveButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="5, 5, 2, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="addNewProject">
+                    <Button x:Name="PISaveButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="5, 5, 2, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Save Any Changes You Made" Click="saveDirectoryInfo">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Save" Foreground="White" FontWeight="Bold"/>
                         </Viewbox>
                     </Button>
 
                     <!--The Clear Input Fields Button-->
-                    <Button Grid.Column="1" Style="{StaticResource TwoRoundedCornersRight}" Margin="2, 5, 5, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="clearNewProjectGUI">
+                    <Button Grid.Column="1" Style="{StaticResource TwoRoundedCornersRight}" Margin="2, 5, 5, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Clear Path and Name" Click="clearDirectoryInfo">
                         <Viewbox Stretch="Uniform">
                             <TextBlock Text="Clear" Foreground="White" FontWeight="Bold"/>
                         </Viewbox>
@@ -512,7 +512,7 @@
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
     </Grid>
