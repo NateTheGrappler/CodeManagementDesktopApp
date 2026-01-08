@@ -341,10 +341,26 @@ namespace CodeManagementSystem
             {
                 //get as directory and remove from list
                 var directory = mainTreeView.SelectedItem as projectDirectory;
-                savedDirectories.Remove(directory);
 
-                //also save the deletion
-                await jsonManager.saveToJson(savedDirectories);
+                //ask the user if they are sure they want to delete this item?
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this item? This is quasi-permanent.",
+                    "Delete item?",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Question
+                    );
+
+                if (result == MessageBoxResult.OK)
+                {
+                    // save the deletion
+                    savedDirectories.Remove(directory);
+                    await jsonManager.saveToJson(savedDirectories);
+                }
+                else if(result == MessageBoxResult.Cancel)
+                {
+                    //do nothing
+                    return;
+                }
             }
         }
         private async void updateAllDirectories(object sender, RoutedEventArgs e)         //recursively update all files for any changes
@@ -795,9 +811,86 @@ namespace CodeManagementSystem
                 Debug.WriteLine(project.folderPath);
             }
         }
+        private void deleteSelectedItem(object sender, RoutedEventArgs e)                  //Delete a selected Item In a directory
+        {
+            //Check to see if selected item is folder or file never both
+            if(ffTreeView.SelectedItem != null)
+            {
+                projectDirectory dir = ffTreeView.SelectedItem as projectDirectory;
+
+                //ask the user if they are sure they want to delete this item?
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this item? This is quasi-permanent.",
+                    "Delete item?",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Question
+                    );
+
+                if (result == MessageBoxResult.OK)
+                {
+                    //remove directory and update fileexplorer as well
+                    try
+                    {
+                        //remove from given list, and from actual file
+                        currentDir.innerDirectories.Remove(dir);
+                        Directory.Delete(dir.folderPath);
+                    }
+                    catch
+                    {
+                        MessageBox.Show(
+                        "Unable to remove directory. Please make sure you have permissions to delete this item",
+                        "Unable to Remove Directory",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                        );
+                    }
+                }
+                else if(result == MessageBoxResult.Cancel)
+                {
+                    //simply do nothing
+                    return;
+                }
+
+            }
+            else if(ffListView.SelectedItem != null)
+            {
+                projectFile file = ffListView.SelectedItem as projectFile;
+                //ask the user if they are sure they want to delete this item?
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this item? This is quasi-permanent.",
+                    "Delete item?",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Question
+                    );
+
+                if (result == MessageBoxResult.OK)
+                {
+                    //remove directory and update fileexplorer as well
+                    try
+                    {
+                        //remove from given list, and from actual file
+                        currentDir.innerFiles.Remove(file);
+                        File.Delete(file.filePath);
+                    }
+                    catch
+                    {
+                        MessageBox.Show(
+                        "Unable to remove file. Please make sure you have permissions to delete this item",
+                        "Unable to Remove File",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                        );
+                    }
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    //simply do nothing
+                    return;
+                }
+            }
+        }
 
         //---------------------Show Project Info-------------------------------                                                                   
-
         private void doProjectInfoAnimation(object sender, RoutedEventArgs e)              //opens and closes the project info GUI
         {
             //get button for button name
@@ -897,6 +990,7 @@ namespace CodeManagementSystem
                     dir.calculateSize(dir);
                 }
 
+                PITitle.Text = $"File Info For: {dir.folderName}";
 
                 //update all visuals based on information
                 PIprojectNameTB.Text       = dir.folderName;
@@ -1012,5 +1106,17 @@ namespace CodeManagementSystem
             mainTreeView.ItemsSource = savedDirectories;
 
         }
+    
+        //--------------------Add new item GUI--------------------------------
+        private void doNewItemAnimation(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void saveChangesToFileExplorer(projectDirectory dir)                       //Update the entirety of the file explorer at said dir
+        {
+
+        }
+        
+    
     }
 }

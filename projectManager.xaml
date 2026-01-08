@@ -49,7 +49,7 @@
                 </Viewbox>
             </Button>
             <!--The Button To delete any given directory-->
-            <Button Grid.Column="1" Grid.ColumnSpan="1" x:Name="DeleteButton" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,0,4" Background="#FF0078D7" Click="deleteDirectory">
+            <Button Grid.Column="1" Grid.ColumnSpan="1" x:Name="DeleteButton" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,0,4" Background="#FF0078D7" ToolTip="Get Rid of a directory in this GUI" Click="deleteDirectory">
                 <Viewbox Stretch="Uniform">
                     <TextBlock Text="Delete Directory" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                 </Viewbox>
@@ -61,7 +61,7 @@
                 </Viewbox>
             </Button>
             <!--The update directory-->
-            <Button Grid.Column="3" Grid.ColumnSpan="1" x:Name="updateButton" Style="{StaticResource TwoRoundedCornersRight}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,1,4" Background="#FF0078D7" Click="updateAllDirectories">
+            <Button Grid.Column="3" Grid.ColumnSpan="1" x:Name="updateButton" Style="{StaticResource TwoRoundedCornersRight}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,1,4" Background="#FF0078D7" ToolTip="Matchs all items to file explorer counter part (takes a while)" Click="updateAllDirectories">
                 <Viewbox Stretch="Uniform">
                     <TextBlock x:Name="UpdateButtonText" Text="Update Directories" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                 </Viewbox>
@@ -380,7 +380,7 @@
                         </Grid.ColumnDefinitions>
 
                         <!--The Button To delete a selected Item-->
-                        <Button Grid.Column="0" Grid.ColumnSpan="1" x:Name="ffDeleteButton" Style="{DynamicResource TwoRoundedCornersLeft}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,0,4" Background="#FF0078D7">
+                        <Button Grid.Column="0" Grid.ColumnSpan="1" x:Name="ffDeleteButton" Style="{DynamicResource TwoRoundedCornersLeft}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,0,4" Background="#FF0078D7" ToolTip="Delete A Highlighted Item" Click="deleteSelectedItem">
                             <Viewbox Stretch="Uniform">
                                 <TextBlock Text="Delete Selected Item" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                             </Viewbox>
@@ -427,7 +427,7 @@
                 <!--The Text On Top-->
                 <Border Grid.Column="0" Margin="0" Grid.Row="0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 3, 3">
                     <Viewbox Stretch="Uniform" Margin="1">
-                        <TextBlock Text="File Info For: " Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+                        <TextBlock x:Name="PITitle" Text="File Info For: " Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
                     </Viewbox>
                 </Border>
                 <!--The Close GUI Button-->
@@ -512,7 +512,7 @@
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
     </Grid>
