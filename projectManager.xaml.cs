@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,41 @@ using System.Xml.Linq;
 
 namespace CodeManagementSystem
 {
+    public static class IconManager
+    {
+        public static ImageSource GetFolderIcon()
+        {
+            //Vector folder icon
+            var geometry = Geometry.Parse("M10,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V8C22,6.89 21.11,6 20,6H12L10,4Z");
+
+            var drawing = new GeometryDrawing(
+                Brushes.Goldenrod,
+                new Pen(Brushes.DarkGoldenrod, 1),
+                geometry);
+
+            var drawingImage = new DrawingImage(drawing);
+            drawingImage.Freeze();
+
+            return drawingImage;
+        }
+
+        public static ImageSource GetFileIcon(string extension)
+        {
+            //Vector file icon
+            var geometry = Geometry.Parse("M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z");
+
+            var drawing = new GeometryDrawing(
+                Brushes.LightSteelBlue,
+                new Pen(Brushes.SteelBlue, 1),
+                geometry);
+
+            var drawingImage = new DrawingImage(drawing);
+            drawingImage.Freeze();
+
+            return drawingImage;
+        }
+    }
+
     public class projectJsonManagement
     {
         private readonly string _JsonPath = System.IO.Path.Combine(
@@ -96,7 +132,6 @@ namespace CodeManagementSystem
         public string      folderName            { get; set; }
         public string      folderPath            { get; set; }
         public DateTime    addedDate             { get; set; }
-        public ImageSource icon                  { get; set; }
         public int         innerFileCount        { get; set; } = 0;
         public int         innerDirCount         { get; set; } = 0;
         public float       size                  { get; set; } = 0;
@@ -140,11 +175,13 @@ namespace CodeManagementSystem
 
                     //create the new file object using the data that was gotten
                     projectFile newFile = new projectFile(fileInfo.Name, filePath);
-                    newFile.addedDate = fileInfo.LastWriteTime;
-                    newFile.fileSize = (float)fileInfo.Length;
-                    newFile.fileType = fileInfo.Extension;
+                    newFile.addedDate   = fileInfo.LastWriteTime;
+                    newFile.fileSize    = (float)fileInfo.Length;
+                    newFile.fileType    = fileInfo.Extension;
+                    //newFile.icon        = IconManager.GetFileIcon(fileInfo.Extension);
                     directory.innerFiles.Add(newFile);
                 }
+                
             }
             catch (Exception ex)
             {
@@ -293,7 +330,9 @@ namespace CodeManagementSystem
         public string      fileType    { get; set; }
         public float       fileSize    { get; set; }
         public DateTime    addedDate   { get; set; }
-        public ImageSource icon        { get; set; }
+        
+        [JsonIgnore]
+        public ImageSource icon => IconManager.GetFileIcon(fileType);
 
         //-------------------------Constructors---------------------------
         public projectFile() { }
@@ -694,6 +733,8 @@ namespace CodeManagementSystem
                 ffTreeView.ItemsSource = directory.innerDirectories;
                 ffListView.ItemsSource = directory.innerFiles;
                 currentDir             = directory;
+
+
             }
         }
         private void openFile(projectFile file)                                            //Opens a file at the given path it exists at

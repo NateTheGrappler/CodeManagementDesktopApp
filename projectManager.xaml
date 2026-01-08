@@ -323,7 +323,7 @@
                     </Viewbox>
                 </Border>
 
-                <!--The list view that holds all of the folders there as well-->
+                <!--The list view that holds all of the files there as well-->
                 <Border Grid.Row="1" Grid.Column="1" Margin="0, 0, 0, 0"  BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="1, 0, 0, 0">
                     <ListBox x:Name="ffListView" Grid.Row="1" Grid.Column="1" Margin="0, 5, 5, 0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" MouseDoubleClick="ffListView_MouseDoubleClick">
                         
@@ -340,15 +340,11 @@
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="30"/>
                                         </Grid.RowDefinitions>
-                                        <!--The Folder icon-->
+                                        <!--The File icon-->
                                         <Viewbox Stretch="Uniform" Grid.Column="0">
-                                            <Rectangle Width="20" Height="20" Fill="{StaticResource DarkBorderBrushKey}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                <Rectangle.OpacityMask>
-                                                    <ImageBrush ImageSource="/Images/fileFolderButtonImg.png" Stretch="Uniform"/>
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
+                                            <Image Source="{Binding icon}" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Viewbox>
-                                        <!--The name of the folder/directory-->
+                                        <!--The name of the file-->
                                         <Viewbox Grid.Column="1" Stretch="Uniform" Margin="10, 0">
                                             <TextBlock Text="{Binding fileName}" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
                                         </Viewbox>
