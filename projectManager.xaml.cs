@@ -24,7 +24,7 @@ using System.Xml.Linq;
 
 namespace CodeManagementSystem
 {
-    public static class IconManager
+    public static class IconManager                                                        //For setting/getting icons
     {
         public static ImageSource GetFolderIcon()
         {
@@ -58,8 +58,7 @@ namespace CodeManagementSystem
             return drawingImage;
         }
     }
-
-    public class projectJsonManagement
+    public class projectJsonManagement                                                     //For loading and saving data to json
     {
         private readonly string _JsonPath = System.IO.Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -124,9 +123,7 @@ namespace CodeManagementSystem
 
         }
     }
-
-
-    public class projectDirectory
+    public class projectDirectory                                                          //Main class that stores all of the inner folders and files
     {
         //--------------------------Varaibles---------------------------
         public string      folderName            { get; set; }
@@ -320,9 +317,7 @@ namespace CodeManagementSystem
             }
         }
     }
-
-
-    public class projectFile
+    public class projectFile                                                               //File Class for any kind of file in project
     {
         //--------------------------Varaibles---------------------------
         public string      fileName    { get; set; }

@@ -400,7 +400,7 @@
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
 
@@ -511,5 +511,51 @@
                 <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
+    
+        <!--______________________________Add new File/Folder GUI___________________________________-->
+        <Border x:Name="AddNewGUI" Grid.ColumnSpan="5" Grid.RowSpan="5" Background="{StaticResource MainBackgroundBrushKey}" Margin="100, 20, 100, 20" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" CornerRadius="10">
+
+            <!--Main Grid that holds all of the visible content-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+
+                <!--The Text On Top-->
+                <Border Grid.Column="0" Margin="0" Grid.Row="0" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="0, 0, 3, 3">
+                    <Viewbox Stretch="Uniform" Margin="1">
+                        <TextBlock x:Name="ANTitle" Text="Add a New File or Folder" Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+                    </Viewbox>
+                </Border>
+                <!--The Close GUI Button-->
+                <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddNewGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="doProjectInfoAnimation">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Rectangle.OpacityMask>
+                                        <ImageBrush ImageSource="\Images\Close.png" Stretch="Uniform"/>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Border>
+
+                <!--The Grid To Hold the bottom two buttons-->
+
+            </Grid>
+
+            <Border.RenderTransform>
+                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+            </Border.RenderTransform>
+        </Border>
+    
     </Grid>
 </Page>
