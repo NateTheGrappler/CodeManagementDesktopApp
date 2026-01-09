@@ -1144,15 +1144,83 @@ namespace CodeManagementSystem
         }
     
         //--------------------Add new item GUI--------------------------------
-        private void doNewItemAnimation(object sender, RoutedEventArgs e)
+        private void doNewItemAnimation(object sender, RoutedEventArgs e)                  //Open and close the Add new File or Folder GUI
         {
+            //get button for button name
+            if (sender is Button button)
+            {
+                Storyboard sb = new Storyboard();
 
+                //The open sequence
+                if (button.Name == "ffCreateButton")
+                {
+
+                    //Set the transform origin on the Border itself
+                    AddNewGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 15);
+                    Panel.SetZIndex(AddNewGUI, 16);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, AddNewGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Begin();
+                }
+                //the close sequence
+                else if (button.Name == "closeAddNewGUI" || button.Name == "ANCreateButton")
+                {
+                    //Set the transform origin on the Border itself
+                    AddNewGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, AddNewGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                }
+            }
         }
-        private void saveChangesToFileExplorer(projectDirectory dir)                       //Update the entirety of the file explorer at said dir
+        private void clearAddNewGUI(object sender, RoutedEventArgs e)                      //Clear any of the changes made by user
         {
-
+            ANNameTB.Text = string.Empty;
+            ANTypeTB.Text = string.Empty;
+            FileRB.IsChecked = true;
         }
-        
-    
+        private void FolderRB_Checked(object sender, RoutedEventArgs e)                    //Just handles radio button
+        {
+            //Enable the type text box
+            ANTypeTB.IsEnabled = true;
+            ANComboBox.IsEnabled = true;
+            ANComboBox.SelectedItem = null;
+        }
+        private void FileRB_Checked(object sender, RoutedEventArgs e)                      //Just handles radio button
+        {
+            //Clear the text box and also disable it
+            ANTypeTB.Text = string.Empty;
+            ANTypeTB.IsEnabled = false;
+            ANComboBox.IsEnabled = true;
+        }
+        private void ANComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //Update the Text in the tb to what was selected in the combo box
+            ANTypeTB.Text = ANComboBox.SelectedItem.ToString();
+        }
     }
 }

@@ -388,7 +388,7 @@
                             </Viewbox>
                         </Button>
                         <!--Create new item button-->
-                        <Button Grid.Column="2" Grid.ColumnSpan="1" x:Name="ffCreateButton"  Style ="{StaticResource TwoRoundedCornersRight}"  Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,4,4" Background="#FF0078D7">
+                        <Button Grid.Column="2" Grid.ColumnSpan="1" x:Name="ffCreateButton"  Style ="{StaticResource TwoRoundedCornersRight}"  Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="0,4,4,4" Background="#FF0078D7" Click="doNewItemAnimation">
                             <Viewbox Stretch="Uniform">
                                 <TextBlock Text="Create New Item" FontSize="32" FontWeight="Bold" Margin="0,0,2.2,3"/>
                             </Viewbox>
@@ -400,7 +400,7 @@
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
 
@@ -535,7 +535,7 @@
                 </Border>
                 <!--The Close GUI Button-->
                 <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
-                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddNewGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="doProjectInfoAnimation">
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddNewGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="doNewItemAnimation">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
                                 <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -547,13 +547,146 @@
                         </Button.Content>
                     </Button>
                 </Border>
+                
+                <!--The inner content Grid-->
+                <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
+                    <!--The Name of the folder/file-->
+                    <TextBlock Margin="5" Text="Name:" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold"/>
+                    <TextBox Grid.Column="1" Grid.ColumnSpan="2" x:Name="ANNameTB" Margin="5, 15, 5, 15"/>
+                    
+                    <!--The Name of the folder/file-->
+                    <TextBlock Grid.Row="1" Margin="5" Text="Type:" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" x:Name="ANTypeTB" Margin="5, 15, 5, 15"/>
+                    <ComboBox x:Name="ANComboBox" Grid.Row="1" Grid.Column="2" Margin="5, 15, 5, 15" SelectionChanged="ANComboBox_SelectionChanged">
+                        <!--All the file types under the fucking sun-->
+                        <ComboBoxItem Content=".txt"/>
+                        <ComboBoxItem Content=".doc"/>
+                        <ComboBoxItem Content=".docx"/>
+                        <ComboBoxItem Content=".pdf"/>
+                        <ComboBoxItem Content=".jpg"/>
+                        <ComboBoxItem Content=".jpeg"/>
+                        <ComboBoxItem Content=".png"/>
+                        <ComboBoxItem Content=".gif"/>
+                        <ComboBoxItem Content=".bmp"/>
+                        <ComboBoxItem Content=".svg"/>
+                        <ComboBoxItem Content=".mp3"/>
+                        <ComboBoxItem Content=".wav"/>
+                        <ComboBoxItem Content=".flac"/>
+                        <ComboBoxItem Content=".mp4"/>
+                        <ComboBoxItem Content=".avi"/>
+                        <ComboBoxItem Content=".mov"/>
+                        <ComboBoxItem Content=".mkv"/>
+                        <ComboBoxItem Content=".zip"/>
+                        <ComboBoxItem Content=".rar"/>
+                        <ComboBoxItem Content=".7z"/>
+                        <ComboBoxItem Content=".tar"/>
+                        <ComboBoxItem Content=".gz"/>
+                        <ComboBoxItem Content=".exe"/>
+                        <ComboBoxItem Content=".msi"/>
+                        <ComboBoxItem Content=".dll"/>
+                        <ComboBoxItem Content=".py"/>
+                        <ComboBoxItem Content=".java"/>
+                        <ComboBoxItem Content=".cpp"/>
+                        <ComboBoxItem Content=".c"/>
+                        <ComboBoxItem Content=".js"/>
+                        <ComboBoxItem Content=".html"/>
+                        <ComboBoxItem Content=".css"/>
+                        <ComboBoxItem Content=".php"/>
+                        <ComboBoxItem Content=".json"/>
+                        <ComboBoxItem Content=".xml"/>
+                        <ComboBoxItem Content=".csv"/>
+                        <ComboBoxItem Content=".xls"/>
+                        <ComboBoxItem Content=".xlsx"/>
+                        <ComboBoxItem Content=".ppt"/>
+                        <ComboBoxItem Content=".pptx"/>
+                        <ComboBoxItem Content=".sql"/>
+                        <ComboBoxItem Content=".db"/>
+                        <ComboBoxItem Content=".iso"/>
+                        <ComboBoxItem Content=".psd"/>
+                        <ComboBoxItem Content=".ai"/>
+                        <ComboBoxItem Content=".indd"/>
+                        <ComboBoxItem Content=".ttf"/>
+                        <ComboBoxItem Content=".otf"/>
+                        <ComboBoxItem Content=".woff"/>
+                        <ComboBoxItem Content=".yaml"/>
+                        <ComboBoxItem Content=".yml"/>
+                        <ComboBoxItem Content=".md"/>
+                        <ComboBoxItem Content=".ini"/>
+                        <ComboBoxItem Content=".conf"/>
+                        <ComboBoxItem Content=".log"/>
+                        <ComboBoxItem Content=".tmp"/>
+                        <ComboBoxItem Content=".dat"/>
+                        <ComboBoxItem Content=".bak"/>
+                        <ComboBoxItem Content=".vmdk"/>
+                        <ComboBoxItem Content=".ova"/>
+                        <ComboBoxItem Content=".pem"/>
+                        <ComboBoxItem Content=".ppk"/>
+                        <ComboBoxItem Content=".rtf"/>
+                        <ComboBoxItem Content=".odt"/>
+                        <ComboBoxItem Content=".ods"/>
+                        <ComboBoxItem Content=".odp"/>
+                    </ComboBox>
+                    
+                    <!--The Grid That holds the radio buttons and such-->
+                    <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!--Files or folders text-->
+                        <TextBlock Grid.Row="1" Margin="5" Text="File or Folder?" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold"/>
+                        <!--Folder Radio Button-->
+                        <Viewbox Grid.Row="1" Grid.Column="1" Margin="15">
+                            <RadioButton x:Name="FolderRB" Content="File  " GroupName="fileOrFolder" IsChecked="True" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="FolderRB_Checked"/>
+                        </Viewbox>
+                        <!--Folder Radio Button-->
+                        <Viewbox Grid.Row="1" Grid.Column="2" Margin="15">
+                            <RadioButton x:Name="FileRB" Content="Folder" GroupName="fileOrFolder" IsChecked="false" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="FileRB_Checked"/>
+                        </Viewbox>
+                        
+                    </Grid>
+                </Grid>
+               
                 <!--The Grid To Hold the bottom two buttons-->
+                <Grid Grid.Row="5" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!--The Create Button-->
+                    <Button x:Name="ANCreateButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="3, 3, 1, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                        <Viewbox>
+                            <TextBlock Text="Create" FontWeight="Bold" Foreground="White"/>
+                        </Viewbox>
+                    </Button>
+                    <!--The Clear Button-->
+                    <Button Grid.Column="1" x:Name="ANClearButton" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                        <Viewbox>
+                            <TextBlock Text="Clear" FontWeight="Bold" Foreground="White"/>
+                        </Viewbox>
+                    </Button>
+                    
+                </Grid>
 
             </Grid>
 
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
     
