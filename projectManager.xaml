@@ -669,13 +669,13 @@
                     </Grid.ColumnDefinitions>
                     
                     <!--The Create Button-->
-                    <Button x:Name="ANCreateButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="3, 3, 1, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                    <Button x:Name="ANCreateButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="3, 3, 1, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="CreateFileOrFolder">
                         <Viewbox>
                             <TextBlock Text="Create" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
                     </Button>
                     <!--The Clear Button-->
-                    <Button Grid.Column="1" x:Name="ANClearButton" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}">
+                    <Button Grid.Column="1" x:Name="ANClearButton" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" Click="clearAddNewGUI">
                         <Viewbox>
                             <TextBlock Text="Clear" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>

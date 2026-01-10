@@ -1202,11 +1202,13 @@ namespace CodeManagementSystem
             ANNameTB.Text = string.Empty;
             ANTypeTB.Text = string.Empty;
             FileRB.IsChecked = true;
+            ANComboBox.SelectedItem = null;
         }
         private void FolderRB_Checked(object sender, RoutedEventArgs e)                    //Just handles radio button
         {
             //Enable the type text box
             ANTypeTB.IsEnabled = true;
+            ANComboBox.IsEnabled = true;
             ANComboBox.IsEnabled = true;
             ANComboBox.SelectedItem = null;
         }
@@ -1215,12 +1217,123 @@ namespace CodeManagementSystem
             //Clear the text box and also disable it
             ANTypeTB.Text = string.Empty;
             ANTypeTB.IsEnabled = false;
-            ANComboBox.IsEnabled = true;
+            ANComboBox.IsEnabled = false;
         }
-        private void ANComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ANComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)//Update the text to reflect user's choice
         {
             //Update the Text in the tb to what was selected in the combo box
-            ANTypeTB.Text = ANComboBox.SelectedItem.ToString();
+            ANTypeTB.Text = ANComboBox.SelectedItem.ToString().Remove(0, 38);
+        }
+        private void CreateFileOrFolder(object sender, RoutedEventArgs e)                  //Create the system file at that given directory
+        {
+            if(string.IsNullOrEmpty(ANNameTB.Text))
+            {
+                //let the person know at least a name is needed then return to not run rest of function
+                MessageBox.Show(
+                    "Please enter in a name for this item.",
+                    "Empty name",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Stop
+                    );
+
+                return;
+            }
+
+            //create file
+            if(FolderRB.IsChecked == true)
+            {
+                //check if the file has a type
+                if (string.IsNullOrEmpty(ANTypeTB.Text))
+                {
+                    MessageBox.Show(
+                        "Please enter in a type for this item.",
+                        "Empty name",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Stop
+                        );
+
+                    return;
+                }
+
+                //combine the current directory path, the inputted name, and also the desired type
+                string filePath = System.IO.Path.Combine(currentDir.folderPath, ANNameTB.Text+ANTypeTB.Text);
+
+                //check to see if a dir like this already exists
+                if (!File.Exists(filePath))
+                {
+                    //try and create a new file
+                    try
+                    {
+                        //create the dir and close the window
+                        File.Create(filePath);
+
+                        //also create a new directory item and appened
+                        projectFile file = new projectFile(ANNameTB.Text, filePath);
+                        currentDir.innerFiles.Add(file);
+
+                        //refresh the view
+                        ffListView.ItemsSource = null;
+                        ffListView.ItemsSource = currentDir.innerFiles;
+                        doNewItemAnimation(sender, e);
+                    }
+                    catch
+                    {
+                        //say you cannot create a new file 
+                        MessageBox.Show(
+                        "Error Creating File. Please try again later.",
+                        "Invalid File",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                        );
+                    }
+                }
+                else
+                {
+                    //dont create the dir and let the user know
+                    MessageBox.Show(
+                    "File of that Name Already Exists! Please enter a new name.",
+                    "Repeat File",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+
+                    return;
+                }
+
+            }
+            //create a folder
+            else if(FileRB.IsChecked == true)
+            {
+                string folderPath = System.IO.Path.Combine(currentDir.folderPath, ANNameTB.Text);
+
+                //check to see if a dir like this already exists
+                if(!Directory.Exists(folderPath))
+                {
+                    //create the dir and close the window
+                    Directory.CreateDirectory(folderPath);
+                    doNewItemAnimation(sender, e);
+
+                    //also create a new directory item and appened
+                    projectDirectory dir = new projectDirectory(ANNameTB.Text, folderPath);
+                    currentDir.innerDirectories.Add(dir);
+
+                    //refresh the view
+                    ffTreeView.ItemsSource = null;
+                    ffTreeView.ItemsSource = currentDir.innerDirectories;
+                }
+                else
+                {
+                    //dont create the dir and let the user know
+                    MessageBox.Show(
+                    "Directory of that Name Already Exists! Please enter a new name.",
+                    "Repeat Directory",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+
+                    return;
+                }
+            }
         }
     }
 }
