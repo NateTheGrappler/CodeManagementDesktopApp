@@ -15,14 +15,19 @@ using System.Windows.Shapes;
 
 namespace CodeManagementSystem
 {
-    /// <summary>
-    /// Interaction logic for githubManager.xaml
-    /// </summary>
+
     public partial class githubManager : Page
     {
         public githubManager()
         {
             InitializeComponent();
+        }
+
+        //The Button to go back
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            //return back to the main page
+            this.NavigationService.GoBack();
         }
     }
 }

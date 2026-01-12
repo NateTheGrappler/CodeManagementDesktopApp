@@ -8,7 +8,29 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="githubManager">
 
-    <Grid>
+    <Grid Background="{StaticResource MainBackgroundBrushKey}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         
+        <!--The Return Button-->
+        <Border Grid.Column="0" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
+            <Button x:Name="BackButton" Style="{DynamicResource RounddButton}" Foreground="AliceBlue" BorderBrush="#FF075A9B" BorderThickness="3" Margin="4,4,4,4" Background="#FF0078D7" Click="BackButton_Click">
+                <TextBlock Text="&lt;" FontSize="32" FontWeight="Bold" FontFamily="Matura MT Script Capitals" Margin="0,0,2.2,3"/>
+            </Button>
+        </Border>
+
+        <!--The Main Title-->
+        <Border Grid.Column="2" Margin="2,2,2,2" Grid.Row="0" BorderBrush="{StaticResource MainBorderBrushKey}" BorderThickness="3">
+            <Viewbox Stretch="Uniform" Margin="1">
+                <TextBlock Text="Github Repository Manager" Margin="2, 2, 4, 2" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" FontStyle="Italic" FontFamily="Microsoft YaHei" TextAlignment="Center" />
+            </Viewbox>
+        </Border>
+
     </Grid>
 </Page>

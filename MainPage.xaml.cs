@@ -17,9 +17,7 @@ using System.Windows.Shapes;
 
 namespace CodeManagementSystem
 {
-    /// <summary>
-    /// Interaction logic for Page1.xaml
-    /// </summary>
+
     public partial class Page1 : Page
     {
 
@@ -129,6 +127,18 @@ namespace CodeManagementSystem
             }
             this.NavigationService.Navigate(new projectManager());
         }
+
+        private void githubManagerButtonGM_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (UIElement element in mainGrid.Children)
+            {
+                if (element is System.Windows.Controls.Button button)
+                {
+                    resetButtonImmediately(button);
+                }
+            }
+            this.NavigationService.Navigate(new githubManager());
+        }
         
         //-------------------------------------Set Up the Neural Network Look------------------------
         private void CreateNNLines()
@@ -237,6 +247,7 @@ namespace CodeManagementSystem
                         else if (lastTwoDigits == "BM") { button.Click += BookManagerButton_Click; }
                         else if (lastTwoDigits == "FM") { button.Click += funManagerButtonFM_Click; }
                         else if (lastTwoDigits == "PM") { button.Click += projectManagerButtonPM_Click; }
+                        else if (lastTwoDigits == "GM") { button.Click += githubManagerButtonGM_Click; }
                         else { button.Click += buttonClick; }
                     }
                 }
