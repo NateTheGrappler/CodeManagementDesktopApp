@@ -86,6 +86,30 @@
                      <TextBlock Text="See Repository Info" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button>
             </Grid>
+            
+            <!--The Grid for the list view and seach bar-->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!--The search text-->
+                <Viewbox Stretch="Uniform" Margin="0, 2, 0, 2">
+                    <TextBlock Text="Search:" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold"/>
+                </Viewbox>
+                <!--The search textbox-->
+                <TextBox x:Name="SearchTB" Grid.Column="1" Margin="0, 5, 5, 5" />
+
+                <!--The List View of all the github repo items-->
+                <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                    
+                </ListView>
+            </Grid>
         </Grid>
 
     </Grid>
