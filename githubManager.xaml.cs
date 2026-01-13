@@ -15,6 +15,42 @@ using System.Windows.Shapes;
 
 namespace CodeManagementSystem
 {
+        
+    public class githubMetaData
+    {
+
+        //-----------------------------varaibles-----------------------
+        public string id { get; set; }
+        public string ownerName { get; set; }
+        public string repoName { get; set; }
+        public string Description { get; set; }
+        public string cloneURL { get; set; }
+        //see if possible to get things like languages, size, readme content
+
+        //-----------------------------constructor-----------------------
+        public githubMetaData() { }
+    }
+
+    public class githubRepository
+    {
+        //-----------------------------Varaibles-------------------------
+        public string         url         { get; set; }
+        public string         name        { get; set; }
+        public string[]       tags        { get; set; }
+        public string         collection  { get; set; }
+        public string         status      { get; set; }
+        public bool           isStarred   { get; set; } = false;
+        public githubMetaData metaData    { get; set; }
+
+
+        //-----------------------------Functions-------------------------
+
+        //-----------------------------constructor-----------------------
+        public githubRepository(string url) 
+        { 
+        }
+    }
+
 
     public partial class githubManager : Page
     {
@@ -29,5 +65,7 @@ namespace CodeManagementSystem
             //return back to the main page
             this.NavigationService.GoBack();
         }
+
+        //--------------------------The Side Button Functions-------------------------
     }
 }
