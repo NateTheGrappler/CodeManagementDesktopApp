@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,10 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+//added dependecies
+using Octokit;
+
+
 
 namespace CodeManagementSystem
 {
@@ -22,11 +27,15 @@ namespace CodeManagementSystem
     {
 
         //-----------------------------varaibles-----------------------
-        public string id { get; set; }
-        public string ownerName { get; set; }
-        public string repoName { get; set; }
-        public string Description { get; set; }
-        public string cloneURL { get; set; }
+        public string id               { get; set; }
+        public string ownerName        { get; set; }
+        public string repoName         { get; set; }
+        public string repoFullName     { get; set; }
+        public string Language         { get; set; }
+        public string Description      { get; set; }
+        public string cloneURL         { get; set; }
+        public string readMeContent    { get; set; }
+        public string defaultBranch    { get; set; }
         //see if possible to get things like languages, size, readme content
 
         //-----------------------------constructor-----------------------
@@ -36,25 +45,76 @@ namespace CodeManagementSystem
     public class githubRepository
     {
         //-----------------------------Varaibles-------------------------
-        public string url { get; set; }
-        public string name { get; set; }
-        public string[] tags { get; set; }
-        public string collection { get; set; }
-        public string status { get; set; }
-        public bool isStarred { get; set; } = false;
-        public githubMetaData metaData { get; set; }
+        public string url              { get; set; }
+        public string name             { get; set; }
+        public string[] tags           { get; set; }
+        public string collection       { get; set; }
+        public string status           { get; set; }
+        public bool isStarred          { get; set; } = false;
+        public githubMetaData metaData { get; set; } = new githubMetaData();
+
+        [JsonIgnore]
+        private GitHubClient gitHubClient = new GitHubClient(new ProductHeaderValue("CodeMangementSystem"));
 
 
         //-----------------------------Functions-------------------------
+        public void getOwnerAndName(string url)
+        {
+            //try split up the repo link
+            var parts = url.Replace("https://github.com/", "").Split('/');
+            if(parts.Length < 2)
+            {
+                //show message to user saying youre unable to get metadata then return
+                MessageBox.Show(
+                    "Unable to get metadata from Repository Link, regular repo will still be added",
+                    "Unable to get metadata",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation
+                    );
 
+                return;
+            }
+
+            //update metaData information to hold ownerName and repoName
+            metaData.ownerName = parts[0];
+            metaData.repoName = parts[1].Replace(".git", "");
+        }
+        public async Task getMetaData(string owner, string repoName)
+        {
+            try
+            {
+                //get the main repo object and get the data from there
+                var repo = await gitHubClient.Repository.Get(owner, repoName);
+                metaData.repoFullName  = repo.FullName;
+                metaData.Language      = repo.Language;
+                metaData.Description   = repo.Description;
+                metaData.cloneURL      = repo.CloneUrl;
+                metaData.defaultBranch = repo.DefaultBranch;
+
+                //get the reade me as well (gotta be seperate)
+                Octokit.Readme readme = await gitHubClient.Repository.Content.GetReadme(owner, repoName);
+                metaData.readMeContent = readme.Content;
+            }
+            catch
+            {
+                //Let User Know that there was an error in getting some metadata
+                    MessageBox.Show(
+                    "There was an error in getting some part of the metadata",
+                    "Unable to get full metadata",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+            }
+        }
         //-----------------------------constructor-----------------------
         public githubRepository(string url)
         {
+            this.url = url;
         }
     }
 
 
-    public partial class githubManager : Page
+    public partial class githubManager : System.Windows.Controls.Page
     {
         public githubManager()
         {
@@ -164,14 +224,14 @@ namespace CodeManagementSystem
                 //create a new button with all of the different styles it needs to have
                 Button button = new Button
                 {
-                    Content = tag,
-                    Margin = new Thickness(5),
-                    Style = (Style)this.FindResource("EvenLessRoundedButton"),
-                    Foreground = new SolidColorBrush(Colors.White),
-                    Background = Application.Current.Resources["MainBorderBrushKey"] as Brush,
-                    BorderBrush = Application.Current.Resources["DarkBorderBrushKey"] as Brush,
-                    FontWeight = FontWeights.Bold,
-                    Padding = new Thickness(10, 5, 10, 5),
+                    Content         = tag,
+                    Margin          = new Thickness(5),
+                    Style           = (Style)this.FindResource("EvenLessRoundedButton"),
+                    Foreground      = new SolidColorBrush(Colors.White),
+                    Background      = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
+                    BorderBrush     = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush,
+                    FontWeight      = FontWeights.Bold,
+                    Padding         = new Thickness(10, 5, 10, 5),
                     BorderThickness = new Thickness(2),
                     MinHeight = 40,
                     MinWidth = 40
@@ -195,9 +255,9 @@ namespace CodeManagementSystem
                     if (solidColorBrush.Color == System.Windows.Media.Colors.DarkGray)
                     {
                         //if so, then make it blue again
-                        button.Foreground = new SolidColorBrush(Colors.White);
-                        button.BorderBrush = Application.Current.Resources["DarkBorderBrushKey"] as Brush;
-                        button.Background = Application.Current.Resources["MainBorderBrushKey"] as Brush;
+                        button.Foreground  = new SolidColorBrush(Colors.White);
+                        button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
+                        button.Background  = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
                     }
                     else if (solidColorBrush.Color == System.Windows.Media.Colors.White)
                     {
@@ -211,7 +271,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void clearAllFields(object sender, RoutedEventArgs e)
+        private void clearAllFields(object sender, RoutedEventArgs e)       //Clear the input fields and clear tags as well
         {
             //clear all of the textboxes first
             ANCollection.Text = string.Empty;
@@ -228,10 +288,21 @@ namespace CodeManagementSystem
                 {
                     //change back to enabled color scheme
                     button.Foreground  = new SolidColorBrush(Colors.White);
-                    button.BorderBrush = Application.Current.Resources["DarkBorderBrushKey"] as Brush;
-                    button.Background  = Application.Current.Resources["MainBorderBrushKey"] as Brush;
+                    button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
+                    button.Background  = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
                 }
             }
+        }
+        private async void addInNewRepo(object sender, RoutedEventArgs e)         //Get new repo content and save it
+        {
+            githubRepository gitRepo = new githubRepository(ANLink.Text);
+            gitRepo.getOwnerAndName(gitRepo.url);
+            await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
+
+            Debug.WriteLine(gitRepo.metaData.ownerName);
+            Debug.WriteLine(gitRepo.metaData.repoName);
+            Debug.WriteLine(gitRepo.metaData.Language);
+            Debug.WriteLine(gitRepo.metaData.Description);
         }
     }
 }
