@@ -80,16 +80,16 @@
                     </Button>
 
                     <!--The Add a new repo button-->
-                    <Button Grid.Row="4" x:Name="AddNewRepoButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" HorizontalContentAlignment="Center">
+                    <Button Grid.Row="4" x:Name="AddNewRepoButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" HorizontalContentAlignment="Center" ToolTip="Save a Github Repository you wish to use" Click="doAddNewAnimation">
                         <TextBlock Text="Add A New Repo" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
 
-                    <!--The Add a new repo button-->
+                    <!--The Delete selected rep-->
                     <Button Grid.Row="5" x:Name="DeleteRepoButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" HorizontalContentAlignment="Center">
                         <TextBlock Text="Delete Selected Repository" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
 
-                    <!--The Add a new repo button-->
+                    <!--The See extra repo info-->
                     <Button Grid.Row="6" x:Name="InfoRepoButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" HorizontalContentAlignment="Center">
                         <TextBlock Text="See Repository Info" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
@@ -122,9 +122,10 @@
         </Grid>
 
         <!--Translucent black box-->
+        <Rectangle x:Name="TranslucentBox" Grid.ColumnSpan="10" Grid.RowSpan="10" Fill="Black" Opacity="0" Panel.ZIndex="-5"/>
         
         <!--_______________________________Add New Repo GUI_____________________________________________-->
-        <Border Background="{StaticResource MainBackgroundBrushKey}" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="35, 25, 35, 25" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" CornerRadius="10">
+        <Border x:Name="NewRepoGUI" Background="{StaticResource MainBackgroundBrushKey}" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="35, 25, 35, 25" BorderThickness="3" BorderBrush="{StaticResource DarkBorderBrushKey}" CornerRadius="10">
 
             <!--Main Content Grid-->
             <Grid>
@@ -146,7 +147,7 @@
                 </Border>
                 <!--The Close GUI button-->
                 <Border Grid.Row="0" Grid.Column="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0, 0, 0, 3" BorderBrush="{StaticResource DarkBorderBrushKey}" ClipToBounds="True">
-                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddNewGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" >
+                    <Button Margin="3" BorderThickness="3" Style="{DynamicResource RounddButton}" x:Name="closeAddNewGUI" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" Grid.Column="0" Grid.Row="0" ToolTip="Close This Window" Click="doAddNewAnimation">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
                                 <Rectangle Width="20" Height="20" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -235,7 +236,7 @@
                         </Viewbox>
                     </Button>
                     <!--The Clear Button-->
-                    <Button Grid.Column="1" x:Name="ANClearButton" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Clear name and other input fields">
+                    <Button Grid.Column="1" x:Name="ANClearButton" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Clear name and other input fields" Click="clearAllFields">
                         <Viewbox>
                             <TextBlock Text="Clear All Fields" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
@@ -245,7 +246,7 @@
             </Grid>
             
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" CenterY="0.5" CenterX="0.5"/>
+                <ScaleTransform ScaleX="1" ScaleY="0" CenterY="0.5" CenterX="0.5"/>
             </Border.RenderTransform>
         </Border>
 
