@@ -370,14 +370,61 @@ namespace CodeManagementSystem
         }
         private async void addInNewRepo(object sender, RoutedEventArgs e)          //Get new repo content and save it
         {
-            githubRepository gitRepo = new githubRepository(ANLink.Text);
-            gitRepo.getOwnerAndName(gitRepo.url);
-            await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
+            //check to see if all required fields are picked out
+            if(!string.IsNullOrEmpty(ANLink.Text) || !string.IsNullOrEmpty(ANName.Text))
+            {
+                //update saving button to reflect saving
+                ANCreateButton.IsEnabled = false;
+                ANCreateText.Text = "Creating...";
+                closeAddNewGUI.IsEnabled = false;
 
-            githubRepositories.Add(gitRepo);
-            await githubJsonManagement.saveToJson(githubRepositories);
+                //create a new repository item 
+                try
+                {
+                    githubRepository gitRepo = new githubRepository(ANLink.Text);
+                    gitRepo.getOwnerAndName(gitRepo.url);
 
-            doAddNewAnimation(sender, e);
+                    //check to see if user wants to get the metaData from the repo
+                    if(YesRB.IsChecked == true)
+                    {
+                        //call the get metadata function
+                        await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
+                    }
+
+                    //add the repo to the list
+                    githubRepositories.Add(gitRepo);
+                }
+                catch
+                {
+                    //show user their error of not filling out all fields
+                    MessageBox.Show(
+                        "Unable to get full metadata from repo",
+                        "Error getting all metadata",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                        );
+                }
+
+                //save to the json file, clear fields, and then close the window
+                await githubJsonManagement.saveToJson(githubRepositories);
+                clearAllFields(sender, e);
+                doAddNewAnimation(sender, e);
+
+                //reable all buttons
+                ANCreateButton.IsEnabled = true;
+                ANCreateText.Text = "Add New Repo";
+                closeAddNewGUI.IsEnabled = true;
+            }
+            else
+            {
+                //show user their error of not filling out all fields
+                MessageBox.Show(
+                    "Please Fill out all non-optional fields before creating a new Repository Item",
+                    "Not all fields met",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                    );
+            }
 
         }
     }

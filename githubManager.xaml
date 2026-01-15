@@ -232,7 +232,7 @@
                     <!--The Add New Repo Button-->
                     <Button x:Name="ANCreateButton" Style="{StaticResource TwoRoundedCornersLeft}" Margin="3, 3, 1, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Create New Repo from given informatio" Click="addInNewRepo">
                         <Viewbox>
-                            <TextBlock Text="Add New Repo" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock x:Name="ANCreateText" Text="Add New Repo" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
                     </Button>
                     <!--The Clear Button-->
