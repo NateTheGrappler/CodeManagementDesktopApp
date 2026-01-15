@@ -299,10 +299,6 @@ namespace CodeManagementSystem
             gitRepo.getOwnerAndName(gitRepo.url);
             await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
 
-            Debug.WriteLine(gitRepo.metaData.ownerName);
-            Debug.WriteLine(gitRepo.metaData.repoName);
-            Debug.WriteLine(gitRepo.metaData.Language);
-            Debug.WriteLine(gitRepo.metaData.Description);
         }
     }
 }
