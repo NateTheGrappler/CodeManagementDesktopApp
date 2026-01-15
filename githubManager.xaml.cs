@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +25,71 @@ using Octokit;
 
 namespace CodeManagementSystem
 {
+    public class githubJsonManagement                                                     //For loading and saving data to json
+    {
+        private readonly string _JsonPath = System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "CodeInformationManagingSystem\\GithubRepoManagement\\JSON\\");
+        private readonly string _jsonStoragePath = System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "CodeInformationManagingSystem\\GithubRepoManagement\\JSON\\");
+
+
+        //save to json informaton
+        public async Task saveToJson(ObservableCollection<githubRepository> dataPaths)
+        {
+            //Create the directory if it doesn't exist
+            if (!System.IO.Directory.Exists(_JsonPath))
+            {
+                System.IO.Directory.CreateDirectory(_JsonPath);
+            }
+
+            //Set up the data to be written to the json, and also define the json format
+            var serializedList = dataPaths.ToList();
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            //Actually write the file to the json
+            string json = JsonSerializer.Serialize(serializedList, options);
+            await File.WriteAllTextAsync(System.IO.Path.Combine(_JsonPath, "githubRepos.json"), json);
+        }
+
+        //-------------------------------The loading functions-------------------------------------
+        public async Task<ObservableCollection<T>> loadJsonData<T>()
+        {
+            // Check to see if path exists, if not return empty
+            if (!File.Exists(System.IO.Path.Combine(_jsonStoragePath, "githubRepos.json")))
+            {
+                return new ObservableCollection<T>();
+            }
+
+
+            //Await until all of the json data is read
+            string json = await File.ReadAllTextAsync(System.IO.Path.Combine(_jsonStoragePath, "githubRepos.json"));
+
+            //Create the JsonSerializerOptions
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            //Use serializer in order to deserialize the data and return the type of data inputed
+            var itemList = JsonSerializer.Deserialize<List<T>>(json, options);
+            return itemList != null
+                ? new ObservableCollection<T>(itemList)
+                : new ObservableCollection<T>();
+        }
+
+
+        //------------------------------------Constructor------------------------------------------
+        public githubJsonManagement()
+        {
+
+        }
+    }
 
     public class githubMetaData
     {
@@ -116,23 +184,30 @@ namespace CodeManagementSystem
 
     public partial class githubManager : System.Windows.Controls.Page
     {
+        private ObservableCollection<githubRepository> githubRepositories   = new ObservableCollection<githubRepository>();
+        private githubJsonManagement                   githubJsonManagement = new githubJsonManagement();
         public githubManager()
         {
             InitializeComponent();
-            loadTags();
+            loadInContent();        //Set Up repo collection
+            loadTags();             //for add new repo view
         }
-
-        //The Button to go back
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        
+        private async void loadInContent()                                              //Set up the collection for the listview
+        {
+            githubRepositories = await githubJsonManagement.loadJsonData<githubRepository>();
+        }
+        private async void BackButton_Click(object sender, RoutedEventArgs e)           //Naviagte back to the main page
         {
             //return back to the main page
             this.NavigationService.GoBack();
+            await githubJsonManagement.saveToJson(githubRepositories);
         }
 
         //--------------------------The Side Button Functions-------------------------
 
         //-------------------------The Add New Repo GUI-------------------------------
-        private void doAddNewAnimation(object sender, RoutedEventArgs e)                                    //handle opening and closing the new repo info
+        private void doAddNewAnimation(object sender, RoutedEventArgs e)           //handle opening and closing the new repo info
         {
             if (sender is Button button)
             {
@@ -204,7 +279,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void loadTags()                                             //Set up visible tags in the wrappanel
+        private void loadTags()                                                    //Set up visible tags in the wrappanel
         {
             //List all of the avalible tags for a github repo
             string[] tags =
@@ -243,7 +318,7 @@ namespace CodeManagementSystem
                 TagsPanel.Children.Add(button);
             }
         }
-        private void tagButtonClick(object sender, RoutedEventArgs e)       //Add the tag to the current button
+        private void tagButtonClick(object sender, RoutedEventArgs e)              //Add the tag to the current button
         {
             //check if button
             if(sender is Button button)
@@ -271,7 +346,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void clearAllFields(object sender, RoutedEventArgs e)       //Clear the input fields and clear tags as well
+        private void clearAllFields(object sender, RoutedEventArgs e)              //Clear the input fields and clear tags as well
         {
             //clear all of the textboxes first
             ANCollection.Text = string.Empty;
@@ -293,11 +368,16 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private async void addInNewRepo(object sender, RoutedEventArgs e)         //Get new repo content and save it
+        private async void addInNewRepo(object sender, RoutedEventArgs e)          //Get new repo content and save it
         {
             githubRepository gitRepo = new githubRepository(ANLink.Text);
             gitRepo.getOwnerAndName(gitRepo.url);
             await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
+
+            githubRepositories.Add(gitRepo);
+            await githubJsonManagement.saveToJson(githubRepositories);
+
+            doAddNewAnimation(sender, e);
 
         }
     }
