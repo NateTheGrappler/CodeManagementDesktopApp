@@ -118,7 +118,7 @@ namespace CodeManagementSystem
         public List<string> tags       { get; set; } = new List<string>();
         public string collection       { get; set; } = "None";
         public string status           { get; set; }
-        public bool isStarred          { get; set; } = true;
+        public bool isStarred          { get; set; } = false;
         public githubMetaData metaData { get; set; } = new githubMetaData();
 
         [JsonIgnore]
@@ -470,6 +470,7 @@ namespace CodeManagementSystem
             }
         }
 
+      
         //-------------------------The Add New Repo GUI-------------------------------
         private void doAddNewAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info
         {
@@ -709,5 +710,80 @@ namespace CodeManagementSystem
             }
 
         }
+
+        //-----------------------The Extra Information GUI------------------------------
+        private void doSeeInfoAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info
+        {
+            if (sender is Button button)
+            {
+                Storyboard sb = new Storyboard();
+
+
+                //The open sequence
+                if (button.Name == "InfoRepoButton")
+                {
+                    //Set the transform origin on the Border itself
+                    SeeInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                    Panel.SetZIndex(SeeInfoGUI, 11);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, SeeInfoGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+                }
+                //the close sequence
+                else if (button.Name == "closeSeeInfoGUI" || button.Name == "SISave")
+                {
+                    //Set the transform origin on the Border itself
+                    SeeInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0.7,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, SeeInfoGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, -5);
+                }
+            }
+        }
+
     }
 }
