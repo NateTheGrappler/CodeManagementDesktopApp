@@ -353,8 +353,14 @@ namespace CodeManagementSystem
 
         private async Task InitializeProjectList()
         {
+            //diasable back button to prevent crashes
+            backButton.IsEnabled = false;
+
             //load any given data from a json file
             savedDirectories = await jsonManager.loadJsonData<projectDirectory>();
+
+            //then renable it
+            backButton.IsEnabled = true;
 
             //set the saved Directories as the item source for the tree view
             mainTreeView.ItemsSource = savedDirectories;
