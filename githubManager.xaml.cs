@@ -115,8 +115,8 @@ namespace CodeManagementSystem
         //-----------------------------Varaibles-------------------------
         public string url              { get; set; }
         public string name             { get; set; }
-        public string[] tags           { get; set; }
-        public string collection       { get; set; }
+        public List<string> tags       { get; set; } = new List<string>();
+        public string collection       { get; set; } = "None";
         public string status           { get; set; }
         public bool isStarred          { get; set; } = false;
         public githubMetaData metaData { get; set; } = new githubMetaData();
@@ -186,6 +186,7 @@ namespace CodeManagementSystem
     {
         private ObservableCollection<githubRepository> githubRepositories   = new ObservableCollection<githubRepository>();
         private githubJsonManagement                   githubJsonManagement = new githubJsonManagement();
+        private List<string>                           tagsToAdd            = new List<string>();
         public githubManager()
         {
             InitializeComponent();
@@ -193,21 +194,140 @@ namespace CodeManagementSystem
             loadTags();             //for add new repo view
         }
         
-        private async void loadInContent()                                              //Set up the collection for the listview
+        private async void loadInContent()                                                       //Set up the collection for the listview
         {
+            //load in any saved data from json
             githubRepositories = await githubJsonManagement.loadJsonData<githubRepository>();
+
+            //also set the itemsource for the main viewbox
+            githubListView.ItemsSource = githubRepositories;
         }
-        private async void BackButton_Click(object sender, RoutedEventArgs e)           //Naviagte back to the main page
+        private async void BackButton_Click(object sender, RoutedEventArgs e)                    //Naviagte back to the main page
         {
             //return back to the main page
             this.NavigationService.GoBack();
             await githubJsonManagement.saveToJson(githubRepositories);
         }
 
+        //-------------------The Main List Box Button Functions-----------------------
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)       //Redirect to the given github repo
+        {
+            try
+            {
+                //Try to open the link that the user inputted
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = e.Uri.AbsoluteUri,
+                    UseShellExecute = true
+                });
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                //If link is invalid or is unable to open, then let user know and abort the process so no crash happens
+                MessageBox.Show(
+                    $"Unable to open URL: {e.Uri}. Please enter valid URL and try again.",
+                    "Invalid URL",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+                e.Handled = true; //handle the event so the .net system doesnt kill itself
+            }
+
+        }
+        private void OpenContextMenu(object sender, RoutedEventArgs e)                          //get where you clicked, and then summon the little context menu to open there
+        {
+
+            //Check to see if youre a button in the list, and if so, get that list, and select the item that you pressed the button from
+            if (sender is Button button)
+            {
+                //Find the parent ListBoxItem
+                DependencyObject parent = VisualTreeHelper.GetParent(button);
+
+                //Get the parent of the button object
+                while (parent != null && !(parent is ListBoxItem))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+
+                if (parent is ListBoxItem listBoxItem)
+                {
+                    //Select the ListBoxItem
+                    listBoxItem.IsSelected = true;
+                    ListBox listBox = ItemsControl.ItemsControlFromItemContainer(listBoxItem) as ListBox;
+
+                    //Make the item the selected one in the list box
+                    if (listBox != null)
+                    {
+                        var selectedItem = listBox.SelectedItem;
+                    }
+                }
+            }
+
+
+            //Get the context menu from the key in App.cs
+            ContextMenu menu = this.FindResource("VideoContextMenuKey") as ContextMenu; //lowkey just use the same context menu
+
+            if (menu != null) //if menu is not null, then display it
+            {
+                //Open the Context Menu
+                menu.IsOpen = true;
+
+                //Add in click function based on header value
+
+                foreach (MenuItem item in menu.Items)
+                {
+                    string name = item.Header.ToString();
+                    //if (name == "Edit") { item.Click += openInfoGUI; }
+                    //else if (name == "Save") { item.Click += saveVideoPage; }
+                    //else if (name == "Delete") { item.Click += deleteSelectedItem; }
+                    //else if (name == "View Full Info") { item.Click += openInfoGUI; }
+
+                }
+
+            }
+        }
+        private void LoadListViewTags(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Sender Type");
+            Debug.WriteLine(sender.GetType());
+
+            //check if is wrapanel
+            if (sender is WrapPanel wrapPanel)
+            {
+                //get the data context as the custom class
+                githubRepository gitRepo = wrapPanel.DataContext as githubRepository;
+
+                //add in a button for each of the tags in the class tags list
+                foreach (string tag in gitRepo.tags)
+                {
+
+                    //create a new button with all of the different styles it needs to have
+                    Button button = new Button
+                    {
+                        Content = tag,
+                        Margin = new Thickness(2),
+                        Style = (Style)this.FindResource("EvenLessRoundedButton"),
+                        Foreground = new SolidColorBrush(Colors.White),
+                        Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
+                        BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush,
+                        FontWeight = FontWeights.Bold,
+                        Padding = new Thickness(3, 1, 3, 1),
+                        BorderThickness = new Thickness(2),
+                        MinHeight = 10,
+                        MinWidth = 10
+
+                    };
+                    wrapPanel.Children.Add(button);
+                }
+            }
+        }
+
+
         //--------------------------The Side Button Functions-------------------------
 
         //-------------------------The Add New Repo GUI-------------------------------
-        private void doAddNewAnimation(object sender, RoutedEventArgs e)           //handle opening and closing the new repo info
+        private void doAddNewAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info
         {
             if (sender is Button button)
             {
@@ -279,7 +399,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private void loadTags()                                                    //Set up visible tags in the wrappanel
+        private void loadTags()                                                                 //Set up visible tags in the wrappanel
         {
             //List all of the avalible tags for a github repo
             string[] tags =
@@ -318,7 +438,7 @@ namespace CodeManagementSystem
                 TagsPanel.Children.Add(button);
             }
         }
-        private void tagButtonClick(object sender, RoutedEventArgs e)              //Add the tag to the current button
+        private void tagButtonClick(object sender, RoutedEventArgs e)                           //Add the tag to the current button
         {
             //check if button
             if(sender is Button button)
@@ -333,20 +453,25 @@ namespace CodeManagementSystem
                         button.Foreground  = new SolidColorBrush(Colors.White);
                         button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
                         button.Background  = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
+
+                        //also remove the tag from the current tag list
+                        tagsToAdd.Remove(button.Content.ToString());
                     }
                     else if (solidColorBrush.Color == System.Windows.Media.Colors.White)
                     {
-                        Debug.WriteLine("Do i just so happen to be white?");
 
                         //if not, then make it gray because it's blue
-                        button.Foreground = new SolidColorBrush(Colors.DarkGray);
+                        button.Foreground  = new SolidColorBrush(Colors.DarkGray);
+                        button.Background  = new SolidColorBrush(Colors.LightGray);
                         button.BorderBrush = new SolidColorBrush(Colors.DarkGray);
-                        button.Background = new SolidColorBrush(Colors.LightGray);
+
+                        //add a given tag to a given tag list
+                        tagsToAdd.Add(button.Content.ToString());
                     }
                 }
             }
         }
-        private void clearAllFields(object sender, RoutedEventArgs e)              //Clear the input fields and clear tags as well
+        private void clearAllFields(object sender, RoutedEventArgs e)                           //Clear the input fields and clear tags as well
         {
             //clear all of the textboxes first
             ANCollection.Text = string.Empty;
@@ -368,7 +493,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private async void addInNewRepo(object sender, RoutedEventArgs e)          //Get new repo content and save it
+        private async void addInNewRepo(object sender, RoutedEventArgs e)                       //Get new repo content and save it
         {
             //check to see if all required fields are picked out
             if(!string.IsNullOrEmpty(ANLink.Text) || !string.IsNullOrEmpty(ANName.Text))
@@ -383,6 +508,8 @@ namespace CodeManagementSystem
                 {
                     githubRepository gitRepo = new githubRepository(ANLink.Text);
                     gitRepo.getOwnerAndName(gitRepo.url);
+                    gitRepo.name   = ANName.Text;
+                    gitRepo.status = "Unlooked";
 
                     //check to see if user wants to get the metaData from the repo
                     if(YesRB.IsChecked == true)
@@ -390,6 +517,17 @@ namespace CodeManagementSystem
                         //call the get metadata function
                         await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
                     }
+                    //see if user added in collection
+                    if(!string.IsNullOrEmpty(ANCollection.Text))
+                    {
+                        gitRepo.collection = ANCollection.Text;
+                    }
+                    //update the tags of the github repo and then clear tagsToAdd
+                    foreach(string tag in tagsToAdd)
+                    {
+                        gitRepo.tags.Add(tag);
+                    }
+                    tagsToAdd.Clear();
 
                     //add the repo to the list
                     githubRepositories.Add(gitRepo);

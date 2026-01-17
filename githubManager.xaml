@@ -115,8 +115,109 @@
                 <TextBox x:Name="SearchTB" Grid.Column="1" Margin="0, 5, 10, 5" />
 
                 <!--The List View of all the github repo items-->
-                <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="5, 5, 10, 10">
+                <ListView x:Name="githubListView" Grid.Row="1" Grid.ColumnSpan="2" Margin="5, 5, 10, 10" BorderThickness="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel HorizontalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <!--Set the style for the inner contents of the listbox-->
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalAlignment"        Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalAlignment"          Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment"   Value="Stretch"/>
+                            <Setter Property="BorderBrush"                Value="#E1E8ED"/>
+                            <Setter Property="BorderThickness"            Value="1"/>
+                            <Setter Property="Margin"                     Value="0, 0, 0, 3"/>
+                            <Setter Property="Padding"                    Value="0"/>
+                            <!--Customize the look whenever the mouse hovers over one of the items-->
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#F0F8FF"/>
+                                    <Setter Property="BorderBrush" Value="#4A90E2"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#E8F4FF"/>
+                                    <Setter Property="BorderBrush" Value="#4A90E2"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <!--The Grid that Defines space for thumbnail, link, category, and untility button-->
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                </Grid.RowDefinitions>
+
+                                <!--The Thumbnail that is visible-->
+                                <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+
+                                <!--Background rectange for color?-->
+                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="3, 0, 0, 3"/>
+
+                                <!--The (Editable?) text box with the link-->
+                                <Viewbox Stretch="Uniform" MaxHeight="50" Grid.Column="1" Margin="4, 0, 4, 0">
+                                    <WrapPanel MaxWidth="1500">
+                                        <TextBlock TextWrapping="Wrap" TextAlignment="Right" FontSize="16">
+                                    <Hyperlink NavigateUri="{Binding url}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Run Text="{Binding name}" Foreground="MediumPurple" FontWeight="SemiBold"/>
+                                    </Hyperlink>
+                                        </TextBlock>
+                                    </WrapPanel>
+                                </Viewbox>
+
+                                <!--The Button that changes whether a favorite is selected-->
+                                <Button Grid.Column="2">
+                                    
+                                </Button>
+                                
+                                <!--The tags-->
+                                <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                    <WrapPanel x:Name="TagsPanelListView" Loaded="LoadListViewTags">
+
+                                    </WrapPanel>
+                                </ScrollViewer>
+
+                                <!--The Collection Box-->
+                                <Border Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="Gray" Margin="0" CornerRadius="0" BorderThickness="1, 0, 1, 0" >
+                                    <Viewbox Stretch="Uniform">
+                                        <TextBlock Text="{Binding collection}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="DarkBlue" FontWeight="Medium" Margin="10, 0, 10,0"/>
+                                    </Viewbox>
+                                </Border>
+
+                                <!--The Button that should hold the avaliable options-->
+                                <Border Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Margin="0" CornerRadius="0, 8, 8, 0"/>
+                                <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="ExtraVideoInfo" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="45" Height="45" BorderBrush="#FF0078D7" Grid.Column="3" ToolTip="View More Information" Click="OpenContextMenu" ContextMenu="{StaticResource VideoContextMenuKey}">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Rectangle Width="15" Height="15" Fill="DarkBlue" VerticalAlignment="Center">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush ImageSource="/images/verticalDots.png" Stretch="Uniform"/>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListView>
             </Grid>
         </Grid>
