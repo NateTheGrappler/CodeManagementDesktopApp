@@ -118,7 +118,7 @@ namespace CodeManagementSystem
         public List<string> tags       { get; set; } = new List<string>();
         public string collection       { get; set; } = "None";
         public string status           { get; set; }
-        public bool isStarred          { get; set; } = false;
+        public bool isStarred          { get; set; } = true;
         public githubMetaData metaData { get; set; } = new githubMetaData();
 
         [JsonIgnore]
@@ -287,11 +287,8 @@ namespace CodeManagementSystem
 
             }
         }
-        private void LoadListViewTags(object sender, RoutedEventArgs e)
+        private void LoadListViewTags(object sender, RoutedEventArgs e)                         //Load in the tags as visible buttons
         {
-            Debug.WriteLine("Sender Type");
-            Debug.WriteLine(sender.GetType());
-
             //check if is wrapanel
             if (sender is WrapPanel wrapPanel)
             {
@@ -322,7 +319,70 @@ namespace CodeManagementSystem
                 }
             }
         }
+        private void LoadFavoritedStatus(object sender, RoutedEventArgs e)                      //Check to see if item is a favorite or not
+        {
+            //get the rectangle as the sender
+            if(sender is Rectangle rec)
+            {
+                //get the data context as the custom class
+                githubRepository gitRepo = rec.DataContext as githubRepository;
 
+                //only if the repo is favorited, you should change it
+                if(gitRepo.isStarred)
+                {
+                    if(rec.OpacityMask is ImageBrush imageBrush)
+                    {
+                        //update the color to be gold, and change the image to be full
+                        rec.Fill = new SolidColorBrush(Colors.Gold);
+                        imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star.png"));
+                    }
+                }
+            }
+        }
+        private async void favoriteStarButtonClick(object sender, RoutedEventArgs e)            //update favorited status as needed
+        {
+            //get the button
+            if(sender is Button button)
+            {
+                //get the custom class from button
+                githubRepository gitRepo = button.DataContext as githubRepository;
+                
+                //also get inner rectangle and it's brush
+                Rectangle  rect = button.Template.FindName("favoriteRectangle", button) as Rectangle;
+                
+                
+                //conditionally update the condition status
+                if (gitRepo.isStarred)
+                {
+                    //unstar the repo
+                    gitRepo.isStarred = !gitRepo.isStarred;
+
+                    //upate the visual to showcase this
+                    rect.Fill = new SolidColorBrush(Colors.DarkBlue);
+                    if(rect.OpacityMask is ImageBrush imageBrush)
+                    {
+                        imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star-outline.png"));
+                    }
+                }
+                else
+                {
+                    //star the repo
+                    gitRepo.isStarred = !gitRepo.isStarred;
+
+                    //upate the visual to showcase this
+                    rect.Fill = new SolidColorBrush(Colors.Gold);
+                    if(rect.OpacityMask is ImageBrush imageBrush)
+                    {
+                        imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star.png"));
+                    }
+                }
+
+                //save to the json
+                await githubJsonManagement.saveToJson(githubRepositories);
+
+
+            }
+        }
 
         //--------------------------The Side Button Functions-------------------------
 

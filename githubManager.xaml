@@ -165,7 +165,9 @@
                                 </Grid.RowDefinitions>
 
                                 <!--The Thumbnail that is visible-->
-                                <Image Source="{Binding thumbNailUrl}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+                                <Viewbox>
+                                    <Image Source="/Images/githubCat.jpg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill" Height="30"/>
+                                </Viewbox>
 
                                 <!--Background rectange for color?-->
                                 <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#F8FAFC" BorderBrush="#E1E8ED" Grid.Column="1" Margin="0" CornerRadius="3, 0, 0, 3"/>
@@ -182,10 +184,18 @@
                                 </Viewbox>
 
                                 <!--The Button that changes whether a favorite is selected-->
-                                <Button Grid.Column="2">
-                                    
+                                <Button BorderThickness="0" Style="{DynamicResource RounddButton}" x:Name="favoriteButton" HorizontalAlignment="Center" VerticalAlignment="Center"  Background="Transparent" Width="30" Height="30" BorderBrush="#FF0078D7" Grid.Column="2" ToolTip="Favorite/Unfavorite this item" Click="favoriteStarButtonClick">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Rectangle x:Name="favoriteRectangle" Width="20" Height="20" Fill="DarkBlue" VerticalAlignment="Center" Loaded="LoadFavoritedStatus">
+                                                <Rectangle.OpacityMask>
+                                                    <ImageBrush x:Name="favoriteImageBrush" ImageSource="/Images/star-outline.png" Stretch="Uniform"/>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </StackPanel>
+                                    </Button.Content>
                                 </Button>
-                                
+
                                 <!--The tags-->
                                 <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                     <WrapPanel x:Name="TagsPanelListView" Loaded="LoadListViewTags">

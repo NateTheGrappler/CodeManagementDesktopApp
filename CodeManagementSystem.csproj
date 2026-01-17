@@ -22,6 +22,8 @@
     <None Remove="Images\fitScreen.png" />
     <None Remove="Images\fullScreenArrows.png" />
     <None Remove="Images\fullScreenExit.png" />
+    <None Remove="Images\githubCat.jpg" />
+    <None Remove="Images\githubCat.png" />
     <None Remove="Images\lastPageButton.png" />
     <None Remove="Images\leftArrow.png" />
     <None Remove="Images\NoRedircle.png" />
@@ -31,6 +33,8 @@
     <None Remove="Images\resetZoom.png" />
     <None Remove="Images\rightArrow.png" />
     <None Remove="Images\speedReset.png" />
+    <None Remove="Images\star-outline.png" />
+    <None Remove="Images\star.png" />
     <None Remove="Images\textToSpeech.png" />
     <None Remove="Images\upArrow.png" />
     <None Remove="Images\verticalDots.png" />
@@ -114,6 +118,9 @@
     <Resource Include="Images\fullScreenExit.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\githubCat.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\JackOLanternSpirte-removebg-preview.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -154,6 +161,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\speedReset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\star-outline.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\star.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\textToSpeech.png">
