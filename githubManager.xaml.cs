@@ -346,44 +346,86 @@ namespace CodeManagementSystem
             {
                 //get the custom class from button
                 githubRepository gitRepo = button.DataContext as githubRepository;
-                
-                //also get inner rectangle and it's brush
-                Rectangle  rect = button.Template.FindName("favoriteRectangle", button) as Rectangle;
-                
-                
-                //conditionally update the condition status
-                if (gitRepo.isStarred)
-                {
-                    //unstar the repo
-                    gitRepo.isStarred = !gitRepo.isStarred;
 
-                    //upate the visual to showcase this
-                    rect.Fill = new SolidColorBrush(Colors.DarkBlue);
-                    if(rect.OpacityMask is ImageBrush imageBrush)
+                
+                if(button.Content is StackPanel panel)
+                {
+                    //get all of the inner button content
+                    foreach(var child in panel.Children)
                     {
-                        imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star-outline.png"));
+                        //locate rectange
+                        if (child is Rectangle rectangle && rectangle.Name == "favoriteRectangle")
+                        {
+                            //get the image brush
+                            if (rectangle.OpacityMask is ImageBrush imageBrush)
+                            {
+                                if(gitRepo.isStarred)
+                                {
+                                    //unstar the inner repo variable
+                                    gitRepo.isStarred = !gitRepo.isStarred;
+
+                                    //change the visual to reflect the change
+                                    rectangle.Fill = new SolidColorBrush(Colors.DarkBlue);
+                                    imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star-outline.png"));
+
+                                }
+                                else
+                                {
+                                    //star the inner repo variable
+                                    gitRepo.isStarred = !gitRepo.isStarred;
+
+                                    //change the visual to reflect the change
+                                    rectangle.Fill = new SolidColorBrush(Colors.Gold);
+                                    imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star.png"));
+                                }
+                            }
+                            break;
+                        }
                     }
                 }
-                else
-                {
-                    //star the repo
-                    gitRepo.isStarred = !gitRepo.isStarred;
 
-                    //upate the visual to showcase this
-                    rect.Fill = new SolidColorBrush(Colors.Gold);
-                    if(rect.OpacityMask is ImageBrush imageBrush)
-                    {
-                        imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/CodeManagementSystem;component/Images/star.png"));
-                    }
-                }
-
-                //save to the json
-                await githubJsonManagement.saveToJson(githubRepositories);
+                //reorder and save the new repos
+                await reorderListBasedOnFavorite();
 
 
             }
         }
+        private async Task reorderListBasedOnFavorite()                                         //updates list order
+        {
+            //create temp empty list
+            ObservableCollection<githubRepository> tempList = new ObservableCollection<githubRepository>();
+            
+            //add in all of the starred repos first
+            foreach(githubRepository repo in githubRepositories)
+            {
+                if(repo.isStarred)
+                {
+                    tempList.Add(repo);
+                }
+            }
 
+            //then add in all of the non stared repos
+            foreach(githubRepository repo in githubRepositories)
+            {
+                if (!repo.isStarred)
+                {
+                    tempList.Add(repo);
+                }
+            }
+
+            //update the github repo list
+            githubRepositories = tempList;
+
+            //refresh the list box
+            githubListView.ItemsSource = null;
+            githubListView.ItemsSource = githubRepositories;
+
+            //save the new order to the json
+            await githubJsonManagement.saveToJson(githubRepositories);
+
+
+        }
+       
         //--------------------------The Side Button Functions-------------------------
 
         //-------------------------The Add New Repo GUI-------------------------------
