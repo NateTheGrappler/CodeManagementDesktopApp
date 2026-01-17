@@ -161,13 +161,29 @@ namespace CodeManagementSystem
 
                 //get the reade me as well (gotta be seperate)
                 Octokit.Readme readme = await gitHubClient.Repository.Content.GetReadme(owner, repoName);
-                metaData.readMeContent = readme.Content;
+                if (readme != null)
+                {
+                    metaData.readMeContent = readme.Content;
+                }
+                else
+                {
+                    metaData.readMeContent = "No README found";
+                }
             }
-            catch
+            catch (Octokit.RateLimitExceededException rlex)
+            {
+                MessageBox.Show(
+                    "GitHub API rate limit exceeded. Please try again later.",
+                    "Rate Limit Exceeded",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+            catch(Exception ex)
             {
                 //Let User Know that there was an error in getting some metadata
                     MessageBox.Show(
-                    "There was an error in getting some part of the metadata",
+                    "Unable to get Readme due to repo's settings",
                     "Unable to get full metadata",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
@@ -264,7 +280,6 @@ namespace CodeManagementSystem
                 }
             }
 
-
             //Get the context menu from the key in App.cs
             ContextMenu menu = this.FindResource("VideoContextMenuKey") as ContextMenu; //lowkey just use the same context menu
 
@@ -278,10 +293,10 @@ namespace CodeManagementSystem
                 foreach (MenuItem item in menu.Items)
                 {
                     string name = item.Header.ToString();
-                    //if (name == "Edit") { item.Click += openInfoGUI; }
-                    //else if (name == "Save") { item.Click += saveVideoPage; }
-                    //else if (name == "Delete") { item.Click += deleteSelectedItem; }
-                    //else if (name == "View Full Info") { item.Click += openInfoGUI; }
+                    if      (name == "Edit")            { item.Click += deleteSelectedRepo;}
+                    else if (name == "Save")            { item.Click += deleteSelectedRepo;}
+                    else if (name == "Delete")          { item.Click += deleteSelectedRepo;}
+                    else if (name == "View Full Info")  { item.Click += deleteSelectedRepo;}
 
                 }
 
@@ -303,7 +318,7 @@ namespace CodeManagementSystem
                     Button button = new Button
                     {
                         Content = tag,
-                        Margin = new Thickness(2),
+                        Margin = new Thickness(2, 3, 2, 3),
                         Style = (Style)this.FindResource("EvenLessRoundedButton"),
                         Foreground = new SolidColorBrush(Colors.White),
                         Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
@@ -427,6 +442,33 @@ namespace CodeManagementSystem
         }
        
         //--------------------------The Side Button Functions-------------------------
+        private async void deleteSelectedRepo(object sender, RoutedEventArgs e)
+        {
+            //check to see if an item is selected
+            if(githubListView.SelectedItem != null)
+            {
+                //make sure to ask user if they really want to delete a given item
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this repo? Deletion is permanent.",
+                    "Delete Repo?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                    );
+
+                
+                if(result == MessageBoxResult.Yes)
+                {
+                    //if they respond yes, then pop the repo and save
+                    githubRepositories.Remove(githubListView.SelectedItem as githubRepository);
+                    await githubJsonManagement.saveToJson(githubRepositories);
+                }
+                else
+                {
+                    //do nothing
+                    return;
+                }
+            }
+        }
 
         //-------------------------The Add New Repo GUI-------------------------------
         private void doAddNewAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info

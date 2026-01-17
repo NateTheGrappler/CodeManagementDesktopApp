@@ -85,7 +85,7 @@
                     </Button>
 
                     <!--The Delete selected rep-->
-                    <Button Grid.Row="5" x:Name="DeleteRepoButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" HorizontalContentAlignment="Center">
+                    <Button Grid.Row="5" x:Name="DeleteRepoButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" HorizontalContentAlignment="Center" ToolTip="Deleted Selected Repo" Click="deleteSelectedRepo">
                         <TextBlock Text="Delete Selected Repository" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
 
@@ -147,7 +147,6 @@
                             </Style.Triggers>
                         </Style>
                     </ListBox.ItemContainerStyle>
-
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
