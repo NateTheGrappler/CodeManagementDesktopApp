@@ -116,8 +116,8 @@ namespace CodeManagementSystem
         public string url              { get; set; }
         public string name             { get; set; }
         public List<string> tags       { get; set; } = new List<string>();
-        public string collection       { get; set; } = "NonStarted";
-        public string status           { get; set; }
+        public string collection       { get; set; } = "None";
+        public string status           { get; set; } = "NonStarted";
         public bool isStarred          { get; set; } = false;
         public githubMetaData metaData { get; set; } = new githubMetaData();
 
@@ -202,6 +202,7 @@ namespace CodeManagementSystem
     {
         private ObservableCollection<githubRepository> githubRepositories     = new ObservableCollection<githubRepository>();
         private ObservableCollection<githubRepository> collectionRepositories = new ObservableCollection<githubRepository>();
+        private ObservableCollection<githubRepository> statusRepositories     = new ObservableCollection<githubRepository>();
         private githubJsonManagement githubJsonManagement                     = new githubJsonManagement();
         private List<string> tagsToAdd                                        = new List<string>();
         private List<string> collectionList                                   = new List<string>();
@@ -213,7 +214,7 @@ namespace CodeManagementSystem
             loadTags();             //for add new repo view
         }
 
-        private async void loadInContent()                                                       //Set up the collection for the listview
+        private async void loadInContent()                                                      //Set up the collection for the listview
         {
             //load in any saved data from json
             githubRepositories = await githubJsonManagement.loadJsonData<githubRepository>();
@@ -229,12 +230,13 @@ namespace CodeManagementSystem
             }
             //set the collections list box to have items
             CollectionsComboBox.ItemsSource = collectionList;
+            AddCB.ItemsSource = collectionList;
 
 
             //also set the itemsource for the main viewbox
             githubListView.ItemsSource = githubRepositories;
         }
-        private async void BackButton_Click(object sender, RoutedEventArgs e)                    //Naviagte back to the main page
+        private async void BackButton_Click(object sender, RoutedEventArgs e)                   //Naviagte back to the main page
         {
             //return back to the main page
             this.NavigationService.GoBack();
@@ -751,6 +753,11 @@ namespace CodeManagementSystem
             }
 
         }
+        private void CollectionAdd(object sender, SelectionChangedEventArgs e)                  //Update collection visual
+        {
+           //update visual to select collection
+            ANCollection.Text = AddCB.SelectedItem.ToString();
+        }
 
         //-----------------------The Extra Information GUI------------------------------
         private void doSeeInfoAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info
@@ -985,33 +992,117 @@ namespace CodeManagementSystem
                 return;
             }
         }
+        private void enableAll(object sender, RoutedEventArgs e)                                 //Make all fields editable
+        {
+            if (SIPersonalName.IsEnabled == false)
+            { 
+                //set all text boxes as enabled, including radio buttons and wrap panel
+                SIMainTitle.IsEnabled     = true;
+                SIPersonalName.IsEnabled  = true;
+                SIUrl.IsEnabled           = true;
+                SICollection.IsEnabled    = true;
+                SIid.IsEnabled            = true;
+                SIOwner.IsEnabled         = true;
+                SIRepoName.IsEnabled      = true;
+                SIFullRepoName.IsEnabled  = true;
+                SIDescription.IsEnabled   = true;
+                SICloneUrl.IsEnabled      = true;
+                SIReadme.IsEnabled        = true;
+                SIBranch.IsEnabled        = true;
+                SItagsPanel.IsEnabled     = true;
+                StartedRB.IsEnabled       = true;
+                NonStartedRB.IsEnabled    = true;
+                CompletedRB.IsEnabled     = true;
+
+            }
+            else if (SIPersonalName.IsEnabled == true)
+            {
+                //set all text boxes as disabled, including radio buttons and wrap panel
+                SIMainTitle.IsEnabled     = false;
+                SIPersonalName.IsEnabled  = false;
+                SIUrl.IsEnabled           = false;
+                SICollection.IsEnabled    = false;
+                SIid.IsEnabled            = false;
+                SIOwner.IsEnabled         = false;
+                SIRepoName.IsEnabled      = false;
+                SIFullRepoName.IsEnabled  = false;
+                SIDescription.IsEnabled   = false;
+                SICloneUrl.IsEnabled      = false;
+                SIReadme.IsEnabled        = false;
+                SIBranch.IsEnabled        = false;
+                SItagsPanel.IsEnabled     = false;
+                StartedRB.IsEnabled       = false;
+                NonStartedRB.IsEnabled    = false;
+                CompletedRB.IsEnabled     = false;
+            }
+        }
         
         //-----------------------Some Search Button Stuff--------------------------------
         private void CollectionSelectionChanged(object sender, SelectionChangedEventArgs e)      //Search by collection
         {
-
-            //change the text for the search bar to reflect the selected item
-            var selectedItem = CollectionsComboBox.SelectedItem.ToString();
-            SearchTB.Text = selectedItem;
-
-            //clear the actual combo box & collections list
-            collectionRepositories.Clear();
-
-            //loop over repos to see if it is the right collection
-            foreach(var repo in githubRepositories)
+            if(CollectionsComboBox.SelectedItem != null)
             {
-                //if it is right then add it to collection
-                if(repo.collection == SearchTB.Text.ToString())
+                //change the text for the search bar to reflect the selected item
+                var selectedItem = CollectionsComboBox.SelectedItem.ToString();
+                SearchTB.Text = selectedItem;
+
+                //clear the actual combo box & collections list
+                collectionRepositories.Clear();
+
+                //loop over repos to see if it is the right collection
+                foreach (var repo in githubRepositories)
                 {
-                    collectionRepositories.Add(repo);
+                    //if it is right then add it to collection
+                    if (repo.collection == SearchTB.Text.ToString())
+                    {
+                        collectionRepositories.Add(repo);
+                    }
                 }
+
+                //refresh to showcase the collection repos
+                githubListView.ItemsSource = null;
+                githubListView.ItemsSource = collectionRepositories;
+            }
+        }
+        private void searchByStatusClick(object sender, RoutedEventArgs e)
+        {
+
+            //clear the status repositories and search
+            statusRepositories.Clear();
+            CollectionsComboBox.SelectedItem = null;
+            SearchTB.Text = string.Empty;
+
+            if(sender is Button Button)
+            {
+                //cycle through to change the names
+                if(StatusTextBlock.Text == "Search By Status") { StatusTextBlock.Text = "NonStarted"; }
+                else if(StatusTextBlock.Text == "NonStarted")  { StatusTextBlock.Text = "Started";    }
+                else if(StatusTextBlock.Text == "Started")     { StatusTextBlock.Text = "Completed";  }
+                else if(StatusTextBlock.Text == "Completed")   { StatusTextBlock.Text = "Search By Status";  }
             }
 
-            //refresh to showcase the collection repos
-            githubListView.ItemsSource = null;
-            githubListView.ItemsSource = collectionRepositories;
+            //check to see reset happens
+            if(StatusTextBlock.Text == "Search By Status")
+            {
+                //set main repos as given
+                githubListView.ItemsSource = null;
+                githubListView.ItemsSource = githubRepositories;
+            }
+            else
+            {
+                foreach(var repo in githubRepositories)
+                {
+                    //check if the name is the same then add
+                    if(StatusTextBlock.Text == repo.status)
+                    {
+                        statusRepositories.Add(repo);
+                    }
+                }
 
-            CollectionsComboBox.SelectedItem =null;
+                //set as visible list view
+                githubListView.ItemsSource = null;
+                githubListView.ItemsSource = statusRepositories;
+            }
         }
 
 

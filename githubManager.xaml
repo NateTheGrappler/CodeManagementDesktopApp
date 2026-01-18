@@ -75,8 +75,8 @@
                     </Button>
 
                     <!--The search by Status button-->
-                    <Button Grid.Row="3" x:Name="StatusSearchButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3">
-                        <TextBlock Text="Search By Status" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12"/>
+                    <Button Grid.Row="3" x:Name="StatusSearchButton" Style="{StaticResource EvenLessRoundedButton}" Margin="2" Background="{StaticResource MainBorderBrushKey}" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" ToolTip="Look for Repos based on their completeion" Click="searchByStatusClick">
+                        <TextBlock x:Name="StatusTextBlock" Text="Search By Status" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" FontSize="12"/>
                     </Button>
 
                     <!--The Add a new repo button-->
@@ -298,8 +298,20 @@
                         <TextBox x:Name="ANLink" Grid.Row="1" Grid.Column="1" Margin="15"/>
 
                         <!--The collection of the repo-->
+                        <Grid Grid.Row="2" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <!--The Text box-->
+                            <TextBox x:Name="ANCollection" Margin="15, 15, 5, 15"/>
+                            
+                            <!--The collection combo box-->
+                            <ComboBox x:Name="AddCB" Grid.Column="2" Margin="0, 15, 5, 15" SelectionChanged="CollectionAdd"/>
+
+
+                        </Grid>
                         <TextBlock Grid.Row="2" Margin="5, 0, 0, 0" Text="Collection(Optional)" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource MainBorderBrushKey}"/>
-                        <TextBox x:Name="ANCollection" Grid.Row="2" Grid.Column="1" Margin="15"/>
 
                         <!--The Grid holding the metaData question-->
                         <Grid Grid.Row="3" Grid.ColumnSpan="2">
@@ -331,7 +343,6 @@
                             </WrapPanel>
                         </Grid>
                         
-
                     </Grid>
                 </ScrollViewer>
                 
@@ -356,6 +367,7 @@
                     </Button>
                     
                 </Grid>
+                
             </Grid>
             
             <Border.RenderTransform>
@@ -401,7 +413,7 @@
 
                 <!--The inner content display for the repo-->
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2" Grid.Row="1">
-                    <Grid>
+                    <Grid x:Name="SIContentGrid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -426,15 +438,15 @@
                         
                         <!--The Personal Name-->
                         <TextBlock Grid.Row="0" Text="Name:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="0" x:Name="SIPersonalName"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="0" x:Name="SIPersonalName"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--The Url-->
                         <TextBlock Grid.Row="1" Text="Link:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="1" x:Name="SIUrl"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="1" x:Name="SIUrl"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--The Collection-->
                         <TextBlock Grid.Row="2" Text="Collection:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="2" x:Name="SICollection"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="2" x:Name="SICollection"  Grid.Column="1" Margin="15" IsEnabled="False"/>
                         
                         <!--The Status Options-->
                         <Grid Grid.Row="3" Grid.ColumnSpan="2">
@@ -449,16 +461,15 @@
 
                             <!--NonStarted Radio Button-->
                             <Viewbox Grid.Row="1" Grid.Column="1" Margin="15">
-                                <RadioButton x:Name="NonStartedRB" Content="NonStarted" GroupName="statusRadio" IsChecked="True" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <RadioButton x:Name="NonStartedRB" Content="NonStarted" GroupName="statusRadio" IsChecked="True" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False"/>
                             </Viewbox>
-                            
                             <!--Started Radio Button-->
                             <Viewbox Grid.Row="1" Grid.Column="2" Margin="15">
-                                <RadioButton x:Name="StartedRB" Content="Started" GroupName="statusRadio" IsChecked="false" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <RadioButton x:Name="StartedRB" Content="Started" GroupName="statusRadio" IsChecked="false" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False"/>
                             </Viewbox>
                             <!--Compeleted Radio Button-->
                             <Viewbox Grid.Row="1" Grid.Column="3" Margin="15">
-                                <RadioButton x:Name="CompletedRB" Content="Completed" GroupName="statusRadio" IsChecked="false" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <RadioButton x:Name="CompletedRB" Content="Completed" GroupName="statusRadio" IsChecked="false" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False"/>
                             </Viewbox>
                             
                         </Grid>
@@ -472,43 +483,43 @@
 
                         <!--The ID -->
                         <TextBlock Grid.Row="5" Text="ID:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="5" x:Name="SIid"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="5" x:Name="SIid"  Grid.Column="1" Margin="15" IsEnabled="False"/>
                         
                         <!--The Owner Name-->
                         <TextBlock Grid.Row="6" Text="Owner:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="6" x:Name="SIOwner"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="6" x:Name="SIOwner"  Grid.Column="1" Margin="15" IsEnabled="False"/>
                         
                         <!--The Repo Name-->
                         <TextBlock Grid.Row="7" Text="Repo Name:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="7" x:Name="SIRepoName"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="7" x:Name="SIRepoName"  Grid.Column="1" Margin="15" IsEnabled="False"/>
                        
                         <!--The Full Repo Name-->
                         <TextBlock Grid.Row="8" Text="Full Name:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="8" x:Name="SIFullRepoName"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="8" x:Name="SIFullRepoName"  Grid.Column="1" Margin="15" IsEnabled="False"/>
                        
                         <!--The Lanuage-->
                         <TextBlock Grid.Row="9" Text="Lanuage:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0"/>
-                        <TextBox   Grid.Row="9" x:Name="SILanuage"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="9" x:Name="SILanuage"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--The description-->
                         <TextBlock Grid.Row="10" Text="Description:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0" TextWrapping="Wrap"/>
-                        <TextBox   Grid.Row="10" x:Name="SIDescription"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="10" x:Name="SIDescription"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--The Clone Url-->
                         <TextBlock Grid.Row="11" Text="Clone URL:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0" />
-                        <TextBox   Grid.Row="11" x:Name="SICloneUrl"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="11" x:Name="SICloneUrl"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--The Readme Content-->
                         <TextBlock Grid.Row="12" Text="Readme:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0" TextWrapping="Wrap"/>
-                        <TextBox   Grid.Row="12" x:Name="SIReadme"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="12" x:Name="SIReadme"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--The Default Branch-->
                         <TextBlock Grid.Row="13" Text="Branch:" FontSize="16" Foreground="{StaticResource MainBorderBrushKey}" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5, 0, 0, 0" TextWrapping="Wrap"/>
-                        <TextBox   Grid.Row="13" x:Name="SIBranch"  Grid.Column="1" Margin="15"/>
+                        <TextBox   Grid.Row="13" x:Name="SIBranch"  Grid.Column="1" Margin="15" IsEnabled="False"/>
 
                         <!--tags WrapPanel-->
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.Row="14" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <WrapPanel x:Name="SItagsPanel"/>
+                            <WrapPanel x:Name="SItagsPanel" IsEnabled="False"/>
                         </ScrollViewer>
 
                     </Grid>
@@ -531,7 +542,7 @@
                     </Button>
 
                     <!--The Edit Button-->
-                    <Button Grid.Column="1" x:Name="SIEdit" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Allow Editing of any information shown">
+                    <Button Grid.Column="1" x:Name="SIEdit" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Turn Editing information on or off" Click="enableAll">
                         <Viewbox>
                             <TextBlock Text="Edit Fields" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
