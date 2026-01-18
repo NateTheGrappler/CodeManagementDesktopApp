@@ -311,10 +311,10 @@ namespace CodeManagementSystem
                 foreach (MenuItem item in menu.Items)
                 {
                     string name = item.Header.ToString();
-                    if (name == "Edit") { item.Click += deleteSelectedRepo; }
-                    else if (name == "Save") { item.Click += deleteSelectedRepo; }
-                    else if (name == "Delete") { item.Click += deleteSelectedRepo; }
-                    else if (name == "View Full Info") { item.Click += deleteSelectedRepo; }
+                    if (name == "Edit")                { item.Click += doSeeInfoForContext; }
+                    else if (name == "Save")           { item.Click += saveGivenRepo     ; }
+                    else if (name == "Delete")         { item.Click += deleteSelectedRepo; }
+                    else if (name == "View Full Info") { item.Click += doSeeInfoForContext; }
 
                 }
 
@@ -460,7 +460,7 @@ namespace CodeManagementSystem
         }
 
         //--------------------------The Side Button Functions-------------------------
-        private async void deleteSelectedRepo(object sender, RoutedEventArgs e)
+        private async void deleteSelectedRepo(object sender, RoutedEventArgs e)                 //Perma Delete a repo 
         {
             //check to see if an item is selected
             if (githubListView.SelectedItem != null)
@@ -487,8 +487,15 @@ namespace CodeManagementSystem
                 }
             }
         }
-
-
+        private async void saveGivenRepo(object sender, RoutedEventArgs e)                      //context menu button save
+        {
+            //save when context menu button click
+            await githubJsonManagement.saveToJson(githubRepositories);
+        }
+        private void ViewFullInfoClick(object sender, RoutedEventArgs e)                        //Open when clicked in side menu
+        {
+            doSeeInfoAnimation(sender, e);
+        }
         //-------------------------The Add New Repo GUI-------------------------------
         private void doAddNewAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info
         {
@@ -697,7 +704,7 @@ namespace CodeManagementSystem
                     githubRepository gitRepo = new githubRepository(ANLink.Text);
                     gitRepo.getOwnerAndName(gitRepo.url);
                     gitRepo.name = ANName.Text;
-                    gitRepo.status = "Unlooked";
+                    gitRepo.status = "NonStarted";
 
                     //check to see if user wants to get the metaData from the repo
                     if (YesRB.IsChecked == true)
@@ -709,6 +716,13 @@ namespace CodeManagementSystem
                     if (!string.IsNullOrEmpty(ANCollection.Text))
                     {
                         gitRepo.collection = ANCollection.Text;
+                        if(!collectionList.Contains(ANCollection.Text))
+                        {
+                            //if not in list, add and refresh combo boxes
+                            collectionList.Add(ANCollection.Text);
+                            AddCB.ItemsSource = collectionList;
+                            CollectionsComboBox.ItemsSource = collectionList;
+                        }
                     }
                     //update the tags of the github repo and then clear tagsToAdd
                     foreach (string tag in tagsToAdd)
@@ -822,6 +836,10 @@ namespace CodeManagementSystem
                 //the close sequence
                 else if (button.Name == "closeSeeInfoGUI" || button.Name == "SISave")
                 {
+
+                    //disable all items
+                    enableAll(sender, e);
+
                     //Set the transform origin on the Border itself
                     SeeInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
 
@@ -851,6 +869,65 @@ namespace CodeManagementSystem
                     Panel.SetZIndex(TranslucentBox, -5);
                 }
             }
+        }
+        private void doSeeInfoForContext(object sender, RoutedEventArgs e)                       //opening info gui but for context menu
+        {
+            if (githubListView.SelectedItem == null)
+            {
+                //tell user they have to select an item
+                MessageBox.Show(
+                    "Please select a github repository before trying to see extra information",
+                    "Please select a repo",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation
+                    );
+
+                return; //return so it doesnt open
+            }
+            else
+            {
+                //run the fill out information function
+                populateInformation(sender, e);
+            }
+
+            if(sender is MenuItem menuItem)
+            {
+                if(menuItem.Name == "EditItem")
+                {
+                    enableAll(sender, e);
+                }
+                Storyboard sb = new Storyboard();
+
+                //Set the transform origin on the Border itself
+                SeeInfoGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                Panel.SetZIndex(TranslucentBox, 10);
+                Panel.SetZIndex(SeeInfoGUI, 11);
+
+                DoubleAnimation moveDOWN = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 1,
+                    Duration = TimeSpan.FromSeconds(0.3),
+                };
+                DoubleAnimation opacityAdd = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 0.7,
+                    Duration = TimeSpan.FromSeconds(0.2),
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                };
+
+                Storyboard.SetTarget(moveDOWN, SeeInfoGUI);
+                Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                sb.Children.Add(moveDOWN);
+                sb.Children.Add(opacityAdd);
+                sb.Begin();
+            }
+
         }
         private void populateInformation(object sender, RoutedEventArgs e)                       //fill in all of the info
         {
@@ -1036,7 +1113,7 @@ namespace CodeManagementSystem
                 CompletedRB.IsEnabled     = false;
             }
         }
-        
+
         //-----------------------Some Search Button Stuff--------------------------------
         private void CollectionSelectionChanged(object sender, SelectionChangedEventArgs e)      //Search by collection
         {
@@ -1064,7 +1141,7 @@ namespace CodeManagementSystem
                 githubListView.ItemsSource = collectionRepositories;
             }
         }
-        private void searchByStatusClick(object sender, RoutedEventArgs e)
+        private void searchByStatusClick(object sender, RoutedEventArgs e)                       //change repos based on their status
         {
 
             //clear the status repositories and search
@@ -1104,8 +1181,6 @@ namespace CodeManagementSystem
                 githubListView.ItemsSource = statusRepositories;
             }
         }
-
-
 
     }
 }

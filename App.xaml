@@ -8,10 +8,10 @@
 
         <!--Add in a context Menu for use in Video Manager-->
         <ContextMenu x:Key="VideoContextMenuKey" x:Name="VideoContextMenu">
-            <MenuItem Header="Edit"/>
-            <MenuItem Header="Save" />
-            <MenuItem Header="Delete" />
-            <MenuItem Header="View Full Info"/>
+            <MenuItem x:Name="EditItem"   Header="Edit"/>
+            <MenuItem x:Name="SaveItem"   Header="Save" />
+            <MenuItem x:Name="DeleteItem" Header="Delete" />
+            <MenuItem x:Name="InfoItem" Header="View Full Info"/>
             <!--<Separator/>-->
             <MenuItem Header="Exit" />
         </ContextMenu>
