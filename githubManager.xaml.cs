@@ -95,15 +95,15 @@ namespace CodeManagementSystem
     {
 
         //-----------------------------varaibles-----------------------
-        public string id               { get; set; }
-        public string ownerName        { get; set; }
-        public string repoName         { get; set; }
-        public string repoFullName     { get; set; }
-        public string Language         { get; set; }
-        public string Description      { get; set; }
-        public string cloneURL         { get; set; }
-        public string readMeContent    { get; set; }
-        public string defaultBranch    { get; set; }
+        public string id               { get; set; } = "No MetaData Found";
+        public string ownerName        { get; set; } = "No MetaData Found";
+        public string repoName         { get; set; } = "No MetaData Found";
+        public string repoFullName     { get; set; } = "No MetaData Found";
+        public string Language         { get; set; } = "No MetaData Found";
+        public string Description      { get; set; } = "No MetaData Found";
+        public string cloneURL         { get; set; } = "No MetaData Found";
+        public string readMeContent    { get; set; } = "No MetaData Found";
+        public string defaultBranch    { get; set; } = "No MetaData Found";
         //see if possible to get things like languages, size, readme content
 
         //-----------------------------constructor-----------------------
@@ -116,7 +116,7 @@ namespace CodeManagementSystem
         public string url              { get; set; }
         public string name             { get; set; }
         public List<string> tags       { get; set; } = new List<string>();
-        public string collection       { get; set; } = "None";
+        public string collection       { get; set; } = "NonStarted";
         public string status           { get; set; }
         public bool isStarred          { get; set; } = false;
         public githubMetaData metaData { get; set; } = new githubMetaData();
@@ -200,16 +200,16 @@ namespace CodeManagementSystem
 
     public partial class githubManager : System.Windows.Controls.Page
     {
-        private ObservableCollection<githubRepository> githubRepositories   = new ObservableCollection<githubRepository>();
-        private githubJsonManagement                   githubJsonManagement = new githubJsonManagement();
-        private List<string>                           tagsToAdd            = new List<string>();
+        private ObservableCollection<githubRepository> githubRepositories = new ObservableCollection<githubRepository>();
+        private githubJsonManagement githubJsonManagement = new githubJsonManagement();
+        private List<string> tagsToAdd = new List<string>();
         public githubManager()
         {
             InitializeComponent();
             loadInContent();        //Set Up repo collection
             loadTags();             //for add new repo view
         }
-        
+
         private async void loadInContent()                                                       //Set up the collection for the listview
         {
             //load in any saved data from json
@@ -293,10 +293,10 @@ namespace CodeManagementSystem
                 foreach (MenuItem item in menu.Items)
                 {
                     string name = item.Header.ToString();
-                    if      (name == "Edit")            { item.Click += deleteSelectedRepo;}
-                    else if (name == "Save")            { item.Click += deleteSelectedRepo;}
-                    else if (name == "Delete")          { item.Click += deleteSelectedRepo;}
-                    else if (name == "View Full Info")  { item.Click += deleteSelectedRepo;}
+                    if (name == "Edit") { item.Click += deleteSelectedRepo; }
+                    else if (name == "Save") { item.Click += deleteSelectedRepo; }
+                    else if (name == "Delete") { item.Click += deleteSelectedRepo; }
+                    else if (name == "View Full Info") { item.Click += deleteSelectedRepo; }
 
                 }
 
@@ -337,15 +337,15 @@ namespace CodeManagementSystem
         private void LoadFavoritedStatus(object sender, RoutedEventArgs e)                      //Check to see if item is a favorite or not
         {
             //get the rectangle as the sender
-            if(sender is Rectangle rec)
+            if (sender is Rectangle rec)
             {
                 //get the data context as the custom class
                 githubRepository gitRepo = rec.DataContext as githubRepository;
 
                 //only if the repo is favorited, you should change it
-                if(gitRepo.isStarred)
+                if (gitRepo.isStarred)
                 {
-                    if(rec.OpacityMask is ImageBrush imageBrush)
+                    if (rec.OpacityMask is ImageBrush imageBrush)
                     {
                         //update the color to be gold, and change the image to be full
                         rec.Fill = new SolidColorBrush(Colors.Gold);
@@ -357,16 +357,16 @@ namespace CodeManagementSystem
         private async void favoriteStarButtonClick(object sender, RoutedEventArgs e)            //update favorited status as needed
         {
             //get the button
-            if(sender is Button button)
+            if (sender is Button button)
             {
                 //get the custom class from button
                 githubRepository gitRepo = button.DataContext as githubRepository;
 
-                
-                if(button.Content is StackPanel panel)
+
+                if (button.Content is StackPanel panel)
                 {
                     //get all of the inner button content
-                    foreach(var child in panel.Children)
+                    foreach (var child in panel.Children)
                     {
                         //locate rectange
                         if (child is Rectangle rectangle && rectangle.Name == "favoriteRectangle")
@@ -374,7 +374,7 @@ namespace CodeManagementSystem
                             //get the image brush
                             if (rectangle.OpacityMask is ImageBrush imageBrush)
                             {
-                                if(gitRepo.isStarred)
+                                if (gitRepo.isStarred)
                                 {
                                     //unstar the inner repo variable
                                     gitRepo.isStarred = !gitRepo.isStarred;
@@ -409,18 +409,18 @@ namespace CodeManagementSystem
         {
             //create temp empty list
             ObservableCollection<githubRepository> tempList = new ObservableCollection<githubRepository>();
-            
+
             //add in all of the starred repos first
-            foreach(githubRepository repo in githubRepositories)
+            foreach (githubRepository repo in githubRepositories)
             {
-                if(repo.isStarred)
+                if (repo.isStarred)
                 {
                     tempList.Add(repo);
                 }
             }
 
             //then add in all of the non stared repos
-            foreach(githubRepository repo in githubRepositories)
+            foreach (githubRepository repo in githubRepositories)
             {
                 if (!repo.isStarred)
                 {
@@ -440,12 +440,12 @@ namespace CodeManagementSystem
 
 
         }
-       
+
         //--------------------------The Side Button Functions-------------------------
         private async void deleteSelectedRepo(object sender, RoutedEventArgs e)
         {
             //check to see if an item is selected
-            if(githubListView.SelectedItem != null)
+            if (githubListView.SelectedItem != null)
             {
                 //make sure to ask user if they really want to delete a given item
                 var result = MessageBox.Show(
@@ -455,8 +455,8 @@ namespace CodeManagementSystem
                     MessageBoxImage.Question
                     );
 
-                
-                if(result == MessageBoxResult.Yes)
+
+                if (result == MessageBoxResult.Yes)
                 {
                     //if they respond yes, then pop the repo and save
                     githubRepositories.Remove(githubListView.SelectedItem as githubRepository);
@@ -470,7 +470,7 @@ namespace CodeManagementSystem
             }
         }
 
-      
+
         //-------------------------The Add New Repo GUI-------------------------------
         private void doAddNewAnimation(object sender, RoutedEventArgs e)                        //handle opening and closing the new repo info
         {
@@ -555,23 +555,23 @@ namespace CodeManagementSystem
                 "Framework", "Library", "BolierPlate", "Demo", "Tutorial", "OS", "Learning",
                 "CheatSheet", "Documentation", "Awesome-List", "Books", "Icons-Fonts", "Design",
                 "Game-Dev", "Cyber Security", "Low-Level", "Education", "Science", "Engineering",
-                "graphics", "3d" 
+                "graphics", "3d"
             };
 
             //add in a button for each of them in the tags panel
-            foreach(string tag in tags)
+            foreach (string tag in tags)
             {
                 //create a new button with all of the different styles it needs to have
                 Button button = new Button
                 {
-                    Content         = tag,
-                    Margin          = new Thickness(5),
-                    Style           = (Style)this.FindResource("EvenLessRoundedButton"),
-                    Foreground      = new SolidColorBrush(Colors.White),
-                    Background      = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
-                    BorderBrush     = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush,
-                    FontWeight      = FontWeights.Bold,
-                    Padding         = new Thickness(10, 5, 10, 5),
+                    Content = tag,
+                    Margin = new Thickness(5),
+                    Style = (Style)this.FindResource("EvenLessRoundedButton"),
+                    Foreground = new SolidColorBrush(Colors.White),
+                    Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
+                    BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush,
+                    FontWeight = FontWeights.Bold,
+                    Padding = new Thickness(10, 5, 10, 5),
                     BorderThickness = new Thickness(2),
                     MinHeight = 40,
                     MinWidth = 40
@@ -582,22 +582,47 @@ namespace CodeManagementSystem
                 button.Click += tagButtonClick;
                 TagsPanel.Children.Add(button);
             }
+
+            //also then do the same for the extra info GUI panel
+            foreach (string tag in tags)
+            {
+                //create a new button with all of the different styles it needs to have
+                Button button = new Button
+                {
+                    Content = tag,
+                    Margin = new Thickness(5),
+                    Style = (Style)this.FindResource("EvenLessRoundedButton"),
+                    Foreground = new SolidColorBrush(Colors.White),
+                    Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
+                    BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush,
+                    FontWeight = FontWeights.Bold,
+                    Padding = new Thickness(10, 5, 10, 5),
+                    BorderThickness = new Thickness(2),
+                    MinHeight = 40,
+                    MinWidth = 40
+
+                };
+
+                //append the click handle function and then add the button to the wrap panel
+                button.Click += changeTagButton;
+                SItagsPanel.Children.Add(button);
+            }
         }
         private void tagButtonClick(object sender, RoutedEventArgs e)                           //Add the tag to the current button
         {
             //check if button
-            if(sender is Button button)
+            if (sender is Button button)
             {
                 //get button foreground as brush
-                if(button.Foreground is System.Windows.Media.SolidColorBrush solidColorBrush)
+                if (button.Foreground is System.Windows.Media.SolidColorBrush solidColorBrush)
                 {
                     //check to see if button is gray
                     if (solidColorBrush.Color == System.Windows.Media.Colors.DarkGray)
                     {
                         //if so, then make it blue again
-                        button.Foreground  = new SolidColorBrush(Colors.White);
+                        button.Foreground = new SolidColorBrush(Colors.White);
                         button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
-                        button.Background  = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
+                        button.Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
 
                         //also remove the tag from the current tag list
                         tagsToAdd.Remove(button.Content.ToString());
@@ -606,8 +631,8 @@ namespace CodeManagementSystem
                     {
 
                         //if not, then make it gray because it's blue
-                        button.Foreground  = new SolidColorBrush(Colors.DarkGray);
-                        button.Background  = new SolidColorBrush(Colors.LightGray);
+                        button.Foreground = new SolidColorBrush(Colors.DarkGray);
+                        button.Background = new SolidColorBrush(Colors.LightGray);
                         button.BorderBrush = new SolidColorBrush(Colors.DarkGray);
 
                         //add a given tag to a given tag list
@@ -620,28 +645,28 @@ namespace CodeManagementSystem
         {
             //clear all of the textboxes first
             ANCollection.Text = string.Empty;
-            ANLink.Text       = string.Empty;
-            ANName.Text       = string.Empty;
+            ANLink.Text = string.Empty;
+            ANName.Text = string.Empty;
 
             //Reset the selection for the radio buttons
             YesRB.IsChecked = true;
 
             //clear all of the possible selections for the tags
-            foreach(UIElement element in TagsPanel.Children)
+            foreach (UIElement element in TagsPanel.Children)
             {
-                if(element is Button button)
+                if (element is Button button)
                 {
                     //change back to enabled color scheme
-                    button.Foreground  = new SolidColorBrush(Colors.White);
+                    button.Foreground = new SolidColorBrush(Colors.White);
                     button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
-                    button.Background  = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
+                    button.Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
                 }
             }
         }
         private async void addInNewRepo(object sender, RoutedEventArgs e)                       //Get new repo content and save it
         {
             //check to see if all required fields are picked out
-            if(!string.IsNullOrEmpty(ANLink.Text) || !string.IsNullOrEmpty(ANName.Text))
+            if (!string.IsNullOrEmpty(ANLink.Text) || !string.IsNullOrEmpty(ANName.Text))
             {
                 //update saving button to reflect saving
                 ANCreateButton.IsEnabled = false;
@@ -653,22 +678,22 @@ namespace CodeManagementSystem
                 {
                     githubRepository gitRepo = new githubRepository(ANLink.Text);
                     gitRepo.getOwnerAndName(gitRepo.url);
-                    gitRepo.name   = ANName.Text;
+                    gitRepo.name = ANName.Text;
                     gitRepo.status = "Unlooked";
 
                     //check to see if user wants to get the metaData from the repo
-                    if(YesRB.IsChecked == true)
+                    if (YesRB.IsChecked == true)
                     {
                         //call the get metadata function
                         await gitRepo.getMetaData(gitRepo.metaData.ownerName, gitRepo.metaData.repoName);
                     }
                     //see if user added in collection
-                    if(!string.IsNullOrEmpty(ANCollection.Text))
+                    if (!string.IsNullOrEmpty(ANCollection.Text))
                     {
                         gitRepo.collection = ANCollection.Text;
                     }
                     //update the tags of the github repo and then clear tagsToAdd
-                    foreach(string tag in tagsToAdd)
+                    foreach (string tag in tagsToAdd)
                     {
                         gitRepo.tags.Add(tag);
                     }
@@ -718,6 +743,26 @@ namespace CodeManagementSystem
             {
                 Storyboard sb = new Storyboard();
 
+                if(button.Name != "SISave" && button.Name != "closeSeeInfoGUI")
+                {
+                    if (githubListView.SelectedItem == null)
+                    {
+                        //tell user they have to select an item
+                        MessageBox.Show(
+                            "Please select a github repository before trying to see extra information",
+                            "Please select a repo",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Exclamation
+                            );
+
+                        return; //return so it doesnt open
+                    }
+                    else
+                    {
+                        //run the fill out information function
+                        populateInformation(sender, e);
+                    }
+                }
 
                 //The open sequence
                 if (button.Name == "InfoRepoButton")
@@ -784,6 +829,145 @@ namespace CodeManagementSystem
                 }
             }
         }
+        private void populateInformation(object sender, RoutedEventArgs e)                       //fill in all of the info
+        {
+            //get the repo as an item
+            githubRepository repo = githubListView.SelectedItem as githubRepository;
 
+            //set all of the given texts outright
+            SIMainTitle.Text    = $"Showing information for: {repo.name}";
+            SIPersonalName.Text = repo.name;
+            SIUrl.Text          = repo.url;
+            SICollection.Text   = repo.collection;
+
+            //set up the metaData
+            githubMetaData data = repo.metaData;
+            SIid.Text           = data.id;
+            SIOwner.Text        = data.ownerName;
+            SIRepoName.Text     = data.repoName;
+            SIFullRepoName.Text = data.repoName;
+            SIDescription.Text  = data.Description;
+            SICloneUrl.Text     = data.cloneURL;
+            SIReadme.Text       = data.readMeContent;
+            SIBranch.Text       = data.defaultBranch;
+
+            //set up the options for the status
+            if      (repo.status == "NonStarted") { NonStartedRB.IsChecked = true; }
+            else if (repo.status == "Started")    { NonStartedRB.IsChecked = true; }
+            else if (repo.status == "Completed")  { NonStartedRB.IsChecked = true; }
+
+            //go through each of the tags and highlight the ones that are selected
+            foreach (UIElement child in SItagsPanel.Children)
+            {
+                //get button
+                if (child is Button button)
+                {
+                    //see if button content is in repo's tags
+                    if (repo.tags.Contains(button.Content.ToString()) && button.Foreground is System.Windows.Media.SolidColorBrush solidColorBrush)
+                    {
+                        button.Foreground = new SolidColorBrush(Colors.DarkGray);
+                        button.Background = new SolidColorBrush(Colors.LightGray);
+                        button.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+                    }
+                }
+            }
+
+        }
+        private void changeTagButton(object sender, RoutedEventArgs e)                           //Just change the color for initial
+        {
+            //check if button
+            if (sender is Button button)
+            {
+                //get button foreground as brush
+                if (button.Foreground is System.Windows.Media.SolidColorBrush solidColorBrush)
+                {
+                    //check to see if button is gray
+                    if (solidColorBrush.Color == System.Windows.Media.Colors.DarkGray)
+                    {
+                        //if so, then make it blue again
+                        button.Foreground = new SolidColorBrush(Colors.White);
+                        button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
+                        button.Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
+
+                        //Remove the tag from the current repo's list
+                        githubRepository repo = githubListView.SelectedItem as githubRepository;
+                        repo.tags.Remove(button.Content.ToString());
+                    }
+                    else if (solidColorBrush.Color == System.Windows.Media.Colors.White)
+                    {
+
+                        //if not, then make it gray because it's blue
+                        button.Foreground = new SolidColorBrush(Colors.DarkGray);
+                        button.Background = new SolidColorBrush(Colors.LightGray);
+                        button.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+
+                        //add a given tag to a given tag list
+                        githubRepository repo = githubListView.SelectedItem as githubRepository;
+                        repo.tags.Add(button.Content.ToString());
+                    }
+                }
+            }
+        }
+        private async void saveChangesMade(object sender, RoutedEventArgs e)
+        {
+            if(githubListView.SelectedItem != null)
+            {
+                //get the repo
+                githubRepository repo = githubListView.SelectedItem as githubRepository;
+                githubMetaData data = repo.metaData;
+
+                //save all of the text into the repo
+                SIMainTitle.Text    = $"Showing information for: {repo.name}";
+                repo.name           = SIPersonalName.Text;
+                repo.url            = SIUrl.Text;
+                repo.collection     = SICollection.Text;
+                data.id             = SIid.Text;
+                data.ownerName      = SIOwner.Text;
+                data.repoName       = SIRepoName.Text;
+                data.repoName       = SIFullRepoName.Text;
+                data.Description    = SIDescription.Text;
+                data.cloneURL       = SICloneUrl.Text;
+                data.readMeContent  = SIReadme.Text;
+                data.defaultBranch  = SIBranch.Text;
+
+                //Also save any changes in the radio buttons
+                if      (NonStartedRB.IsChecked == true) { repo.status = "NonStarted";}
+                else if (NonStartedRB.IsChecked == true) { repo.status = "Started";   }
+                else if (NonStartedRB.IsChecked == true) { repo.status = "Completed"; }
+
+                //the changing for the tags is already done
+
+                //save to json
+                await githubJsonManagement.saveToJson(githubRepositories);
+
+                //refresh the main list view to reflect any changes
+                githubListView.ItemsSource = null;
+                githubListView.ItemsSource = githubRepositories;
+
+                //then close the window
+                doSeeInfoAnimation(sender, e);
+            }
+        }
+        private void undoAllChanges(object sender, RoutedEventArgs e)
+        {
+            //ask the user if they are sure they want to reload the repo
+            var result = MessageBox.Show(
+                "Any changes made will be undone and not saved.",
+                "Are you sure",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Hand
+                );
+
+            if(result == MessageBoxResult.Yes)
+            {
+                //lowkey just reload the information
+                populateInformation(sender, e);
+            }
+            else
+            {
+                //do nothing
+                return;
+            }
+        }
     }
 }

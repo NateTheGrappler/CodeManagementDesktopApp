@@ -418,8 +418,7 @@
                             <RowDefinition Height="Auto" MinHeight="60"/> <!--The description-->
                             <RowDefinition Height="60"/> <!--The Clone URL-->
                             <RowDefinition Height="60"/> <!--The Readme Text-->
-                            <RowDefinition Height="60"/> <!--The Default Branch-->
-                            <RowDefinition Height="Auto" MinHeight="60"/> <!--The Wrappanel that lets you change the tags-->
+                            <RowDefinition Height="auto"/> <!--The Wrappanel that lets you change the tags-->
                         </Grid.RowDefinitions>
                         
                         <!--The Personal Name-->
@@ -505,7 +504,9 @@
                         <TextBox   Grid.Row="13" x:Name="SIBranch"  Grid.Column="1" Margin="15"/>
 
                         <!--tags WrapPanel-->
-                        <WrapPanel Grid.Row="14" Grid.ColumnSpan="2" x:Name="SItagsPanel"/>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.Row="14" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <WrapPanel x:Name="SItagsPanel"/>
+                        </ScrollViewer>
 
                     </Grid>
                     
@@ -520,7 +521,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!--The Save Changes Button-->
-                    <Button x:Name="SISave" Style="{StaticResource TwoRoundedCornersLeft}" Margin="3, 3, 1, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Create New Repo from given informatio" >
+                    <Button x:Name="SISave" Style="{StaticResource TwoRoundedCornersLeft}" Margin="3, 3, 1, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Create New Repo from given informatio" Click="saveChangesMade" >
                         <Viewbox>
                             <TextBlock x:Name="SISaveText" Text="Save Changes" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
@@ -534,7 +535,7 @@
                     </Button>
 
                     <!--The Undo Button-->
-                    <Button Grid.Column="2" x:Name="SIUndoChanges" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Revert To Original Items" >
+                    <Button Grid.Column="2" x:Name="SIUndoChanges" Style="{StaticResource TwoRoundedCornersRight}" Margin="1, 3, 3, 5" BorderBrush="{StaticResource DarkBorderBrushKey}" BorderThickness="3" Background="{StaticResource MainBorderBrushKey}" ToolTip="Revert To Original Items" Click="undoAllChanges">
                         <Viewbox>
                             <TextBlock Text="Revert Changes" FontWeight="Bold" Foreground="White"/>
                         </Viewbox>
