@@ -200,9 +200,12 @@ namespace CodeManagementSystem
 
     public partial class githubManager : System.Windows.Controls.Page
     {
-        private ObservableCollection<githubRepository> githubRepositories = new ObservableCollection<githubRepository>();
-        private githubJsonManagement githubJsonManagement = new githubJsonManagement();
-        private List<string> tagsToAdd = new List<string>();
+        private ObservableCollection<githubRepository> githubRepositories     = new ObservableCollection<githubRepository>();
+        private ObservableCollection<githubRepository> collectionRepositories = new ObservableCollection<githubRepository>();
+        private githubJsonManagement githubJsonManagement                     = new githubJsonManagement();
+        private List<string> tagsToAdd                                        = new List<string>();
+        private List<string> collectionList                                   = new List<string>();
+        
         public githubManager()
         {
             InitializeComponent();
@@ -214,6 +217,19 @@ namespace CodeManagementSystem
         {
             //load in any saved data from json
             githubRepositories = await githubJsonManagement.loadJsonData<githubRepository>();
+
+            //load through the repos to get all of the collections
+            foreach(githubRepository repo in githubRepositories)
+            {
+                //check if condition is in list, if not, add it
+                if(!collectionList.Contains(repo.collection))
+                {
+                    collectionList.Add(repo.collection);
+                }
+            }
+            //set the collections list box to have items
+            CollectionsComboBox.ItemsSource = collectionList;
+
 
             //also set the itemsource for the main viewbox
             githubListView.ItemsSource = githubRepositories;
@@ -908,7 +924,7 @@ namespace CodeManagementSystem
                 }
             }
         }
-        private async void saveChangesMade(object sender, RoutedEventArgs e)
+        private async void saveChangesMade(object sender, RoutedEventArgs e)                     //The save git repo function
         {
             if(githubListView.SelectedItem != null)
             {
@@ -948,7 +964,7 @@ namespace CodeManagementSystem
                 doSeeInfoAnimation(sender, e);
             }
         }
-        private void undoAllChanges(object sender, RoutedEventArgs e)
+        private void undoAllChanges(object sender, RoutedEventArgs e)                            //reload the info window
         {
             //ask the user if they are sure they want to reload the repo
             var result = MessageBox.Show(
@@ -969,5 +985,36 @@ namespace CodeManagementSystem
                 return;
             }
         }
+        
+        //-----------------------Some Search Button Stuff--------------------------------
+        private void CollectionSelectionChanged(object sender, SelectionChangedEventArgs e)      //Search by collection
+        {
+
+            //change the text for the search bar to reflect the selected item
+            var selectedItem = CollectionsComboBox.SelectedItem.ToString();
+            SearchTB.Text = selectedItem;
+
+            //clear the actual combo box & collections list
+            collectionRepositories.Clear();
+
+            //loop over repos to see if it is the right collection
+            foreach(var repo in githubRepositories)
+            {
+                //if it is right then add it to collection
+                if(repo.collection == SearchTB.Text.ToString())
+                {
+                    collectionRepositories.Add(repo);
+                }
+            }
+
+            //refresh to showcase the collection repos
+            githubListView.ItemsSource = null;
+            githubListView.ItemsSource = collectionRepositories;
+
+            CollectionsComboBox.SelectedItem =null;
+        }
+
+
+
     }
 }
