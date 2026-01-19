@@ -200,12 +200,15 @@ namespace CodeManagementSystem
 
     public partial class githubManager : System.Windows.Controls.Page
     {
-        private ObservableCollection<githubRepository> githubRepositories     = new ObservableCollection<githubRepository>();
-        private ObservableCollection<githubRepository> collectionRepositories = new ObservableCollection<githubRepository>();
-        private ObservableCollection<githubRepository> statusRepositories     = new ObservableCollection<githubRepository>();
-        private githubJsonManagement githubJsonManagement                     = new githubJsonManagement();
-        private List<string> tagsToAdd                                        = new List<string>();
-        private List<string> collectionList                                   = new List<string>();
+        private ObservableCollection<githubRepository> githubRepositories       = new ObservableCollection<githubRepository>();
+        private ObservableCollection<githubRepository> collectionRepositories   = new ObservableCollection<githubRepository>();
+        private ObservableCollection<githubRepository> statusRepositories       = new ObservableCollection<githubRepository>();
+        private ObservableCollection<githubRepository> searchTagsRepositories   = new ObservableCollection<githubRepository>();
+        private ObservableCollection<githubRepository> directSearchRepositories = new ObservableCollection<githubRepository>();
+        private List<string> tagsToAdd                                          = new List<string>();
+        private githubJsonManagement githubJsonManagement                       = new githubJsonManagement();
+        private List<string> collectionList                                     = new List<string>();
+        private List<string> searchTagsList                                     = new List<string>();
         
         public githubManager()
         {
@@ -631,6 +634,30 @@ namespace CodeManagementSystem
                 //append the click handle function and then add the button to the wrap panel
                 button.Click += changeTagButton;
                 SItagsPanel.Children.Add(button);
+            }
+            //The search panel
+            foreach (string tag in tags)
+            {
+                //create a new button with all of the different styles it needs to have
+                Button button = new Button
+                {
+                    Content = tag,
+                    Margin = new Thickness(5),
+                    Style = (Style)this.FindResource("EvenLessRoundedButton"),
+                    Foreground = new SolidColorBrush(Colors.White),
+                    Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush,
+                    BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush,
+                    FontWeight = FontWeights.Bold,
+                    Padding = new Thickness(10, 5, 10, 5),
+                    BorderThickness = new Thickness(2),
+                    MinHeight = 40,
+                    MinWidth = 40
+
+                };
+
+                //append the click handle function and then add the button to the wrap panel
+                button.Click += searchTagsClick;
+                SearchPanel.Children.Add(button);
             }
         }
         private void tagButtonClick(object sender, RoutedEventArgs e)                           //Add the tag to the current button
@@ -1181,6 +1208,239 @@ namespace CodeManagementSystem
                 githubListView.ItemsSource = statusRepositories;
             }
         }
+        private void searchTagsClick(object sender, RoutedEventArgs e)                           //Add the tag to the current button
+        {
+            //check if button
+            if (sender is Button button)
+            {
+                //get button foreground as brush
+                if (button.Foreground is System.Windows.Media.SolidColorBrush solidColorBrush)
+                {
+                    //check to see if button is gray
+                    if (solidColorBrush.Color == System.Windows.Media.Colors.DarkGray)
+                    {
+                        //if so, then make it blue again
+                        button.Foreground = new SolidColorBrush(Colors.White);
+                        button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
+                        button.Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
 
+                        //also remove the tag from the current tag list
+                        searchTagsList.Remove(button.Content.ToString());
+                    }
+                    else if (solidColorBrush.Color == System.Windows.Media.Colors.White)
+                    {
+
+                        //if not, then make it gray because it's blue
+                        button.Foreground = new SolidColorBrush(Colors.DarkGray);
+                        button.Background = new SolidColorBrush(Colors.LightGray);
+                        button.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+
+                        //add a given tag to a given tag list
+                        searchTagsList.Add(button.Content.ToString());
+                    }
+                }
+            }
+        }
+        private void searchByTagsButtonclick(object sender, RoutedEventArgs e)                   //the actual search function
+        {
+            if(searchTagsList.Count <= 0)
+            {
+                //tell the user they need to selected tags to search through
+                MessageBox.Show(
+                    "Please selected at least one tag to search by.",
+                    "No Tags Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+
+                return;
+            }
+
+            //clear any previous searches just in case
+            searchTagsRepositories.Clear();
+
+            //check to see what type of search to perform
+            if(RelativeRB.IsChecked == true)
+            {
+                //loop over each repo to see if it has the repo
+                foreach(var repo in githubRepositories)
+                {
+                    foreach(string tag in searchTagsList)
+                    {
+                        //check if the tag is in the repo's tags
+                        if(repo.tags.Contains(tag))
+                        {
+                            //add the tag
+                            searchTagsRepositories.Add(repo);
+                        }
+                    }
+                }
+            }
+            else if (ExactRB.IsChecked == true)
+            {
+                //loop over each repo to see if it has the repo
+                foreach (var repo in githubRepositories)
+                {
+                    bool inThere = true;
+
+                    foreach (string tag in searchTagsList)
+                    {
+                        //if a tag is not in the list, dont add it to the main list
+                        if(!repo.tags.Contains(tag))
+                        {
+                            inThere = false;
+                        }
+                    }
+                    //check to see if the repo's tags is the same size
+                    if (repo.tags.Count != searchTagsList.Count)
+                    {
+                        inThere = false;
+                    }
+                    //if it is in there, then do add it
+                    if (inThere)
+                    {
+                        searchTagsRepositories.Add(repo);
+                    }
+                }
+            }
+
+            //set the main list as the tags list
+            githubListView.ItemsSource = null;
+            githubListView.ItemsSource = searchTagsRepositories;
+
+            //close the gui
+            doSearchByTagsAnimation(sender, e);
+
+            //also reset the button colors
+            //go through each of the tags and highlight the ones that are selected
+            foreach (UIElement child in SearchPanel.Children)
+            {
+                //get button
+                if (child is Button button)
+                {
+                    //reset the colors of all buttons
+                    button.Foreground = new SolidColorBrush(Colors.White);
+                    button.BorderBrush = System.Windows.Application.Current.Resources["DarkBorderBrushKey"] as Brush;
+                    button.Background = System.Windows.Application.Current.Resources["MainBorderBrushKey"] as Brush;
+                }
+            }
+        }
+        private void doSearchByTagsAnimation(object sender, RoutedEventArgs e)                   //Do The animation to open tags search
+        {
+            if (sender is Button button)
+            {
+                Storyboard sb = new Storyboard();
+
+
+                //The open sequence
+                if (button.Name == "TagSearchButton")
+                {
+                    //Set the transform origin on the Border itself
+                    SearchByTagsGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    Panel.SetZIndex(TranslucentBox, 10);
+                    Panel.SetZIndex(SearchByTagsGUI, 11);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 0.7,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, SearchByTagsGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+                }
+                //the close sequence
+                else if (button.Name == "closeSearchBytagsGUI" || button.Name == "STSearch")
+                {
+                    //Set the transform origin on the Border itself
+                    SearchByTagsGUI.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
+
+                    DoubleAnimation moveDOWN = new DoubleAnimation
+                    {
+                        From = 1,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.3),
+                    };
+                    DoubleAnimation opacityAdd = new DoubleAnimation
+                    {
+                        From = 0.7,
+                        To = 0,
+                        Duration = TimeSpan.FromSeconds(0.2),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+                    };
+
+                    Storyboard.SetTarget(moveDOWN, SearchByTagsGUI);
+                    Storyboard.SetTargetProperty(moveDOWN, new PropertyPath("RenderTransform.ScaleY"));
+                    Storyboard.SetTarget(opacityAdd, TranslucentBox);
+                    Storyboard.SetTargetProperty(opacityAdd, new PropertyPath("Opacity"));
+
+                    sb.Children.Add(moveDOWN);
+                    sb.Children.Add(opacityAdd);
+                    sb.Begin();
+
+                    Panel.SetZIndex(TranslucentBox, -5);
+                }
+            }
+        }
+        private void SearchTB_KeyDown(object sender, KeyEventArgs e)                             //Do the search per keystroke
+        {
+            if(e.Key == Key.Enter)
+            {
+                //if the given value is blank, then reset back to the main repos
+                if(string.IsNullOrEmpty(SearchTB.Text))
+                {
+                    //refresh the main source
+                    githubListView.ItemsSource = null;
+                    githubListView.ItemsSource = githubRepositories;
+                    CollectionsComboBox.SelectedItem = null;
+                }
+            }
+            else
+            {
+                //clear the direct search holder just in case
+                directSearchRepositories.Clear();
+
+                //perform a search by name for all of the repos
+                foreach(var repo in githubRepositories)
+                {
+                    //if repo name contains string, add it into view
+                    if(repo.name.Contains(SearchTB.Text))
+                    {
+                        directSearchRepositories.Add(repo);
+                    }
+                }
+
+                //set as main view
+                githubListView.ItemsSource = null;
+                githubListView.ItemsSource = directSearchRepositories;
+            }
+            
+
+        }
+        private void searchRegularButtonClick(object sender, RoutedEventArgs e)
+        {
+            //set the search text box into focus
+            SearchTB.Focus();
+        }
+        private void searchByCollectionButtonClick(object sender, RoutedEventArgs e)
+        {
+            //set focus to the combo search box
+            CollectionsComboBox.Focus();
+        }
     }
 }
