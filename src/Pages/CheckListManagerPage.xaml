@@ -114,7 +114,7 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                         <Rectangle.OpacityMask>
-                                                            <ImageBrush ImageSource="images/trashcanPng.png" Stretch="Uniform"/>
+                                                            <ImageBrush ImageSource="../../Images/trashcanPng.png" Stretch="Uniform"/>
                                                         </Rectangle.OpacityMask>
                                                     </Rectangle>
                                                 </StackPanel>
@@ -125,7 +125,7 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                         <Rectangle.OpacityMask>
-                                                            <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                                            <ImageBrush ImageSource="../../Images/pencil-icon-png-9.jpg" Stretch="Uniform"/>
                                                         </Rectangle.OpacityMask>
                                                     </Rectangle>
                                                 </StackPanel>
@@ -264,7 +264,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Rectangle Width="30" Height="30" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Rectangle.OpacityMask>
-                                        <ImageBrush ImageSource="images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                                        <ImageBrush ImageSource="../../Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                             </StackPanel>
@@ -275,7 +275,7 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Rectangle Width="40" Height="40" Fill="#FF0078D7">
                                     <Rectangle.OpacityMask>
-                                        <ImageBrush ImageSource="images/saveButtonImage.png" Stretch="Uniform"/>
+                                        <ImageBrush ImageSource="../../Images/saveButtonImage.png" Stretch="Uniform"/>
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                             </StackPanel>
@@ -392,7 +392,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                                <ImageBrush ImageSource="../../Images/pencil-icon-png-9.jpg" Stretch="Uniform"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                     </StackPanel>
@@ -403,7 +403,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                                                <ImageBrush ImageSource="../../Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                     </StackPanel>
@@ -414,7 +414,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="/Images/trashcanPng.png" Stretch="Uniform"/>
+                                                <ImageBrush ImageSource="../../Images/trashcanPng.png" Stretch="Uniform"/>
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                     </StackPanel>
@@ -548,7 +548,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="Images\pencil-icon-png-9.jpg" Stretch="Uniform"/>
+                                            <ImageBrush ImageSource="../../Images/pencil-icon-png-9.jpg" Stretch="Uniform"/>
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
                                 </StackPanel>
@@ -562,7 +562,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="/Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
+                                            <ImageBrush ImageSource="../../Images/plusButtonImage-removebg-preview.png" Stretch="Uniform"/>
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
                                 </StackPanel>
@@ -573,7 +573,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="15" Height="15" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="/Images/trashcanPng.png" Stretch="Uniform"/>
+                                            <ImageBrush ImageSource="../../Images/trashcanPng.png" Stretch="Uniform"/>
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
                                 </StackPanel>
@@ -587,7 +587,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="/Images/brushIcon.png" Stretch="Uniform"/>
+                                            <ImageBrush ImageSource="../../Images/brushIcon.png" Stretch="Uniform"/>
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
                                 </StackPanel>
@@ -598,7 +598,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Rectangle Width="20" Height="20" Fill="#FF0078D7" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Rectangle.OpacityMask>
-                                            <ImageBrush ImageSource="images/saveButtonImage.png" Stretch="Uniform"/>
+                                            <ImageBrush ImageSource="../../Images/saveButtonImage.png" Stretch="Uniform"/>
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
                                 </StackPanel>
